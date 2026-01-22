@@ -12,32 +12,54 @@ use Illuminate\View\View;
 
 class AuthenticatedSessionController extends Controller
 {
-    /**
-     * Display the login view.
-     */
     public function create(): View
     {
         return view('auth.login');
     }
-
-    /**
-     * Handle an incoming authentication request.
-     */
-    public function store(LoginRequest $request): RedirectResponse
+    public function rules()
     {
-        $request->authenticate();
-
-        $request->session()->regenerate();
-
-        return redirect()->intended(RouteServiceProvider::HOME);
+        return [
+            'code' => ['required', 'string'],
+            'password' => ['required', 'string'],
+        ];
     }
+
+    public function username()
+    {
+        return 'code';  // tells Breeze to use 'code' for login
+    }
+    public function store(Request $request)
+    {
+        $credentials = $request->only('code', 'password');
+        
+        // Explicitly use the 'student' guard and attempt to authenticate
+        if (Auth::guard('student')->attempt($credentials)) {
+            $request->session()->regenerate();
+
+            // Check if the authenticated user is an admin
+            $user = Auth::guard('student')->user();
+            
+            if ($user->is_admin) {
+                return redirect()->intended(route('admin.dashboard'));
+            }
+
+            return redirect()->intended(route('student.dashboard'));
+        }
+
+        // Add an error if login fails
+        return back()->withErrors([
+            'code' => 'Invalid code or password.',
+        ])->withInput();
+    }
+
+
 
     /**
      * Destroy an authenticated session.
      */
     public function destroy(Request $request): RedirectResponse
     {
-        Auth::guard('web')->logout();
+        Auth::guard('student')->logout();
 
         $request->session()->invalidate();
 

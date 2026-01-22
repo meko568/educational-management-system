@@ -19,6 +19,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        if (app()->getLocale() === 'ar') {
+            app('view.finder')->prependLocation(resource_path('views/ar'));
+        }
     }
 }

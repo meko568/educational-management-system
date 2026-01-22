@@ -16,7 +16,13 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): View
     {
-        return view('profile.edit', [
+        // Load appropriate view based on locale
+        $viewName = 'profile.edit';
+        if (app()->getLocale() === 'ar') {
+            $viewName = 'ar.profile.edit';
+        }
+        
+        return view($viewName, [
             'user' => $request->user(),
         ]);
     }

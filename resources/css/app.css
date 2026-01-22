@@ -1,3 +1,6 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+.mx-4{
+    margin: 10px !important;
+}
