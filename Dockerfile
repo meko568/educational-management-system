@@ -30,8 +30,11 @@ COPY . /var/www
 # Install dependencies
 RUN composer install --no-interaction --no-dev --optimize-autoloader
 
-# Generate application key
-RUN php artisan key:generate --force
+# Copy .env if it doesn't exist
+RUN if [ ! -f .env ]; then \
+        cp .env.example .env && \
+        php artisan key:generate --force; \
+    fi
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
