@@ -40,10 +40,18 @@ return [
     'Profile Information' => 'معلومات الملف الشخصي',
     "Update your account's profile information and email address." => "تحديث معلومات ملفك الشخصي وعنوان بريدك الإلكتروني.",
     'Name' => 'الاسم',
+    'Academic Year' => 'السنة الدراسية',
+    'Code' => 'الكود',
     'Phone Number' => 'رقم الهاتف',
     'Parent\'s Phone Number' => 'رقم هاتف ولي الأمر',
     'Password' => 'كلمة المرور',
     'Cancel' => 'إلغاء',
+    
+    // Delete account translations
+    'Delete Account' => 'حذف الحساب',
+    'Once your account is deleted, all of its resources and data will be permanently deleted. Before deleting your account, please download any data or information that you wish to retain.' => 'بمجرد حذف حسابك، سيتم حذف جميع موارده وبياناته نهائيًا. قبل حذف حسابك، يرجى تنزيل أي بيانات أو معلومات ترغب في الاحتفاظ بها.',
+    'Are you sure you want to delete your account?' => 'هل أنت متأكد أنك تريد حذف حسابك؟',
+    'Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.' => 'بمجرد حذف حسابك، سيتم حذف جميع موارده وبياناته نهائيًا. الرجاء إدخال كلمة المرور الخاصة بك لتأكيد رغبتك في حذف حسابك نهائيًا.',
     
     // Authentication
     'login' => 'تسجيل الدخول',

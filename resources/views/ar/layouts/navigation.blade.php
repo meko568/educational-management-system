@@ -49,11 +49,9 @@
                     </x-slot>
 
                     <x-slot name="content">
-                        @if($showProfile)
-                            <x-dropdown-link :href="route('profile.edit')">
-                                {{ __('messages.profile') }}
-                            </x-dropdown-link>
-                        @endif
+                        <button type="button" onclick="window.location.href='{{ route('profile.edit') }}'" class="w-full text-left block px-4 py-2 text-sm leading-5 text-gray-700 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-700 transition duration-150 ease-in-out">
+                            {{ __('messages.profile') }}
+                        </button>
 
                         <div class="px-4 py-2 text-xs text-gray-500 dark:text-gray-300">{{ __('messages.language') }}</div>
                         <button type="button" onclick="window.location.href='{{ route('lang.switch', ['locale' => 'en']) }}'" class="w-full text-left block px-4 py-2 text-sm leading-5 text-gray-700 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-700 transition duration-150 ease-in-out">
@@ -122,11 +120,9 @@
             </div>
 
             <div class="mt-3 space-y-1">
-                @if($showProfile)
-                    <x-responsive-nav-link :href="route('profile.edit')">
-                        {{ __('messages.profile') }}
-                    </x-responsive-nav-link>
-                @endif
+                <button type="button" onclick="window.location.href='{{ route('profile.edit') }}'" class="w-full text-left block px-4 py-2 text-sm leading-5 text-gray-700 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-700 transition duration-150 ease-in-out">
+                    {{ __('messages.profile') }}
+                </button>
 
                 <div class="px-4 py-2 text-xs text-gray-500 dark:text-gray-300">{{ __('messages.language') }}</div>
                 <button type="button" onclick="window.location.href='{{ route('lang.switch', ['locale' => 'en']) }}'" class="w-full text-left block px-4 py-2 text-sm leading-5 text-gray-700 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-700 transition duration-150 ease-in-out">
