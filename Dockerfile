@@ -32,9 +32,6 @@ RUN composer install --no-interaction --no-dev --optimize-autoloader --no-script
 # Copy everything else
 COPY . /var/www
 
-# Make start script executable
-RUN chmod +x start.sh
-
 # Set permissions
 RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache && \
     chmod -R 775 /var/www/storage /var/www/bootstrap/cache
@@ -42,5 +39,4 @@ RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache && \
 # Expose port
 EXPOSE 3000
 
-# Use the start script
-ENTRYPOINT ["/var/www/start.sh"]
+# No CMD or ENTRYPOINT - let Railway handle the start command
