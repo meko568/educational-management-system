@@ -1,14 +1,16 @@
-#!/bin/bash
+#!/bin/sh
 set -e
 
-echo "Clearing configuration cache..."
+echo "=== Application Starting ==="
+echo "Clearing config cache..."
 php artisan config:clear
 
 echo "Running migrations..."
 php artisan migrate --force
 
-echo "Seeding database..."
-php artisan db:seed --force
+echo "Running seeders..."
+php artisan db:seed --class=DatabaseSeeder || echo "Seeder warning - continuing..."
 
-echo "Starting server on port 3000..."
+echo "Starting Laravel development server..."
+echo "Server will be available on port 3000"
 exec php artisan serve --host=0.0.0.0 --port=3000

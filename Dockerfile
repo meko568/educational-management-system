@@ -23,14 +23,17 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Set working directory
 WORKDIR /var/www
 
-# Copy composer files
+# Copy composer files first
 COPY composer.json composer.lock ./
 
 # Install dependencies
 RUN composer install --no-interaction --no-dev --optimize-autoloader --no-scripts
 
-# Copy application
+# Copy everything else
 COPY . /var/www
+
+# Make start script executable
+RUN chmod +x start.sh
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache && \
@@ -39,11 +42,5 @@ RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache && \
 # Expose port
 EXPOSE 3000
 
-# Run seeders without --force and continue even if it fails
-CMD php artisan config:clear && \
-    echo "Running migrations..." && \
-    php artisan migrate --force && \
-    echo "Running seeders..." && \
-    (php artisan db:seed || echo "Seeder failed but continuing...") && \
-    echo "Starting server on port 3000..." && \
-    php artisan serve --host=0.0.0.0 --port=3000
+# Use the start script
+ENTRYPOINT ["/var/www/start.sh"]
