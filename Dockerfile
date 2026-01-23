@@ -32,9 +32,6 @@ RUN composer install --no-interaction --no-dev --optimize-autoloader --no-script
 # Copy application
 COPY . /var/www
 
-# Make start script executable
-RUN chmod +x /var/www/start.sh
-
 # Set permissions
 RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache && \
     chmod -R 775 /var/www/storage /var/www/bootstrap/cache
@@ -42,4 +39,11 @@ RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache && \
 # Expose port
 EXPOSE 3000
 
-CMD ["/var/www/start.sh"]
+# Run seeders without --force and continue even if it fails
+CMD php artisan config:clear && \
+    echo "Running migrations..." && \
+    php artisan migrate --force && \
+    echo "Running seeders..." && \
+    (php artisan db:seed || echo "Seeder failed but continuing...") && \
+    echo "Starting server on port 3000..." && \
+    php artisan serve --host=0.0.0.0 --port=3000
