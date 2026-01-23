@@ -1,4 +1,4 @@
-FROM php:8.2-fpm
+FROM php:8.2-cli
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -10,7 +10,8 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip \
     libzip-dev \
-    libpq-dev
+    libpq-dev \
+    nginx
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -30,15 +31,15 @@ COPY . /var/www
 # Install dependencies
 RUN composer install --no-interaction --no-dev --optimize-autoloader
 
-# Copy .env if it doesn't exist
-RUN if [ ! -f .env ]; then \
-        cp .env.example .env && \
-        php artisan key:generate --force; \
-    fi
-
 # Set permissions
 RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
 
-# Expose port 9000 and start php-fpm server
-EXPOSE 9000
-CMD ["php-fpm"]
+# Expose port 3000
+EXPOSE 3000
+
+# Start script
+CMD php artisan config:cache && \
+    php artisan route:cache && \
+    php artisan migrate --force && \
+    php artisan db:seed --force && \
+    php artisan serve --host=0.0.0.0 --port=3000
