@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip \
     libzip-dev \
-    libpq-dev
+    nginx
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -24,25 +24,44 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Set working directory
 WORKDIR /var/www
 
-# Copy composer files first
+# Copy composer files
 COPY composer.json composer.lock ./
 
-# Install dependencies WITHOUT running scripts
+# Install dependencies
 RUN composer install --no-interaction --no-dev --optimize-autoloader --no-scripts
 
-# Copy the rest of the application
+# Copy application
 COPY . /var/www
 
+# Generate storage link
+RUN php artisan storage:link || true
+
 # Set permissions
-RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
+RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache && \
+    chmod -R 775 /var/www/storage /var/www/bootstrap/cache
 
-# Expose port 3000
-EXPOSE 3000
+# Create start script
+RUN echo '#!/bin/bash\n\
+set -e\n\
+echo "Starting application..."\n\
+php artisan package:discover --ansi\n\
+echo "Running migrations..."\n\
+php artisan migrate --force\n\
+echo "Running seeders..."\n\
+php artisan db:seed --force || true\n\
+echo "Clearing caches..."\n\
+php artisan config:clear\n\
+php artisan cache:clear\n\
+php artisan view:clear\n\
+echo "Starting server on port ${PORT:-3000}..."\n\
+php artisan serve --host=0.0.0.0 --port=${PORT:-3000}\n\
+' > /var/www/start.sh && chmod +x /var/www/start.sh
 
-# Start script - run package discovery and migrations at runtime
-CMD php artisan package:discover --ansi && \
-    php artisan config:cache && \
-    php artisan route:cache && \
-    php artisan migrate --force && \
-    php artisan db:seed --force && \
-    php artisan serve --host=0.0.0.0 --port=3000
+# Expose port
+EXPOSE ${PORT:-3000}
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=40s \
+  CMD curl -f http://localhost:${PORT:-3000}/ || exit 1
+
+CMD ["/var/www/start.sh"]
