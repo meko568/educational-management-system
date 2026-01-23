@@ -20,7 +20,7 @@
                 :value="old('code')" 
                 required 
                 autofocus 
-                placeholder="Enter your student code"
+                placeholder="أدخل كود الطالب"
             />
             <x-input-error :messages="$errors->get('code')" class="mt-2" />
         </div>

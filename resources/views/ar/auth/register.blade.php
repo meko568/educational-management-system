@@ -3,10 +3,10 @@
         <div class="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-lg">
             <div>
                 <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
-                    Create a new account
+                    إنشاء حساب جديد
                 </h2>
                 <p class="mt-2 text-center text-sm text-gray-600">
-                    Please fill in the details to create your account
+                    يرجى ملء التفاصيل لإنشاء حسابك
                 </p>
             </div>
 
@@ -34,7 +34,7 @@
 
                 <div class="rounded-md shadow-sm space-y-4">
                     <div>
-                        <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                        <label for="name" class="block text-sm font-medium text-gray-700 mb-1">الاسم الكامل</label>
                         <input
                             id="name"
                             name="name"
@@ -44,41 +44,41 @@
                             autofocus
                             autocomplete="name"
                             class="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                            placeholder="Enter your full name"
+                            placeholder="أدخل اسمك الكامل"
                         >
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Academic Year</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">الصف الدراسي</label>
                         <select
                             name="academic_year"
                             required
                             class="appearance-none relative block w-full px-3 py-2 border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                         >
-                            <option value="">-- Select Academic Year --</option>
-                            <optgroup label="Primary School">
-                                <option value="primary_1" {{ old('academic_year') == 'primary_1' ? 'selected' : '' }}>1 Primary</option>
-                                <option value="primary_2" {{ old('academic_year') == 'primary_2' ? 'selected' : '' }}>2 Primary</option>
-                                <option value="primary_3" {{ old('academic_year') == 'primary_3' ? 'selected' : '' }}>3 Primary</option>
-                                <option value="primary_4" {{ old('academic_year') == 'primary_4' ? 'selected' : '' }}>4 Primary</option>
-                                <option value="primary_5" {{ old('academic_year') == 'primary_5' ? 'selected' : '' }}>5 Primary</option>
-                                <option value="primary_6" {{ old('academic_year') == 'primary_6' ? 'selected' : '' }}>6 Primary</option>
+                            <option value="">-- اختر الصف الدراسي --</option>
+                            <optgroup label="المرحلة الابتدائية">
+                                <option value="primary_1" {{ old('academic_year') == 'primary_1' ? 'selected' : '' }}>الصف الأول الابتدائي</option>
+                                <option value="primary_2" {{ old('academic_year') == 'primary_2' ? 'selected' : '' }}>الصف الثاني الابتدائي</option>
+                                <option value="primary_3" {{ old('academic_year') == 'primary_3' ? 'selected' : '' }}>الصف الثالث الابتدائي</option>
+                                <option value="primary_4" {{ old('academic_year') == 'primary_4' ? 'selected' : '' }}>الصف الرابع الابتدائي</option>
+                                <option value="primary_5" {{ old('academic_year') == 'primary_5' ? 'selected' : '' }}>الصف الخامس الابتدائي</option>
+                                <option value="primary_6" {{ old('academic_year') == 'primary_6' ? 'selected' : '' }}>الصف السادس الابتدائي</option>
                             </optgroup>
-                            <optgroup label="Preparatory School">
-                                <option value="prep_1" {{ old('academic_year') == 'prep_1' ? 'selected' : '' }}>1 Preparatory</option>
-                                <option value="prep_2" {{ old('academic_year') == 'prep_2' ? 'selected' : '' }}>2 Preparatory</option>
-                                <option value="prep_3" {{ old('academic_year') == 'prep_3' ? 'selected' : '' }}>3 Preparatory</option>
+                            <optgroup label="المرحلة الإعدادية">
+                                <option value="prep_1" {{ old('academic_year') == 'prep_1' ? 'selected' : '' }}>الصف الأول الإعدادي</option>
+                                <option value="prep_2" {{ old('academic_year') == 'prep_2' ? 'selected' : '' }}>الصف الثاني الإعدادي</option>
+                                <option value="prep_3" {{ old('academic_year') == 'prep_3' ? 'selected' : '' }}>الصف الثالث الإعدادي</option>
                             </optgroup>
-                            <optgroup label="Secondary School">
-                                <option value="sec_1" {{ old('academic_year') == 'sec_1' ? 'selected' : '' }}>1 Secondary</option>
-                                <option value="sec_2" {{ old('academic_year') == 'sec_2' ? 'selected' : '' }}>2 Secondary</option>
-                                <option value="sec_3" {{ old('academic_year') == 'sec_3' ? 'selected' : '' }}>3 Secondary</option>
+                            <optgroup label="المرحلة الثانوية">
+                                <option value="sec_1" {{ old('academic_year') == 'sec_1' ? 'selected' : '' }}>الصف الأول الثانوي</option>
+                                <option value="sec_2" {{ old('academic_year') == 'sec_2' ? 'selected' : '' }}>الصف الثاني الثانوي</option>
+                                <option value="sec_3" {{ old('academic_year') == 'sec_3' ? 'selected' : '' }}>الصف الثالث الثانوي</option>
                             </optgroup>
                         </select>
                     </div>
 
                     <div>
-                        <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                        <label for="email" class="block text-sm font-medium text-gray-700 mb-1">البريد الإلكتروني</label>
                         <input
                             id="email"
                             name="email"
@@ -87,12 +87,12 @@
                             required
                             autocomplete="email"
                             class="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                            placeholder="Enter your email address"
+                            placeholder="أدخل بريدك الإلكتروني"
                         >
                     </div>
 
                     <div>
-                        <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                        <label for="password" class="block text-sm font-medium text-gray-700 mb-1">كلمة المرور</label>
                         <input
                             id="password"
                             name="password"
@@ -100,12 +100,12 @@
                             required
                             autocomplete="new-password"
                             class="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                            placeholder="Create a password"
+                            placeholder="إنشاء كلمة مرور"
                         >
                     </div>
 
                     <div>
-                        <label for="password_confirmation" class="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
+                        <label for="password_confirmation" class="block text-sm font-medium text-gray-700 mb-1">تأكيد كلمة المرور</label>
                         <input
                             id="password_confirmation"
                             name="password_confirmation"
@@ -113,7 +113,7 @@
                             required
                             autocomplete="new-password"
                             class="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                            placeholder="Confirm your password"
+                            placeholder="تأكيد كلمة المرور"
                         >
                     </div>
                 </div>
@@ -125,16 +125,16 @@
                                 <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
                             </svg>
                         </span>
-                        Create Account
+                        إنشاء حساب
                     </button>
                 </div>
             </form>
 
             <div class="text-center text-sm">
                 <p class="text-gray-600">
-                    Already have an account?
+                    هل لديك حساب بالفعل؟
                     <a href="{{ route('login') }}" class="font-medium text-indigo-600 hover:text-indigo-500">
-                        Sign in here
+                        سجل الدخول هنا
                     </a>
                 </p>
             </div>
