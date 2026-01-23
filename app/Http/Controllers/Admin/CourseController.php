@@ -17,7 +17,7 @@ class CourseController extends Controller
             ->forAcademicYear($academicYear)
             ->get();
             
-        return view('admin.courses.index', compact('courses', 'academicYear'));
+        return $this->localeView('admin.courses.index', compact('courses', 'academicYear'));
     }
 
     /**
@@ -25,7 +25,7 @@ class CourseController extends Controller
      */
     public function create($academicYear)
     {
-        return view('admin.courses.create', compact('academicYear'));
+        return $this->localeView('admin.courses.create', compact('academicYear'));
     }
 
     /**
@@ -56,7 +56,7 @@ class CourseController extends Controller
             abort(404);
         }
         $lessons = $course->lessons;
-        return view('admin.courses.show', compact('course', 'lessons', 'academicYear'));
+        return $this->localeView('admin.courses.show', compact('course', 'lessons', 'academicYear'));
     }
 
     /**
@@ -67,7 +67,7 @@ class CourseController extends Controller
         if ($course->academicYear !== $academicYear) {
             abort(404);
         }
-        return view('admin.courses.edit', compact('course', 'academicYear'));
+        return $this->localeView('admin.courses.edit', compact('course', 'academicYear'));
     }
 
     /**

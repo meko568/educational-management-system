@@ -42,7 +42,7 @@ class QuizController extends Controller
             ->latest()
             ->get();
 
-        return view('admin.quizzes.manage', compact('exams', 'quizzes', 'students', 'allResults', 'latestQuiz', 'academicYear'));
+        return $this->localeView('admin.quizzes.manage', compact('exams', 'quizzes', 'students', 'allResults', 'latestQuiz', 'academicYear'));
     }
 
     /**
@@ -59,7 +59,7 @@ class QuizController extends Controller
             ->latest()
             ->first();
 
-        return view('admin.quizzes.create', [
+        return $this->localeView('admin.quizzes.create', [
             'exams' => $exams,
             'defaultExamId' => $latestExam ? $latestExam->id : null,
             'academicYear' => $academicYear
@@ -111,7 +111,7 @@ class QuizController extends Controller
             ->with('student')
             ->get();
 
-        return view('admin.quizzes.show', compact('quiz', 'students', 'results'));
+        return $this->localeView('admin.quizzes.show', compact('quiz', 'students', 'results'));
     }
 
     /**
@@ -123,7 +123,7 @@ class QuizController extends Controller
         $exams = Exam::where('status', '!=', 'cancelled')
             ->where('academicYear', $academicYear)
             ->get();
-        return view('admin.quizzes.edit', compact('quiz', 'exams', 'academicYear'));
+        return $this->localeView('admin.quizzes.edit', compact('quiz', 'exams', 'academicYear'));
     }
 
     /**
@@ -167,7 +167,7 @@ class QuizController extends Controller
             ->with('student')
             ->get();
 
-        return view('admin.quizzes.results', compact('quiz', 'students', 'results'));
+        return $this->localeView('admin.quizzes.results', compact('quiz', 'students', 'results'));
     }
 
     /**

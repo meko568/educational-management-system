@@ -22,13 +22,13 @@ class StudentController extends Controller
             ->latest()
             ->paginate(10);
 
-        return view('admin.students.index', compact('students', 'academicYear'));
+        return $this->localeView('admin.students.index', compact('students', 'academicYear'));
     }
 
     public function create(Request $request)
     {
         $academicYear = $request->query('academicYear') ?? session('selectedAcademicYear', 'primary1');
-        return view('admin.students.create', compact('academicYear'));
+        return $this->localeView('admin.students.create', compact('academicYear'));
     }
 
     // In app/Http/Controllers/Admin/StudentController.php
@@ -107,13 +107,13 @@ class StudentController extends Controller
             'quizResults.quiz'
         ])->where('code', $code)->firstOrFail();
 
-        return view('admin.students.show', compact('student'));
+        return $this->localeView('admin.students.show', compact('student'));
     }
 
     public function edit(Request $request, Student $student)
     {
         $academicYear = $request->query('academicYear') ?? session('selectedAcademicYear', 'primary1');
-        return view('admin.students.edit', compact('student', 'academicYear'));
+        return $this->localeView('admin.students.edit', compact('student', 'academicYear'));
     }
 
     public function update(Request $request, Student $student)
@@ -146,7 +146,7 @@ class StudentController extends Controller
 
     public function showPayment(Student $student)
     {
-        return view('admin.students.payment', compact('student'));
+        return $this->localeView('admin.students.payment', compact('student'));
     }
 
     public function processPayment(Student $student)

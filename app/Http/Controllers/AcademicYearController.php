@@ -39,7 +39,7 @@ class AcademicYearController extends Controller
             ];
         }
 
-        return view('academic-year.selector', [
+        return $this->localeView('academic-year.selector', [
             'academicYears' => $academicYears,
             'yearStats' => $yearStats,
             'user' => $user

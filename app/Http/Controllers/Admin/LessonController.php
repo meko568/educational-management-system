@@ -17,7 +17,7 @@ class LessonController extends Controller
         if ($course->academicYear !== $academicYear) {
             abort(404);
         }
-        return view('admin.lessons.create', compact('course', 'academicYear'));
+        return $this->localeView('admin.lessons.create', compact('course', 'academicYear'));
     }
 
     /**
@@ -57,7 +57,7 @@ class LessonController extends Controller
         if ($lesson->course_id !== $course->id) {
             abort(404);
         }
-        return view('admin.lessons.edit', compact('course', 'lesson', 'academicYear'));
+        return $this->localeView('admin.lessons.edit', compact('course', 'lesson', 'academicYear'));
     }
 
     /**

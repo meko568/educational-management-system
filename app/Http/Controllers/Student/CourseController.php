@@ -19,7 +19,7 @@ class CourseController extends Controller
             ->forAcademicYear($academicYear)
             ->get();
 
-        return view('student.courses.index', compact('courses', 'student'));
+        return $this->localeView('student.courses.index', compact('courses', 'student'));
     }
 
     public function show(Course $course)
@@ -33,7 +33,7 @@ class CourseController extends Controller
         $hasAccess = $student->hasValidSubscription();
         $lessons = $course->lessons()->orderBy('order')->get();
 
-        return view('student.courses.show', compact('course', 'lessons', 'student', 'hasAccess'));
+        return $this->localeView('student.courses.show', compact('course', 'lessons', 'student', 'hasAccess'));
     }
 
     public function showLesson(Course $course, Lesson $lesson)
@@ -51,6 +51,6 @@ class CourseController extends Controller
         $hasAccess = $student->hasValidSubscription();
         $lessonsCount = $course->lessons()->count();
 
-        return view('student.lessons.show', compact('course', 'lesson', 'student', 'hasAccess', 'lessonsCount'));
+        return $this->localeView('student.lessons.show', compact('course', 'lesson', 'student', 'hasAccess', 'lessonsCount'));
     }
 }

@@ -23,7 +23,7 @@ class AttendanceController extends Controller
             ->latest()
             ->paginate(10);
 
-        return view('admin.attendances.index', compact('attendances', 'academicYear'));
+        return $this->localeView('admin.attendances.index', compact('attendances', 'academicYear'));
     }
 
     /**
@@ -35,7 +35,7 @@ class AttendanceController extends Controller
         $students = Student::where('role', '!=', 'admin')
             ->where('academicYear', $academicYear)
             ->get();
-        return view('admin.attendances.create', compact('students', 'academicYear'));
+        return $this->localeView('admin.attendances.create', compact('students', 'academicYear'));
     }
 
     /**
@@ -77,7 +77,7 @@ class AttendanceController extends Controller
     public function edit(Request $request, Attendance $attendance)
     {
         $academicYear = $request->query('academicYear') ?? session('selectedAcademicYear', 'primary1');
-        return view('admin.attendances.edit', compact('attendance', 'academicYear'));
+        return $this->localeView('admin.attendances.edit', compact('attendance', 'academicYear'));
     }
 
     /**

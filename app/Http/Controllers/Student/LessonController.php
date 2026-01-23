@@ -14,7 +14,7 @@ class LessonController extends Controller
     public function courses()
     {
         $courses = Course::with('lessons')->get();
-        return view('student.courses.index', compact('courses'));
+        return $this->localeView('student.courses.index', compact('courses'));
     }
 
     /**
@@ -31,7 +31,7 @@ class LessonController extends Controller
         }
 
         $lessons = $course->lessons;
-        return view('student.lessons.show-course', compact('course', 'lessons'));
+        return $this->localeView('student.lessons.show-course', compact('course', 'lessons'));
     }
 
     /**
@@ -53,6 +53,6 @@ class LessonController extends Controller
         }
 
         $expiryDate = $student->getSubscriptionExpiryDate();
-        return view('student.lessons.view', compact('course', 'lesson', 'expiryDate'));
+        return $this->localeView('student.lessons.view', compact('course', 'lesson', 'expiryDate'));
     }
 }

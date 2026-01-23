@@ -14,7 +14,7 @@ class AuthenticatedSessionController extends Controller
 {
     public function create(): View
     {
-        return view('auth.login');
+        return $this->localeView('auth.login');
     }
     public function rules()
     {

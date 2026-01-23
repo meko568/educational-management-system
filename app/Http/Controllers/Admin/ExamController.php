@@ -36,7 +36,7 @@ class ExamController extends Controller
             ->latest()
             ->get();
 
-        return view('admin.exams.manage', compact('exams', 'students', 'allResults', 'latestExam', 'academicYear'));
+        return $this->localeView('admin.exams.manage', compact('exams', 'students', 'allResults', 'latestExam', 'academicYear'));
     }
 
     /**
@@ -46,7 +46,7 @@ class ExamController extends Controller
     {
         $academicYear = $request->query('academicYear') ?? session('selectedAcademicYear', 'primary1');
         $defaultDate = now()->format('Y-m-d');
-        return view('admin.exams.create', compact('defaultDate', 'academicYear'));
+        return $this->localeView('admin.exams.create', compact('defaultDate', 'academicYear'));
     }
 
     /**
@@ -95,7 +95,7 @@ class ExamController extends Controller
             ->with('student')
             ->get();
 
-        return view('admin.exams.show', compact('exam', 'students', 'results', 'academicYear'));
+        return $this->localeView('admin.exams.show', compact('exam', 'students', 'results', 'academicYear'));
     }
 
     /**
@@ -104,7 +104,7 @@ class ExamController extends Controller
     public function edit(Request $request, Exam $exam)
     {
         $academicYear = $request->query('academicYear') ?? session('selectedAcademicYear', 'primary1');
-        return view('admin.exams.edit', compact('exam', 'academicYear'));
+        return $this->localeView('admin.exams.edit', compact('exam', 'academicYear'));
     }
 
     /**
@@ -148,7 +148,7 @@ class ExamController extends Controller
             ->with('student')
             ->get();
 
-        return view('admin.exams.results', compact('exam', 'students', 'results'));
+        return $this->localeView('admin.exams.results', compact('exam', 'students', 'results'));
     }
 
     /**

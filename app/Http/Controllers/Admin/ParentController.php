@@ -20,6 +20,6 @@ class ParentController extends Controller
             ->get(['code', 'name', 'academicYear'])
             ->keyBy('code');
 
-        return view('admin.parents.index', compact('parents', 'studentNamesByCode'));
+        return $this->localeView('admin.parents.index', compact('parents', 'studentNamesByCode'));
     }
 }
