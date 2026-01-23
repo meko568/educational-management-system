@@ -23,26 +23,7 @@ class SetLocale
 
         app()->setLocale($locale);
 
-        if ($locale === 'ar') {
-            $viewFinder = app('view.finder');
-            $paths = $viewFinder->getPaths();
-            
-            // Remove any existing ar paths to prevent duplicates
-            $paths = array_filter($paths, function($path) {
-                return !str_contains($path, 'resources/views/ar');
-            });
-            
-            // Prepend Arabic views directory at the beginning
-            array_unshift($paths, resource_path('views/ar'));
-            
-            // Set the new paths
-            $viewFinder->setPaths($paths);
-            
-            \Log::debug('Arabic locale detected, prepended views/ar');
-            \Log::debug('View paths: ' . json_encode($viewFinder->getPaths()));
-        } else {
-            \Log::debug('Locale is: ' . $locale);
-        }
+        // Note: We're using localeView() method in controllers instead of manipulating view paths here
 
         return $next($request);
     }
