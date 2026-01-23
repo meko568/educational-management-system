@@ -7,25 +7,19 @@ use Illuminate\Support\Facades\URL;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
     public function register(): void
     {
         //
     }
 
-    /**
-     * Bootstrap any application services.
-     */
     public function boot(): void
     {
-        // Force HTTPS in production
-        if ($this->app->environment('production')) {
+        // Force HTTPS - multiple methods
+        if (config('app.env') === 'production') {
             URL::forceScheme('https');
+            $this->app['request']->server->set('HTTPS', 'on');
         }
 
-        // Your existing locale code
         if (app()->getLocale() === 'ar') {
             app('view.finder')->prependLocation(resource_path('views/ar'));
         }
