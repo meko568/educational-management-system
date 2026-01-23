@@ -4,8 +4,8 @@
 <div class="py-12">
     <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-            <div class="p-6 bg-white border-b border-gray-200">
-                <h2 class="text-2xl font-semibold text-gray-800 mb-6">Create Exam</h2>
+            <div class="p-6 bg-white border-b border-gray-200" style="direction: rtl;">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-6">إنشاء اختبار جديد</h2>
 
                 @if ($errors->any())
                     <div class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
@@ -23,7 +23,7 @@
 
                     <!-- Title -->
                     <div class="mb-6">
-                        <label for="title" class="block text-sm font-medium text-gray-700">Title</label>
+                        <label for="title" class="block text-sm font-medium text-gray-700">عنوان الاختبار</label>
                         <input type="text" id="title" name="title" value="{{ old('title') }}" 
                                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" required>
                         @error('title')
@@ -33,9 +33,9 @@
 
                     <!-- Description -->
                     <div class="mb-6">
-                        <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
+                        <label for="description" class="block text-sm font-medium text-gray-700">الوصف</label>
                         <textarea id="description" name="description" rows="4" 
-                                  class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">{{ old('description') }}</textarea>
+                                  class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" style="direction: rtl;">{{ old('description') }}</textarea>
                         @error('description')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
@@ -43,7 +43,7 @@
 
                     <!-- Exam Date -->
                     <div class="mb-6">
-                        <label for="exam_date" class="block text-sm font-medium text-gray-700">Exam Date</label>
+                        <label for="exam_date" class="block text-sm font-medium text-gray-700">تاريخ الاختبار</label>
                         <input type="date" id="exam_date" name="exam_date" value="{{ old('exam_date', $defaultDate) }}" 
                                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" required>
                         @error('exam_date')
@@ -53,7 +53,7 @@
 
                     <!-- Total Marks -->
                     <div class="mb-6">
-                        <label for="total_marks" class="block text-sm font-medium text-gray-700">Max Score</label>
+                        <label for="total_marks" class="block text-sm font-medium text-gray-700">الدرجة الكلية</label>
                         <input type="number" id="total_marks" name="total_marks" value="{{ old('total_marks') }}" 
                                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" required>
                         @error('total_marks')
@@ -63,13 +63,13 @@
 
                     <!-- Status -->
                     <div class="mb-6">
-                        <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
+                        <label for="status" class="block text-sm font-medium text-gray-700">حالة الاختبار</label>
                         <select id="status" name="status" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" required>
-                            <option value="draft" {{ old('status') === 'draft' ? 'selected' : '' }}>Draft</option>
-                            <option value="scheduled" {{ old('status') === 'scheduled' ? 'selected' : '' }}>Scheduled</option>
-                            <option value="in_progress" {{ old('status') === 'in_progress' ? 'selected' : '' }}>In Progress</option>
-                            <option value="completed" {{ old('status') === 'completed' ? 'selected' : '' }}>Completed</option>
-                            <option value="cancelled" {{ old('status') === 'cancelled' ? 'selected' : '' }}>Cancelled</option>
+                            <option value="draft" {{ old('status') === 'draft' ? 'selected' : '' }}>مسودة</option>
+                            <option value="scheduled" {{ old('status') === 'scheduled' ? 'selected' : '' }}>مجدول</option>
+                            <option value="in_progress" {{ old('status') === 'in_progress' ? 'selected' : '' }}>قيد التنفيذ</option>
+                            <option value="completed" {{ old('status') === 'completed' ? 'selected' : '' }}>مكتمل</option>
+                            <option value="cancelled" {{ old('status') === 'cancelled' ? 'selected' : '' }}>ملغي</option>
                         </select>
                         @error('status')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -79,10 +79,10 @@
                     <!-- Submit Button -->
                     <div class="flex justify-between items-center">
                         <a href="{{ route('admin.exams.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700">
-                            Back
+                            رجوع
                         </a>
                         <button type="submit" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700">
-                            Create Exam
+                            إنشاء الاختبار
                         </button>
                     </div>
                 </form>

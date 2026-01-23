@@ -4,24 +4,24 @@
 <div class="py-12">
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-            <div class="p-6 bg-white border-b border-gray-200">
+            <div class="p-6 bg-white border-b border-gray-200" style="direction: rtl;">
                 <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-2xl font-semibold text-gray-800">Manage Exams & Record Results</h2>
+                    <h2 class="text-2xl font-semibold text-gray-800">إدارة الاختبارات وتسجيل النتائج</h2>
                     <a href="{{ route('admin.dashboard') }}" class="inline-flex items-center px-4 py-2 bg-gray-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700">
-                        Back to Dashboard
+                        العودة للوحة التحكم
                     </a>
                 </div>
 
                 @if(session('success'))
-                    <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6" role="alert">
-                        <p class="font-bold">Success</p>
+                    <div class="bg-green-100 border-r-4 border-green-500 text-green-700 p-4 mb-6" role="alert">
+                        <p class="font-bold">نجاح</p>
                         <p>{{ session('success') }}</p>
                     </div>
                 @endif
 
                 <!-- Create Exam Section -->
                 <div class="mb-8 p-6 bg-blue-50 rounded-lg border border-blue-200">
-                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Create New Exam</h3>
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">إنشاء اختبار جديد</h3>
                     
                     <form method="POST" action="{{ route('admin.exams.store') }}">
                         @csrf
@@ -29,7 +29,7 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <!-- Exam Title -->
                             <div class="md:col-span-2">
-                                <label for="title" class="block text-sm font-medium text-gray-700">Exam Title</label>
+                                <label for="title" class="block text-sm font-medium text-gray-700">عنوان الاختبار</label>
                                 <input type="text" id="title" name="title" 
                                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" 
                                        required>
@@ -40,7 +40,7 @@
 
                             <!-- Max Score -->
                             <div>
-                                <label for="total_marks" class="block text-sm font-medium text-gray-700">Max Score</label>
+                                <label for="total_marks" class="block text-sm font-medium text-gray-700">الدرجة الكلية</label>
                                 <input type="number" id="total_marks" name="total_marks" min="1"
                                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" 
                                        required>
@@ -51,7 +51,7 @@
 
                             <!-- Exam Date -->
                             <div>
-                                <label for="exam_date" class="block text-sm font-medium text-gray-700">Exam Date</label>
+                                <label for="exam_date" class="block text-sm font-medium text-gray-700">تاريخ الاختبار</label>
                                 <input type="date" id="exam_date" name="exam_date" 
                                        value="{{ now()->format('Y-m-d') }}"
                                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" 
@@ -63,16 +63,16 @@
 
                             <!-- Status -->
                             <div>
-                                <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
+                                <label for="status" class="block text-sm font-medium text-gray-700">الحالة</label>
                                 <select id="status" name="status"
                                         class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" 
                                         required>
-                                    <option value="">-- Select Status --</option>
-                                    <option value="draft">Draft</option>
-                                    <option value="scheduled">Scheduled</option>
-                                    <option value="in_progress">In Progress</option>
-                                    <option value="completed">Completed</option>
-                                    <option value="cancelled">Cancelled</option>
+                                    <option value="">-- اختر الحالة --</option>
+                                    <option value="draft">مسودة</option>
+                                    <option value="scheduled">مجدول</option>
+                                    <option value="in_progress">قيد التنفيذ</option>
+                                    <option value="completed">مكتمل</option>
+                                    <option value="cancelled">ملغي</option>
                                 </select>
                                 @error('status')
                                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -81,9 +81,9 @@
 
                             <!-- Description -->
                             <div class="md:col-span-2">
-                                <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
+                                <label for="description" class="block text-sm font-medium text-gray-700">الوصف</label>
                                 <textarea id="description" name="description" rows="3"
-                                          class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"></textarea>
+                                          class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" style="direction: rtl;"></textarea>
                                 @error('description')
                                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                 @enderror
@@ -92,7 +92,7 @@
                             <!-- Submit Button -->
                             <div class="md:col-span-2">
                                 <button type="submit" class="w-full inline-flex items-center justify-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700">
-                                    Create Exam
+                                    إنشاء اختبار
                                 </button>
                             </div>
                         </div>
@@ -101,7 +101,7 @@
 
                 <!-- Record Results Section -->
                 <div class="mb-8 p-6 bg-indigo-50 rounded-lg border border-indigo-200">
-                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Record Student Results</h3>
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">تسجيل نتائج الطلاب</h3>
                     
                     <form method="POST" id="recordForm" action="">
                         @csrf
@@ -110,11 +110,11 @@
                         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                             <!-- Select Exam -->
                             <div>
-                                <label for="exam_select" class="block text-sm font-medium text-gray-700">Select Exam</label>
+                                <label for="exam_select" class="block text-sm font-medium text-gray-700">اختر الاختبار</label>
                                 <select id="exam_select" 
                                         class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" 
                                         onchange="loadExamForm()" required>
-                                    <option value="">-- Select Exam --</option>
+                                    <option value="">-- اختر الاختبار --</option>
                                     @foreach($exams as $exam)
                                         <option value="{{ $exam->id }}" 
                                                 data-max-marks="{{ $exam->total_marks }}"
@@ -127,7 +127,7 @@
 
                             <!-- Max Score (Read-only) -->
                             <div>
-                                <label for="max_score_display" class="block text-sm font-medium text-gray-700">Max Score</label>
+                                <label for="max_score_display" class="block text-sm font-medium text-gray-700">الدرجة الكلية</label>
                                 <input type="number" id="max_score_display" 
                                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 sm:text-sm" 
                                        readonly>
@@ -135,11 +135,11 @@
 
                             <!-- Student Code -->
                             <div>
-                                <label for="student_code" class="block text-sm font-medium text-gray-700">Student Code</label>
+                                <label for="student_code" class="block text-sm font-medium text-gray-700">كود الطالب</label>
                                 <select id="student_code" name="student_code" 
                                         class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" 
                                         required>
-                                    <option value="">-- Select Student --</option>
+                                    <option value="">-- اختر الطالب --</option>
                                     @foreach($students as $student)
                                         <option value="{{ $student->code }}">
                                             {{ $student->code }} - {{ $student->name }}
@@ -153,7 +153,7 @@
 
                             <!-- Student Result -->
                             <div>
-                                <label for="marks_obtained" class="block text-sm font-medium text-gray-700">Student Result</label>
+                                <label for="marks_obtained" class="block text-sm font-medium text-gray-700">الدرجة المتحصل عليها</label>
                                 <input type="number" id="marks_obtained" name="marks_obtained" min="0"
                                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" 
                                        placeholder="0" required>
@@ -165,7 +165,7 @@
                             <!-- Submit Button -->
                             <div class="md:col-span-4">
                                 <button type="submit" class="w-full inline-flex items-center justify-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700">
-                                    Save Result
+                                    حفظ النتيجة
                                 </button>
                             </div>
                         </div>
@@ -173,20 +173,20 @@
                 </div>
 
                 <!-- Results Table -->
-                <h3 class="text-lg font-semibold text-gray-800 mb-4">All Exam Results</h3>
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">جميع النتائج</h3>
                 
                 @if($allResults->count() > 0)
                     <div class="overflow-x-auto mb-8">
                         <table class="min-w-full divide-y divide-gray-200">
                             <thead class="bg-gray-50">
                                 <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Exam</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student Code</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student Name</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Result</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Max Score</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Percentage</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">الاختبار</th>
+                                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">كود الطالب</th>
+                                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">اسم الطالب</th>
+                                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">النتيجة</th>
+                                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">الدرجة الكلية</th>
+                                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">النسبة المئوية</th>
+                                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">الإجراءات</th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
@@ -210,7 +210,7 @@
                                                 @method('DELETE')
                                                 <button type="submit" onclick="return confirm('Are you sure?')" 
                                                         class="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700">
-                                                    Delete
+                                                    حذف
                                                 </button>
                                             </form>
                                         </td>
@@ -221,7 +221,7 @@
                     </div>
                 @else
                     <div class="text-center py-8 text-gray-500 mb-8">
-                        <p>No results recorded yet.</p>
+                        <p>لا توجد نتائج مسجلة حتى الآن.</p>
                     </div>
                 @endif
             </div>
@@ -250,6 +250,13 @@ function loadExamForm() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+    // Initialize select2 for student selection
+    $('#student_code').select2({
+        placeholder: 'ابحث عن طالب...',
+        allowClear: true,
+        dir: 'rtl'
+    });
+    
     const examSelect = document.getElementById('exam_select');
     if (examSelect && examSelect.value) {
         loadExamForm();
