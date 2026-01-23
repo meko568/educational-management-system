@@ -35,6 +35,16 @@ return [
     'delete_account_confirmation' => 'بمجرد حذف حسابك، سيتم حذف جميع موارده وبياناته نهائيًا. الرجاء إدخال كلمة المرور الخاصة بك لتأكيد رغبتك في حذف حسابك نهائيًا.',
     'delete_account_button' => 'حذف الحساب',
     
+    // Additional profile translations
+    'Profile' => 'الملف الشخصي',
+    'Profile Information' => 'معلومات الملف الشخصي',
+    "Update your account's profile information and email address." => "تحديث معلومات ملفك الشخصي وعنوان بريدك الإلكتروني.",
+    'Name' => 'الاسم',
+    'Phone Number' => 'رقم الهاتف',
+    'Parent\'s Phone Number' => 'رقم هاتف ولي الأمر',
+    'Password' => 'كلمة المرور',
+    'Cancel' => 'إلغاء',
+    
     // Authentication
     'login' => 'تسجيل الدخول',
     'register' => 'تسجيل',

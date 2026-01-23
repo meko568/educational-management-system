@@ -55,7 +55,7 @@
                             </x-dropdown-link>
                         @endif
 
-                        <div class="px-4 py-2 text-xs text-gray-500">{{ __('messages.language') }}</div>
+                        <div class="px-4 py-2 text-xs text-gray-500 dark:text-gray-400">{{ __('messages.language') }}</div>
                         <x-dropdown-link :href="route('lang.switch', ['locale' => 'en'])">
                             {{ __('messages.english') }}
                         </x-dropdown-link>
@@ -63,14 +63,14 @@
                             {{ __('messages.arabic') }}
                         </x-dropdown-link>
 
-                        <div class="px-4 py-2 text-xs text-gray-500">{{ __('messages.theme') }}</div>
-                        <button type="button" onclick="window.setTheme('light')" class="w-full text-left block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                        <div class="px-4 py-2 text-xs text-gray-500 dark:text-gray-400">{{ __('messages.theme') }}</div>
+                        <button type="button" onclick="window.setTheme('light')" class="w-full text-left block px-4 py-2 text-sm leading-5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-700 transition duration-150 ease-in-out">
                             {{ __('messages.theme_light') }}
                         </button>
-                        <button type="button" onclick="window.setTheme('dark')" class="w-full text-left block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                        <button type="button" onclick="window.setTheme('dark')" class="w-full text-left block px-4 py-2 text-sm leading-5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-700 transition duration-150 ease-in-out">
                             {{ __('messages.theme_dark') }}
                         </button>
-                        <button type="button" onclick="window.setTheme('system')" class="w-full text-left block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                        <button type="button" onclick="window.setTheme('system')" class="w-full text-left block px-4 py-2 text-sm leading-5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-700 transition duration-150 ease-in-out">
                             {{ __('messages.theme_system') }}
                         </button>
 
@@ -128,7 +128,7 @@
                     </x-responsive-nav-link>
                 @endif
 
-                <div class="px-4 py-2 text-xs text-gray-500">{{ __('messages.language') }}</div>
+                <div class="px-4 py-2 text-xs text-gray-500 dark:text-gray-400">{{ __('messages.language') }}</div>
                 <x-responsive-nav-link :href="route('lang.switch', ['locale' => 'en'])">
                     {{ __('messages.english') }}
                 </x-responsive-nav-link>
@@ -136,14 +136,14 @@
                     {{ __('messages.arabic') }}
                 </x-responsive-nav-link>
 
-                <div class="px-4 py-2 text-xs text-gray-500">{{ __('messages.theme') }}</div>
-                <button type="button" onclick="window.setTheme('light')" class="w-full text-left block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                <div class="px-4 py-2 text-xs text-gray-500 dark:text-gray-400">{{ __('messages.theme') }}</div>
+                <button type="button" onclick="window.setTheme('light')" class="w-full text-left block px-4 py-2 text-sm leading-5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-700 transition duration-150 ease-in-out">
                     {{ __('messages.theme_light') }}
                 </button>
-                <button type="button" onclick="window.setTheme('dark')" class="w-full text-left block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                <button type="button" onclick="window.setTheme('dark')" class="w-full text-left block px-4 py-2 text-sm leading-5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-700 transition duration-150 ease-in-out">
                     {{ __('messages.theme_dark') }}
                 </button>
-                <button type="button" onclick="window.setTheme('system')" class="w-full text-left block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                <button type="button" onclick="window.setTheme('system')" class="w-full text-left block px-4 py-2 text-sm leading-5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-700 transition duration-150 ease-in-out">
                     {{ __('messages.theme_system') }}
                 </button>
 
