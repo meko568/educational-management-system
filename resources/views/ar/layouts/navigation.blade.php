@@ -56,12 +56,12 @@
                         @endif
 
                         <div class="px-4 py-2 text-xs text-gray-500 dark:text-gray-300">{{ __('messages.language') }}</div>
-                        <x-dropdown-link :href="route('lang.switch', ['locale' => 'en'])">
+                        <button type="button" onclick="window.location.href='{{ route('lang.switch', ['locale' => 'en']) }}'" class="w-full text-left block px-4 py-2 text-sm leading-5 text-gray-700 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-700 transition duration-150 ease-in-out">
                             {{ __('messages.english') }}
-                        </x-dropdown-link>
-                        <x-dropdown-link :href="route('lang.switch', ['locale' => 'ar'])">
+                        </button>
+                        <button type="button" onclick="window.location.href='{{ route('lang.switch', ['locale' => 'ar']) }}'" class="w-full text-left block px-4 py-2 text-sm leading-5 text-gray-700 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-700 transition duration-150 ease-in-out">
                             {{ __('messages.arabic') }}
-                        </x-dropdown-link>
+                        </button>
 
                         <div class="px-4 py-2 text-xs text-gray-500 dark:text-gray-300">{{ __('messages.theme') }}</div>
                         <button type="button" onclick="window.setTheme('light')" class="w-full text-left block px-4 py-2 text-sm leading-5 text-gray-700 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-700 transition duration-150 ease-in-out">
@@ -129,12 +129,12 @@
                 @endif
 
                 <div class="px-4 py-2 text-xs text-gray-500 dark:text-gray-300">{{ __('messages.language') }}</div>
-                <x-responsive-nav-link :href="route('lang.switch', ['locale' => 'en'])">
+                <button type="button" onclick="window.location.href='{{ route('lang.switch', ['locale' => 'en']) }}'" class="w-full text-left block px-4 py-2 text-sm leading-5 text-gray-700 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-700 transition duration-150 ease-in-out">
                     {{ __('messages.english') }}
-                </x-responsive-nav-link>
-                <x-responsive-nav-link :href="route('lang.switch', ['locale' => 'ar'])">
+                </button>
+                <button type="button" onclick="window.location.href='{{ route('lang.switch', ['locale' => 'ar']) }}'" class="w-full text-left block px-4 py-2 text-sm leading-5 text-gray-700 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-700 transition duration-150 ease-in-out">
                     {{ __('messages.arabic') }}
-                </x-responsive-nav-link>
+                </button>
 
                 <div class="px-4 py-2 text-xs text-gray-500 dark:text-gray-300">{{ __('messages.theme') }}</div>
                 <button type="button" onclick="window.setTheme('light')" class="w-full text-left block px-4 py-2 text-sm leading-5 text-gray-700 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-700 transition duration-150 ease-in-out">
