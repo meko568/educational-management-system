@@ -64,13 +64,13 @@
                         </x-dropdown-link>
 
                         <div class="px-4 py-2 text-xs text-gray-500">{{ __('messages.theme') }}</div>
-                        <button type="button" onclick="window.setTheme('light')" class="w-full text-left block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                        <button type="button" onclick="window.setTheme('light')" class="w-full text-left block px-4 py-2 text-sm leading-5 text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
                             {{ __('messages.theme_light') }}
                         </button>
-                        <button type="button" onclick="window.setTheme('dark')" class="w-full text-left block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                        <button type="button" onclick="window.setTheme('dark')" class="w-full text-left block px-4 py-2 text-sm leading-5 text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
                             {{ __('messages.theme_dark') }}
                         </button>
-                        <button type="button" onclick="window.setTheme('system')" class="w-full text-left block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                        <button type="button" onclick="window.setTheme('system')" class="w-full text-left block px-4 py-2 text-sm leading-5 text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
                             {{ __('messages.theme_system') }}
                         </button>
 
