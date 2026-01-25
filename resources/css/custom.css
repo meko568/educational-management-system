@@ -308,7 +308,7 @@
 
 .hover-glow {
     transition: box-shadow var(--transition-normal) ease-out;
-                filter: brightness(1.1);
+    filter: brightness(1.1);
 }
 
 .hover-scale {
