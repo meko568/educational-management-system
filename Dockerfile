@@ -34,14 +34,16 @@ COPY . /var/www
 # Set permissions
 RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
 
-# Copy nginx configuration
-COPY docker/nginx.conf /etc/nginx/nginx.conf
+# Copy nginx configuration template
+COPY docker/nginx.conf /etc/nginx/nginx.conf.template
 
 # Copy supervisor configuration
 COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-# Expose port
+# We expose 80, but the container will dynamically boot on the $PORT env var
 EXPOSE 80
 
-# Start supervisor
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+# Dynamic boot step:
+# 1. Swap the $PORT variable into Nginx's configuration template.
+# 2. Start Supervisor to manage PHP-FPM and Nginx.
+CMD ["sh", "-c", "envsubst '${PORT}' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf && /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf"]
