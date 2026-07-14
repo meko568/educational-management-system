@@ -30,10 +30,9 @@ APP_ENV=production
 APP_DEBUG=false
 APP_KEY=your-generated-app-key-here
 APP_URL=https://your-domain.com
-PORT=8080
 ```
 
-**Critical**: The `PORT` environment variable must be set to `8080` (PandaStack's default). PandaStack automatically injects this variable, but you should ensure it's configured. The application will not start properly without it.
+**Note**: The application is configured to use port 8080 by default. PandaStack should automatically handle port mapping.
 
 ### Database Connection Variables
 ```
