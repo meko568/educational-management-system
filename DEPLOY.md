@@ -30,7 +30,10 @@ APP_ENV=production
 APP_DEBUG=false
 APP_KEY=your-generated-app-key-here
 APP_URL=https://your-domain.com
+PORT=8080
 ```
+
+**Critical**: The `PORT` environment variable must be set to `8080` (PandaStack's default). PandaStack automatically injects this variable, but you should ensure it's configured. The application will not start properly without it.
 
 ### Database Connection Variables
 ```
@@ -118,6 +121,13 @@ These commands should be run after deployment, either via:
 4. Check logs in PandaStack for any errors
 
 ## Troubleshooting
+
+### "Context Deadline Exceeded" Error
+If you encounter this error during deployment:
+- **Ensure PORT=8080 is set** in environment variables (PandaStack typically auto-injects this)
+- Check that the healthcheck is passing: the container must respond to HTTP requests within 40 seconds
+- Verify nginx is starting correctly by checking container logs
+- Ensure the application doesn't have any blocking startup processes
 
 ### Database Connection Issues
 - Verify all database environment variables are correctly set
