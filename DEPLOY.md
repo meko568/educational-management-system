@@ -125,9 +125,18 @@ These commands should be run after deployment, either via:
 ### "Context Deadline Exceeded" Error
 If you encounter this error during deployment:
 - **Ensure PORT=8080 is set** in environment variables (PandaStack typically auto-injects this)
-- Check that the healthcheck is passing: the container must respond to HTTP requests within 40 seconds
+- Check that the healthcheck is passing: the container must respond to HTTP requests within 60 seconds
 - Verify nginx is starting correctly by checking container logs
 - Ensure the application doesn't have any blocking startup processes
+
+### 524 Timeout Error
+If you encounter a 524 timeout when accessing the live link:
+- This typically means the application is taking too long to respond or failing to start
+- Check that database environment variables are correctly configured
+- Verify the `/health` endpoint is accessible: `curl https://your-app-url/health`
+- The `/health` endpoint doesn't require database connection and should always respond
+- Check container logs for PHP-FPM or nginx errors
+- Ensure the managed database is accessible from the container
 
 ### Database Connection Issues
 - Verify all database environment variables are correctly set

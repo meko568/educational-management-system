@@ -14,10 +14,9 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        // Force HTTPS - multiple methods
-        if (config('app.env') === 'production') {
+        // Force HTTPS only if behind a proper proxy
+        if (config('app.env') === 'production' && isset($_SERVER['HTTP_X_FORWARDED_PROTO'])) {
             URL::forceScheme('https');
-            $this->app['request']->server->set('HTTPS', 'on');
         }
 
         if (app()->getLocale() === 'ar') {

@@ -49,9 +49,9 @@ RUN chmod +x /usr/local/bin/start.sh
 # Expose dynamic port (PandaStack will set PORT env var)
 EXPOSE 8080
 
-# Healthcheck - verify nginx is responding
-HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-    CMD wget --no-verbose --tries=1 --spider http://localhost:${PORT:-8080} || exit 1
+# Healthcheck - verify Laravel is responding via /health endpoint
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD wget --no-verbose --tries=1 --spider http://localhost:${PORT:-8080}/health || exit 1
 
 # Start application using startup script
 CMD ["/usr/local/bin/start.sh"]

@@ -25,6 +25,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('/health', function () {
+    return response()->json(['status' => 'ok', 'timestamp' => time()]);
+})->name('health');
+
 Route::get('/', function () {
     return view('home');
 });
