@@ -37,24 +37,43 @@ Route::get('/health', function () {
 ])->name('health');
 
 Route::get('/db-check', function () {
+    $config = [
+        'driver' => config('database.default'),
+        'host' => config('database.connections.mysql.host'),
+        'port' => config('database.connections.mysql.port'),
+        'database' => config('database.connections.mysql.database'),
+        'username' => config('database.connections.mysql.username'),
+    ];
+
     try {
-        \DB::connection()->getPdo();
+        // Use a very short timeout (3 seconds) to prevent 524 error
+        $pdo = new \PDO(
+            "mysql:host={$config['host']};port={$config['port']};dbname={$config['database']}",
+            $config['username'],
+            config('database.connections.mysql.password'),
+            [\PDO::ATTR_TIMEOUT => 3, \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION]
+        );
+
         return response()->json([
             'status' => 'connected',
-            'database' => \DB::connection()->getDatabaseName(),
-            'connection' => \DB::connection()->getName()
+            'details' => $config
         ]);
     } catch (\Exception $e) {
         return response()->json([
             'status' => 'error',
             'message' => $e->getMessage(),
-            'db_host' => env('DB_HOST'),
-            'db_port' => env('DB_PORT'),
-            'db_database' => env('DB_DATABASE'),
-            'db_username' => env('DB_USERNAME'),
+            'hint' => 'Check if DB_HOST is reachable from this container. If using PandaStack Managed DB, do not use 127.0.0.1.',
+            'debug_info' => $config
         ], 500);
     }
-})->withoutMiddleware([\App\Http\Middleware\EncryptCookies::class, \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class, \Illuminate\Session\Middleware\StartSession::class])->name('db-check');
+})->withoutMiddleware([
+    \App\Http\Middleware\EncryptCookies::class,
+    \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+    \Illuminate\Session\Middleware\StartSession::class,
+    \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+    \App\Http\Middleware\VerifyCsrfToken::class,
+    \Illuminate\Routing\Middleware\SubstituteBindings::class
+])->name('db-check');
 
 Route::get('/', function () {
     return view('home');
