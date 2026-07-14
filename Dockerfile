@@ -11,9 +11,7 @@ RUN apk add --no-cache \
     unzip \
     git \
     oniguruma-dev \
-    libzip-dev \
-    nodejs \
-    npm
+    libzip-dev
 
 # Install PHP extensions
 RUN docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd zip
@@ -33,17 +31,21 @@ RUN composer install --no-dev --optimize-autoloader --no-scripts
 # Copy application files
 COPY . /var/www
 
-# Build assets
-RUN npm install && npm run build
-
 # Set permissions
 RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
 
 # Copy nginx configuration
 COPY docker/nginx.conf /etc/nginx/nginx.conf
 
+# Copy supervisor configuration
+COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+# Copy startup script
+COPY docker/start.sh /usr/local/bin/start.sh
+RUN chmod +x /usr/local/bin/start.sh
+
 # Expose port 8080
 EXPOSE 8080
 
-# Start both php-fpm and nginx in foreground
-CMD sh -c "php-fpm -D && nginx -g 'daemon off;'"
+# Start application using startup script
+CMD ["/usr/local/bin/start.sh"]
