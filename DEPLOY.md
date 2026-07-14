@@ -148,12 +148,11 @@ If you encounter this error during deployment:
 
 ### 524 Timeout Error
 If you encounter a 524 timeout when accessing the live link:
-- This typically means the application is taking too long to respond or failing to start
-- Check that database environment variables are correctly configured
-- Verify the `/health` endpoint is accessible: `curl https://your-app-url/health`
-- The `/health` endpoint doesn't require database connection and should always respond
-- Check container logs for PHP-FPM or nginx errors
-- Ensure the managed database is accessible from the container
+- **FIXED**: The `/health` endpoint now bypasses all middleware including database-dependent sessions. Use this to verify the container is running even if the database is down.
+- **Check Database Connectivity**: A 524 often means PHP is hanging while trying to connect to a database. Verify `DB_HOST`, `DB_USERNAME`, and `DB_PASSWORD` are correct.
+- **Run Migrations**: If you haven't run `php artisan migrate --force`, the application might fail on some pages.
+- **Check Container Logs**: Use the PandaStack console to view logs. Look for "Connection refused" or "Operation timed out".
+- **Assets**: The `Dockerfile` has been updated to automatically run `npm run build` during deployment to ensure CSS/JS are present.
 
 ### Database Connection Issues
 - Verify all database environment variables are correctly set
