@@ -1,20 +1,17 @@
-FROM php:8.2-cli
+FROM php:8.2-fpm-alpine
 
-# Install system dependencies including Node.js
-RUN apt-get update && apt-get install -y \
-    git \
+# Install system packages
+RUN apk add --no-cache \
+    nginx \
+    supervisor \
     curl \
     libpng-dev \
-    libonig-dev \
     libxml2-dev \
     zip \
     unzip \
-    libzip-dev \
-    nodejs \
-    npm
-
-# Clear cache
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+    git \
+    oniguruma-dev \
+    libzip-dev
 
 # Install PHP extensions
 RUN docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd zip
@@ -25,26 +22,26 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Set working directory
 WORKDIR /var/www
 
-# Copy package files
-COPY package*.json ./
-
-# Install npm dependencies
-RUN npm install
-
 # Copy composer files
 COPY composer.json composer.lock ./
 
 # Install composer dependencies
-RUN composer install --no-interaction --no-dev --optimize-autoloader --no-scripts
+RUN composer install --no-dev --optimize-autoloader --no-scripts
 
-# Copy everything else
+# Copy application files
 COPY . /var/www
 
-# Build frontend assets
-RUN npm run build
-
 # Set permissions
-RUN chmod -R 777 storage bootstrap/cache
+RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
+
+# Copy nginx configuration
+COPY docker/nginx.conf /etc/nginx/nginx.conf
+
+# Copy supervisor configuration
+COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Expose port
-EXPOSE 3000
+EXPOSE 80
+
+# Start supervisor
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
