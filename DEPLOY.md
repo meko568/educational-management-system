@@ -44,6 +44,8 @@ DB_USERNAME=your-db-username-from-pandastack
 DB_PASSWORD=your-db-password-from-pandastack
 ```
 
+**CRITICAL**: You MUST fill in all database variables with the actual值 from your PandaStack managed database. Leaving these empty will cause the application to fail.
+
 ### Optional Configuration Variables
 ```
 LOG_CHANNEL=stack
@@ -116,8 +118,24 @@ These commands should be run after deployment, either via:
 
 1. Access your application via the URL provided by PandaStack
 2. Check that the application loads correctly
-3. Verify database connectivity by testing features that use the database
-4. Check logs in PandaStack for any errors
+3. **Test database connection**: Visit `/db-check` endpoint (e.g., `https://your-app-url/db-check`)
+4. **Check startup logs**: View container logs in PandaStack to see environment variable output
+5. Verify database connectivity by testing features that use the database
+
+### Debugging Database Issues
+
+If you encounter 524 timeout or database connection errors:
+
+1. **Check environment variables in logs**: Look for the "Environment check" output in container startup logs
+2. **Test database endpoint**: Visit `/db-check` to see detailed connection error messages
+3. **Verify database credentials**: Ensure all DB_* variables are set correctly in PandaStack
+4. **Check database accessibility**: Ensure the managed database is reachable from the container
+
+The `/db-check` endpoint will return:
+- Connection status
+- Database name if connected
+- Error message if connection fails
+- Current environment variable values (without passwords)
 
 ## Troubleshooting
 

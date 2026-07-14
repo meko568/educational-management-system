@@ -29,6 +29,26 @@ Route::get('/health', function () {
     return response()->json(['status' => 'ok', 'timestamp' => time()]);
 })->name('health');
 
+Route::get('/db-check', function () {
+    try {
+        \DB::connection()->getPdo();
+        return response()->json([
+            'status' => 'connected',
+            'database' => \DB::connection()->getDatabaseName(),
+            'connection' => \DB::connection()->getName()
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'status' => 'error',
+            'message' => $e->getMessage(),
+            'db_host' => env('DB_HOST'),
+            'db_port' => env('DB_PORT'),
+            'db_database' => env('DB_DATABASE'),
+            'db_username' => env('DB_USERNAME'),
+        ], 500);
+    }
+})->withoutMiddleware([\App\Http\Middleware\EncryptCookies::class, \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class, \Illuminate\Session\Middleware\StartSession::class])->name('db-check');
+
 Route::get('/', function () {
     return view('home');
 });

@@ -61,6 +61,7 @@ return [
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
             ]) : [],
+            'dont_fail_on_missing_connection' => env('DB_DONT_FAIL_ON_MISSING', false),
         ],
 
         'pgsql' => [
