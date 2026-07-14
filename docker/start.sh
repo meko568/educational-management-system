@@ -15,6 +15,16 @@ echo "APP_DEBUG=${APP_DEBUG:-not set}"
 # Create log directories if they don't exist
 mkdir -p /var/log/nginx /var/log/php-fpm
 
+# Run migrations in the background so they don't block the web server
+(
+    sleep 5
+    echo "Starting background migrations..."
+    php artisan migrate --force
+    php artisan config:cache
+    php artisan route:cache
+    php artisan view:cache
+) &
+
 echo "Starting supervisor..."
-# Start supervisor
+# Start supervisor in foreground
 exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf

@@ -11,7 +11,9 @@ RUN apk add --no-cache \
     unzip \
     git \
     oniguruma-dev \
-    libzip-dev
+    libzip-dev \
+    nodejs \
+    npm
 
 # Install PHP extensions
 RUN docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd zip
@@ -30,6 +32,9 @@ RUN composer install --no-dev --optimize-autoloader --no-scripts
 
 # Copy application files
 COPY . /var/www
+
+# Build assets
+RUN npm install && npm run build
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
