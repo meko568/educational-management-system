@@ -1,4 +1,4 @@
 <?php
 
-// Forward Vercel requests to the standard Laravel public index file
-require __construct() . '/../public/index.php';
+// Forward Vercel requests to the normal Laravel index file
+require __DIR__ . '/../public/index.php';
