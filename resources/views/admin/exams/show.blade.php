@@ -59,7 +59,7 @@
                 <h3 class="text-lg font-semibold text-gray-800 mb-4">Record Student Results</h3>
                 
                 <div class="mb-8 p-6 bg-gray-50 rounded-lg border border-gray-200">
-                    <form method="POST" action="{{ route('admin.exams.storeResult', $exam->id) }}">
+                    <form method="POST" action="{{ route('admin.manual-exams.storeResult', $exam->id) }}">
                         @csrf
                         <input type="hidden" name="academicYear" value="{{ $exam->academicYear ?? 'primary1' }}">
                         

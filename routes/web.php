@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\ExamController;
 use App\Http\Controllers\Admin\QuizController;
 use App\Http\Controllers\Admin\CourseController;
 use App\Http\Controllers\Admin\LessonController;
+use App\Http\Controllers\AdminExamController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Parent\AuthController as ParentAuthController;
 use App\Http\Controllers\Parent\DashboardController as ParentDashboardController;
@@ -90,6 +91,7 @@ Route::get('/lang/{locale}', function (string $locale) {
 
 use App\Http\Controllers\Student\DashboardController as StudentDashboardController;
 use App\Http\Controllers\Student\CourseController as StudentCourseController;
+use App\Http\Controllers\StudentExamController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\AcademicYearController;
 
@@ -120,6 +122,16 @@ Route::middleware(['redirect_if_parent', 'auth', 'verified', 'is_student'])->pre
     Route::get('/courses', [StudentCourseController::class, 'index'])->name('courses.index');
     Route::get('/courses/{course}', [StudentCourseController::class, 'show'])->name('courses.show');
     Route::get('/courses/{course}/lessons/{lesson}', [StudentCourseController::class, 'showLesson'])->name('lessons.show');
+    
+    // Student exam routes
+    Route::prefix('exams')->name('exams.')->group(function () {
+        Route::get('/', [StudentExamController::class, 'index'])->name('index');
+        Route::post('/{exam}/start', [StudentExamController::class, 'start'])->name('start');
+        Route::get('/take/{attempt}', [StudentExamController::class, 'take'])->name('take');
+        Route::post('/save-answer/{attempt}', [StudentExamController::class, 'saveAnswer'])->name('save-answer');
+        Route::post('/submit/{attempt}', [StudentExamController::class, 'submit'])->name('submit');
+        Route::get('/result/{attempt}', [StudentExamController::class, 'result'])->name('result');
+    });
 });
 
 // Parent auth + dashboard
@@ -164,15 +176,41 @@ Route::middleware(['redirect_if_parent', 'auth', 'is_admin'])->group(function ()
         ->names('admin.attendances')
         ->except(['show']);
 
-    // Exams resource
+    // Admin Exams resource (new auto-revision system)
+    Route::prefix('admin-exams')->name('admin.exams.')->group(function () {
+        Route::get('/', [AdminExamController::class, 'index'])->name('index');
+        Route::get('/create', [AdminExamController::class, 'create'])->name('create');
+        Route::post('/', [AdminExamController::class, 'store'])->name('store');
+        Route::get('/{exam}', [AdminExamController::class, 'show'])->name('show');
+        Route::get('/{exam}/edit', [AdminExamController::class, 'edit'])->name('edit');
+        Route::put('/{exam}', [AdminExamController::class, 'update'])->name('update');
+        Route::delete('/{exam}', [AdminExamController::class, 'destroy'])->name('destroy');
+        Route::get('/{exam}/questions/create', [AdminExamController::class, 'createQuestions'])->name('questions.create');
+        Route::post('/{exam}/questions', [AdminExamController::class, 'storeQuestions'])->name('questions.store');
+    });
+
+    // Auto-Revision Quizzes resource
+    Route::prefix('admin-quizzes')->name('admin.quizzes.')->group(function () {
+        Route::get('/', [AdminQuizController::class, 'index'])->name('index');
+        Route::get('/create', [AdminQuizController::class, 'create'])->name('create');
+        Route::post('/', [AdminQuizController::class, 'store'])->name('store');
+        Route::get('/{quiz}', [AdminQuizController::class, 'show'])->name('show');
+        Route::get('/{quiz}/edit', [AdminQuizController::class, 'edit'])->name('edit');
+        Route::put('/{quiz}', [AdminQuizController::class, 'update'])->name('update');
+        Route::delete('/{quiz}', [AdminQuizController::class, 'destroy'])->name('destroy');
+        Route::get('/{quiz}/questions/create', [AdminQuizController::class, 'createQuestions'])->name('questions.create');
+        Route::post('/{quiz}/questions', [AdminQuizController::class, 'storeQuestions'])->name('questions.store');
+    });
+
+    // Exams resource (manual result recording)
     Route::resource('exams', ExamController::class)
-        ->names('admin.exams');
+        ->names('admin.manual-exams');
     Route::get('exams/{exam}/results', [ExamController::class, 'results'])
-        ->name('admin.exams.results');
+        ->name('admin.manual-exams.results');
     Route::post('exams/{exam}/results', [ExamController::class, 'storeResult'])
-        ->name('admin.exams.storeResult');
+        ->name('admin.manual-exams.storeResult');
     Route::delete('exams/{exam}/results/{result}', [ExamController::class, 'deleteResult'])
-        ->name('admin.exams.deleteResult');
+        ->name('admin.manual-exams.deleteResult');
 
     // Quizzes resource
     Route::resource('quizzes', QuizController::class)

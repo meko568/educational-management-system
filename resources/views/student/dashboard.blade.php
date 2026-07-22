@@ -139,6 +139,28 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Available Exams Card -->
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="p-6">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <div class="p-3 rounded-full bg-pink-100 text-pink-600">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                                    </svg>
+                                </div>
+                                <div class="ml-4">
+                                    <h3 class="text-lg font-medium text-gray-900">Auto-Revision Exams</h3>
+                                    <p class="text-2xl font-semibold text-gray-700">Take Exams</p>
+                                </div>
+                            </div>
+                            <a href="{{ route('student.exams.index') }}" class="inline-flex items-center px-3 py-1 bg-pink-100 text-pink-600 rounded hover:bg-pink-200 font-medium text-sm">
+                                View →
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Recent Results Section -->

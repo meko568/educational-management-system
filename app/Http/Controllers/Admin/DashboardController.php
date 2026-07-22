@@ -9,6 +9,8 @@ use App\Models\Quiz;
 use App\Models\Attendance;
 use App\Models\ExamResult;
 use App\Models\QuizResult;
+use App\Models\AdminExam;
+use App\Models\AdminExamAttempt;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -32,6 +34,7 @@ class DashboardController extends Controller
             'studentPerformance' => $this->getStudentPerformanceData($academicYear),
             'examStats' => $this->getExamStatisticsData($academicYear),
             'quizStats' => $this->getQuizStatisticsData($academicYear),
+            'autoRevisionExamStats' => $this->getAutoRevisionExamStatisticsData($academicYear),
             'attendance' => $this->getAttendanceData($academicYear)
         ];
 
@@ -215,6 +218,65 @@ class DashboardController extends Controller
             'totalAttempts' => $totalAttempts,
             'avgScoreColor' => '#f59e0b',
             'attemptsColor' => '#8b5cf6'
+        ];
+    }
+
+    private function getAutoRevisionExamStatisticsData($academicYear = null)
+    {
+        // Get the latest 5 auto-revision exams with their statistics
+        $query = DB::table('admin_exams')
+            ->select(
+                'admin_exams.id',
+                'admin_exams.title',
+                DB::raw('(SELECT SUM(points) FROM admin_exam_questions WHERE exam_id = admin_exams.id) as total_points'),
+                DB::raw('COUNT(admin_exam_attempts.id) as total_attempts'),
+                DB::raw('AVG(admin_exam_attempts.score) as avg_score')
+            )
+            ->leftJoin('admin_exam_attempts', function($join) {
+                $join->on('admin_exams.id', '=', 'admin_exam_attempts.exam_id')
+                     ->where('admin_exam_attempts.status', 'submitted');
+            })
+            ->groupBy('admin_exams.id', 'admin_exams.title');
+
+        if ($academicYear) {
+            $query->where('admin_exams.grade', $academicYear);
+        }
+
+        $exams = $query
+            ->orderBy('admin_exams.created_at', 'desc')
+            ->limit(5)
+            ->get();
+
+        // If no auto-revision exams yet, return empty data
+        if ($exams->isEmpty()) {
+            return [
+                'labels' => [],
+                'avgScores' => [],
+                'totalAttempts' => [],
+                'avgScoreColor' => '#ec4899',
+                'attemptsColor' => '#f97316'
+            ];
+        }
+
+        // Prepare the data for the chart
+        $labels = [];
+        $avgScores = [];
+        $totalAttempts = [];
+
+        foreach ($exams as $exam) {
+            $labels[] = $exam->title;
+            $totalPoints = $exam->total_points > 0 ? $exam->total_points : 1;
+            $avgScore = $exam->avg_score ? round(($exam->avg_score / $totalPoints) * 100, 2) : 0;
+            $avgScores[] = (float) $avgScore;
+            $totalAttempts[] = (int) $exam->total_attempts;
+        }
+
+        return [
+            'labels' => $labels,
+            'avgScores' => $avgScores,
+            'totalAttempts' => $totalAttempts,
+            'avgScoreColor' => '#ec4899',
+            'attemptsColor' => '#f97316'
         ];
     }
 

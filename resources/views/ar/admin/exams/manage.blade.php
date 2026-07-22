@@ -246,7 +246,7 @@ function loadExamForm() {
 
     maxScoreDisplay.value = maxScore;
     document.getElementById('marks_obtained').max = maxScore;
-    recordForm.action = '{{ route("admin.exams.storeResult", ":id") }}'.replace(':id', examId);
+    recordForm.action = '{{ route("admin.manual-exams.storeResult", ":id") }}'.replace(':id', examId);
 }
 
 document.addEventListener('DOMContentLoaded', function() {

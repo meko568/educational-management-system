@@ -15,7 +15,7 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $student = Student::with(['examResults.exam', 'quizResults.quiz', 'attendances'])
+        $student = Student::with(['examResults.exam.adminExam', 'quizResults.quiz', 'attendances'])
             ->findOrFail(Auth::id());
 
         return $this->getDashboardData($student, $student->academicYear);
@@ -24,18 +24,26 @@ class DashboardController extends Controller
     private function getDashboardData($student, $academicYear)
     {
         $examResults = $student->examResults()
-            ->whereHas('exam', function ($query) use ($academicYear) {
-                $query->where('academicYear', $academicYear);
-            })
             ->with('exam')
             ->get()
+            ->filter(function ($result) use ($student) {
+                // Filter by academicYear - either from exam's academicYear or from linked admin_exam
+                if ($result->exam->academicYear) {
+                    return $result->exam->academicYear === $student->academicYear;
+                }
+                // For auto-revision exams, check the linked admin_exam's grade
+                if ($result->exam->admin_exam_id) {
+                    return $result->exam->adminExam && $result->exam->adminExam->grade === $student->academicYear;
+                }
+                return false;
+            })
             ->map(function ($result) {
                 return [
                     'exam' => $result->exam->title,
                     'marks_obtained' => $result->marks_obtained,
                     'total_marks' => $result->exam->total_marks,
-                    'percentage' => ($result->marks_obtained / $result->exam->total_marks) * 100,
-                    'date' => $result->exam->exam_date->format('Y-m-d')
+                    'percentage' => $result->exam->total_marks > 0 ? ($result->marks_obtained / $result->exam->total_marks) * 100 : 0,
+                    'date' => $result->exam->exam_date ? $result->exam->exam_date->format('Y-m-d') : now()->format('Y-m-d')
                 ];
             });
 

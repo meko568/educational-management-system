@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\AdminExam;
 
 class Exam extends Model
 {
@@ -20,6 +21,7 @@ class Exam extends Model
         'total_marks',
         'status',
         'created_by',
+        'admin_exam_id',
     ];
 
     /**
@@ -54,5 +56,13 @@ class Exam extends Model
     public function examResults(): HasMany
     {
         return $this->hasMany(ExamResult::class);
+    }
+
+    /**
+     * Get the admin exam associated with this exam.
+     */
+    public function adminExam(): BelongsTo
+    {
+        return $this->belongsTo(AdminExam::class, 'admin_exam_id');
     }
 }

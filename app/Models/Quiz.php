@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Models\AdminQuiz;
 
 class Quiz extends Model
 {
@@ -19,6 +20,7 @@ class Quiz extends Model
         'total_marks',
         'status',
         'created_by',
+        'admin_quiz_id',
     ];
 
     /**
@@ -44,5 +46,13 @@ class Quiz extends Model
     public function creator(): BelongsTo
     {
         return $this->belongsTo(Student::class, 'created_by', 'code');
+    }
+
+    /**
+     * Get the admin quiz associated with this quiz.
+     */
+    public function adminQuiz(): BelongsTo
+    {
+        return $this->belongsTo(AdminQuiz::class, 'admin_quiz_id');
     }
 }

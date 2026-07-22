@@ -100,6 +100,74 @@
                     </div>
                 </div>
 
+                <!-- Admin Exams Card (Auto-revision system) -->
+                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="p-6">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 bg-pink-100 rounded-full p-3">
+                                <svg class="h-8 w-8 text-pink-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                                </svg>
+                            </div>
+                            <div class="ml-5 w-0 flex-1">
+                                <dl>
+                                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
+                                        Auto-Revision Exams
+                                    </dt>
+                                    <dd>
+                                        <div class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                                            Create & Manage
+                                        </div>
+                                    </dd>
+                                </dl>
+                            </div>
+                        </div>
+                        <div class="mt-6">
+                            <a href="{{ route('admin.exams.index') }}" 
+                               class="inline-flex items-center text-sm font-medium text-pink-600 hover:text-pink-500 dark:text-pink-400 dark:hover:text-pink-300">
+                                View Exams
+                                <svg class="ml-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Admin Quizzes Card (Auto-revision system) -->
+                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="p-6">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 bg-orange-100 rounded-full p-3">
+                                <svg class="h-8 w-8 text-orange-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                                </svg>
+                            </div>
+                            <div class="ml-5 w-0 flex-1">
+                                <dl>
+                                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
+                                        Auto-Revision Quizzes
+                                    </dt>
+                                    <dd>
+                                        <div class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                                            Create & Manage
+                                        </div>
+                                    </dd>
+                                </dl>
+                            </div>
+                        </div>
+                        <div class="mt-6">
+                            <a href="{{ route('admin.quizzes.index') }}" 
+                               class="inline-flex items-center text-sm font-medium text-orange-600 hover:text-orange-500 dark:text-orange-400 dark:hover:text-orange-300">
+                                View Quizzes
+                                <svg class="ml-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Exams Management Card -->
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6">
@@ -123,9 +191,9 @@
                             </div>
                         </div>
                         <div class="mt-6">
-                            <a href="{{ route('admin.exams.index', ['academicYear' => isset($academicYear) ? $academicYear : 'primary1']) }}" 
+                            <a href="{{ route('admin.manual-exams.index', ['academicYear' => isset($academicYear) ? $academicYear : 'primary1']) }}" 
                                class="inline-flex items-center text-sm font-medium text-purple-600 hover:text-purple-500 dark:text-purple-400 dark:hover:text-purple-300">
-                                Go to Exams
+                                Go to Manual Exams
                                 <svg class="ml-1 h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
                                 </svg>
@@ -316,6 +384,22 @@
                         @else
                         <div class="chart-container" style="position: relative; height:300px;">
                             <canvas id="quizStatsChart"></canvas>
+                        </div>
+                        @endif
+                    </div>
+                </div>
+
+                <!-- Auto-Revision Exam Statistics Chart -->
+                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="p-6">
+                        <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">Auto-Revision Exam Statistics</h3>
+                        @if(empty($chartData['autoRevisionExamStats']['avgScores']))
+                        <div class="chart-container flex items-center justify-center" style="position: relative; height:300px;">
+                            <p class="text-gray-500 dark:text-gray-400">No auto-revision exam data available</p>
+                        </div>
+                        @else
+                        <div class="chart-container" style="position: relative; height:300px;">
+                            <canvas id="autoRevisionExamStatsChart"></canvas>
                         </div>
                         @endif
                     </div>
@@ -591,6 +675,108 @@
                 });
             } catch (error) {
                 console.error('Error initializing quiz statistics chart:', error);
+            }
+            @endif
+
+            // Initialize Auto-Revision Exam Statistics Chart
+            @if(!empty($chartData['autoRevisionExamStats']['avgScores']) && count($chartData['autoRevisionExamStats']['avgScores']) > 0)
+            try {
+                const autoRevisionCtx = document.getElementById('autoRevisionExamStatsChart').getContext('2d');
+                new Chart(autoRevisionCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: @json($chartData['autoRevisionExamStats']['labels']),
+                        datasets: [
+                            {
+                                label: 'Average Score',
+                                data: @json($chartData['autoRevisionExamStats']['avgScores']),
+                                backgroundColor: 'rgba(236, 72, 153, 0.5)',
+                                borderColor: '{{ $chartData["autoRevisionExamStats"]["avgScoreColor"] }}',
+                                borderWidth: 2,
+                                type: 'line',
+                                tension: 0.3,
+                                pointRadius: 4,
+                                pointHoverRadius: 6,
+                                pointBackgroundColor: '#fff',
+                                pointBorderColor: '{{ $chartData["autoRevisionExamStats"]["avgScoreColor"] }}',
+                                pointHoverBackgroundColor: '{{ $chartData["autoRevisionExamStats"]["avgScoreColor"] }}',
+                                pointHoverBorderColor: '#fff',
+                                fill: false,
+                                yAxisID: 'y'
+                            },
+                            {
+                                label: 'Total Attempts',
+                                data: @json($chartData['autoRevisionExamStats']['totalAttempts']),
+                                backgroundColor: 'rgba(249, 115, 22, 0.5)',
+                                borderColor: '{{ $chartData["autoRevisionExamStats"]["attemptsColor"] }}',
+                                borderWidth: 2,
+                                borderRadius: 4,
+                                yAxisID: 'y1'
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        interaction: {
+                            mode: 'index',
+                            intersect: false
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: { display: true, text: 'Score / Attempts' },
+                                grid: {
+                                    color: window.matchMedia('(prefers-color-scheme: dark)').matches ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
+                                },
+                                ticks: {
+                                    color: window.matchMedia('(prefers-color-scheme: dark)').matches ? '#fff' : '#374151',
+                                    callback: function(value) {
+                                        return value + '%';
+                                    }
+                                }
+                            },
+                            y1: {
+                                beginAtZero: true,
+                                position: 'right',
+                                title: { display: true, text: 'Attempts' },
+                                grid: {
+                                    drawOnChartArea: false
+                                },
+                                ticks: {
+                                    color: window.matchMedia('(prefers-color-scheme: dark)').matches ? '#fff' : '#374151'
+                                }
+                            },
+                            x: {
+                                title: { display: true, text: 'Auto-Revision Exams' },
+                                grid: { display: false },
+                                ticks: {
+                                    color: window.matchMedia('(prefers-color-scheme: dark)').matches ? '#fff' : '#374151'
+                                }
+                            }
+                        },
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        const label = context.dataset.label || '';
+                                        const value = context.raw || 0;
+                                        const suffix = context.dataset.label === 'Average Score' ? '%' : '';
+                                        return `${label}: ${value}${suffix}`;
+                                    }
+                                }
+                            },
+                            legend: {
+                                position: 'top',
+                                labels: {
+                                    color: window.matchMedia('(prefers-color-scheme: dark)').matches ? '#fff' : '#374151'
+                                }
+                            }
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Error initializing auto-revision exam statistics chart:', error);
             }
             @endif
             @if(!empty($chartData['attendance']['total']) && $chartData['attendance']['total'] > 0)
