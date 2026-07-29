@@ -23,7 +23,7 @@
                 <div class="mb-8 p-6 bg-yellow-50 rounded-lg border border-yellow-200">
                     <h3 class="text-lg font-semibold text-gray-800 mb-4">Create New Quiz</h3>
                     
-                    <form method="POST" action="{{ route('admin.quizzes.store') }}">
+                    <form method="POST" action="{{ route('admin.manual-quizzes.store') }}">
                         @csrf
                         <input type="hidden" name="academicYear" value="{{ $academicYear ?? 'primary1' }}">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -190,7 +190,7 @@
                                             {{ number_format(($result->marks_obtained / $result->quiz->total_marks) * 100, 2) }}%
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm space-x-2">
-                                            <form action="{{ route('admin.quizzes.deleteResult', [$result->quiz_id, $result->id]) }}" method="POST" style="display:inline;">
+                                            <form action="{{ route('admin.manual-quizzes.deleteResult', [$result->quiz_id, $result->id]) }}" method="POST" style="display:inline;">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" onclick="return confirm('Are you sure?')" 
@@ -231,7 +231,7 @@ function loadQuizForm() {
 
     maxScoreDisplay.value = maxScore;
     document.getElementById('marks_obtained').max = maxScore;
-    recordForm.action = '{{ route("admin.quizzes.storeResult", ":id") }}'.replace(':id', quizId);
+    recordForm.action = '{{ route("admin.manual-quizzes.storeResult", ":id") }}'.replace(':id', quizId);
 }
 
 document.addEventListener('DOMContentLoaded', function() {

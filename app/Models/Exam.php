@@ -16,6 +16,7 @@ class Exam extends Model
      */
     protected $fillable = [
         'title',
+        'academicYear',
         'description',
         'exam_date',
         'total_marks',

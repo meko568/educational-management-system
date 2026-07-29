@@ -17,12 +17,15 @@ class Controller extends BaseController
     protected function localeView(string $view, array $data = []): View
     {
         $locale = app()->getLocale();
-        
-        // If locale is Arabic, prepend 'ar.' to the view path
+
+        // If locale is Arabic, try to find an 'ar.' prefixed view first
         if ($locale === 'ar') {
-            $view = 'ar.' . $view;
+            $arView = 'ar.' . $view;
+            if (view()->exists($arView)) {
+                return view($arView, $data);
+            }
         }
-        
+
         return view($view, $data);
     }
 }

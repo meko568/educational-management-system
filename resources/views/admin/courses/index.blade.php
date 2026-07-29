@@ -1,71 +1,63 @@
-@extends('layouts.admin')
-
-@section('content')
-<div class="py-12">
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-            <div class="p-6 bg-white border-b border-gray-200">
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-2xl font-semibold text-gray-800">Manage Courses</h2>
-                    <div class="flex gap-2">
-                        <a href="{{ route('admin.dashboard') }}" class="inline-flex items-center px-4 py-2 bg-gray-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700">
-                            Back to Dashboard
-                        </a>
-                        <a href="{{ route('admin.courses.create', $academicYear) }}" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700">
-                            Add New Course
-                        </a>
-                    </div>
-                </div>
-
-                @if(session('success'))
-                    <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6" role="alert">
-                        <p class="font-bold">Success</p>
-                        <p>{{ session('success') }}</p>
-                    </div>
-                @endif
-
-                @if($courses->isEmpty())
-                    <p class="text-gray-500 text-center py-8">No courses found. Create one to get started!</p>
-                @else
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Code</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Lessons</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
-                                @foreach($courses as $course)
-                                    <tr>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $course->code }}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $course->name }}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $course->lessons_count }}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm space-x-2">
-                                            <a href="{{ route('admin.courses.show', [$academicYear, $course]) }}" class="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-700 rounded hover:bg-blue-200">
-                                                View
-                                            </a>
-                                            <a href="{{ route('admin.courses.edit', [$academicYear, $course]) }}" class="inline-flex items-center px-3 py-1 bg-yellow-100 text-yellow-700 rounded hover:bg-yellow-200">
-                                                Edit
-                                            </a>
-                                            <form method="POST" action="{{ route('admin.courses.destroy', [$academicYear, $course]) }}" style="display:inline;" onsubmit="return confirm('Are you sure?');">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="inline-flex items-center px-3 py-1 bg-red-100 text-red-700 rounded hover:bg-red-200">
-                                                    Delete
-                                                </button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                @endif
+<x-app-layout>
+    <div style="display: flex; flex-direction: column; gap: 2rem;">
+        <!-- Header -->
+        <div style="display: flex; flex-direction: column; gap: 1rem; justify-content: space-between; align-items: flex-start;" class="md:flex-row md:items-center">
+            <div>
+                <h1 style="font-size: 1.5rem; font-weight: 700; color: var(--text-main); margin: 0;">{{ __('messages.curriculum_management') }}</h1>
+                <p style="color: var(--text-muted); margin-top: 0.25rem; font-size: 0.875rem;">{{ __('messages.curriculum_description') }} {{ strtoupper($academicYear ?? 'primary1') }}</p>
             </div>
+
+            <a href="{{ route('admin.courses.create', $academicYear) }}"
+               style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1.5rem; background-color: #7c3aed; color: white; border-radius: 0.75rem; font-weight: 800; font-size: 0.875rem; text-decoration: none; box-shadow: 0 10px 15px -3px rgba(124, 58, 237, 0.2);">
+                <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+                {{ __('messages.new_course') }}
+            </a>
         </div>
+
+        <!-- Courses Grid -->
+        @if($courses->isEmpty())
+            <div class="card-custom" style="padding: 4rem; text-align: center; border-style: dashed;">
+                <p style="color: var(--text-muted); font-style: italic;">{{ __('messages.no_courses') }}</p>
+            </div>
+        @else
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem;">
+                @foreach($courses as $course)
+                    <div class="card-custom" style="display: flex; flex-direction: column; gap: 1.5rem;">
+                        <div style="display: flex; align-items: flex-start; justify-content: space-between;">
+                            <div style="width: 3.5rem; height: 3.5rem; background-color: rgba(124, 58, 237, 0.1); color: #7c3aed; border-radius: 1rem; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(124, 58, 237, 0.2);">
+                                <svg style="width: 1.75rem; height: 1.75rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
+                            </div>
+
+                            <div style="display: flex; gap: 0.5rem;">
+                                <a href="{{ route('admin.courses.edit', [$academicYear, $course]) }}" style="padding: 0.5rem; background-color: var(--bg-alt); color: #f59e0b; border-radius: 0.5rem; border: 1px solid var(--border-color); text-decoration: none;">
+                                    <svg style="width: 1rem; height: 1rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                                </a>
+                                <form method="POST" action="{{ route('admin.courses.destroy', [$academicYear, $course]) }}" style="display: inline;" onsubmit="return confirm('{{ __('messages.delete_course_question') }}');">
+                                    @csrf @method('DELETE')
+                                    <button type="submit" style="padding: 0.5rem; background-color: rgba(239, 68, 68, 0.1); color: #ef4444; border-radius: 0.5rem; border: 1px solid rgba(239, 68, 68, 0.2); cursor: pointer;">
+                                        <svg style="width: 1rem; height: 1rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 style="font-size: 1.25rem; font-weight: 800; color: var(--text-main); margin: 0;">{{ $course->name }}</h4>
+                            <div style="display: flex; align-items: center; gap: 0.5rem; margin-top: 0.25rem;">
+                                <span style="font-size: 0.625rem; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; background-color: var(--bg-alt); padding: 0.125rem 0.375rem; border-radius: 0.25rem; border: 1px solid var(--border-color);">{{ $course->code }}</span>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: auto; display: flex; align-items: center; justify-content: space-between; padding-top: 1.5rem; border-top: 1px solid var(--border-color);">
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <span style="font-size: 1rem; font-weight: 800; color: var(--text-main);">{{ $course->lessons_count }}</span>
+                                <span style="font-size: 0.625rem; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em;">{{ __('messages.lessons') }}</span>
+                            </div>
+                            <a href="{{ route('admin.courses.show', [$academicYear, $course]) }}" style="font-size: 0.75rem; font-weight: 800; color: var(--accent-color); text-decoration: none; text-transform: uppercase;">{{ __('messages.view_course') }} →</a>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        @endif
     </div>
-</div>
-@endsection
+</x-app-layout>

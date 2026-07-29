@@ -1,176 +1,206 @@
-@extends('layouts.admin')
+<x-app-layout>
+    <div style="display: flex; flex-direction: column; gap: 2rem;">
+        <!-- Header -->
+        <div style="display: flex; flex-direction: column; gap: 1rem; justify-content: space-between; align-items: flex-start;" class="md:flex-row md:items-center">
+            <div>
+                <h1 style="font-size: 1.5rem; font-weight: 700; color: var(--text-main); margin: 0;">Student Profile: {{ $student->name }}</h1>
+                <p style="color: var(--text-muted); margin-top: 0.25rem; font-size: 0.875rem;">Viewing full academic record and system identity</p>
+            </div>
 
-@section('content')
-<div class="py-12">
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-            <div class="p-6 bg-white border-b border-gray-200">
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-2xl font-semibold text-gray-800">Student Details: {{ $student->name }}</h2>
-                    <a href="{{ route('admin.students.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700">
-                        Back to Students
-                    </a>
+            <a href="{{ route('admin.students.index', ['academicYear' => $student->academicYear]) }}"
+               style="padding: 0.625rem 1.25rem; background-color: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 0.75rem; font-size: 0.875rem; font-weight: 700; text-decoration: none;">
+                {{ __('messages.back_to_list') }}
+            </a>
+        </div>
+
+        <!-- Identity Details -->
+        <div class="card-custom">
+            <h3 style="font-size: 1rem; font-weight: 800; color: var(--text-main); margin: 0 0 1.5rem 0; text-transform: uppercase; letter-spacing: 0.05em;">Institutional Identity</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem;">
+                <div>
+                    <p style="font-size: 0.625rem; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin: 0;">{{ __('messages.name') }}</p>
+                    <p style="font-size: 1rem; font-weight: 700; color: var(--text-main); margin: 0.25rem 0 0 0;">{{ $student->name }}</p>
                 </div>
+                <div>
+                    <p style="font-size: 0.625rem; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin: 0;">{{ __('messages.code') }}</p>
+                    <p style="font-size: 1rem; font-weight: 700; color: var(--text-main); margin: 0.25rem 0 0 0; font-family: monospace;">{{ $student->code }}</p>
+                </div>
+                <div>
+                    <p style="font-size: 0.625rem; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin: 0;">{{ __('messages.academic_year') }}</p>
+                    <p style="font-size: 1rem; font-weight: 700; color: var(--text-main); margin: 0.25rem 0 0 0;">{{ strtoupper(str_replace('_', ' ', $student->academicYear)) }}</p>
+                </div>
+                <div>
+                    <p style="font-size: 0.625rem; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin: 0;">Login Password</p>
+                    <p style="font-size: 1rem; font-weight: 700; color: #4f46e5; margin: 0.25rem 0 0 0; font-family: monospace;">{{ $student->plain_password ?? '********' }}</p>
+                </div>
+            </div>
+        </div>
 
-                <!-- Student Information -->
-                <div class="bg-white shadow overflow-hidden sm:rounded-lg mb-8">
-                    <div class="px-4 py-5 sm:px-6">
-                        <h3 class="text-lg leading-6 font-medium text-gray-900">
-                            Student Information
-                        </h3>
+        <!-- Progress Summary -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem;">
+            <div class="card-custom" style="display: flex; flex-direction: column; gap: 1rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <p style="font-size: 0.75rem; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin: 0;">Exam Average</p>
+                    <span style="font-size: 1.25rem; font-weight: 900; color: #4f46e5;">{{ round($totalExamAvg) }}%</span>
+                </div>
+                <div style="height: 0.5rem; background-color: var(--bg-alt); border-radius: 999px; overflow: hidden;">
+                    <div style="width: {{ $totalExamAvg }}%; height: 100%; background-color: #4f46e5;"></div>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 0.625rem; font-weight: 700; color: var(--text-muted);">
+                    <span>Manual: {{ round($manualExamAvg) }}%</span>
+                    <span>Auto: {{ round($autoExamAvg) }}%</span>
+                </div>
+            </div>
+
+            <div class="card-custom" style="display: flex; flex-direction: column; gap: 1rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <p style="font-size: 0.75rem; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin: 0;">Quiz Average</p>
+                    <span style="font-size: 1.25rem; font-weight: 900; color: #10b981;">{{ round($totalQuizAvg) }}%</span>
+                </div>
+                <div style="height: 0.5rem; background-color: var(--bg-alt); border-radius: 999px; overflow: hidden;">
+                    <div style="width: {{ $totalQuizAvg }}%; height: 100%; background-color: #10b981;"></div>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 0.625rem; font-weight: 700; color: var(--text-muted);">
+                    <span>Manual: {{ round($manualQuizAvg) }}%</span>
+                    <span>Auto: {{ round($autoQuizAvg) }}%</span>
+                </div>
+            </div>
+
+            <div class="card-custom" style="display: flex; flex-direction: column; gap: 1rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <p style="font-size: 0.75rem; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin: 0;">Lesson Progress</p>
+                    <span style="font-size: 1.25rem; font-weight: 900; color: #f59e0b;">{{ round($lessonProgress) }}%</span>
+                </div>
+                <div style="height: 0.5rem; background-color: var(--bg-alt); border-radius: 999px; overflow: hidden;">
+                    <div style="width: {{ $lessonProgress }}%; height: 100%; background-color: #f59e0b;"></div>
+                </div>
+                <p style="font-size: 0.625rem; font-weight: 700; color: var(--text-muted); margin: 0;">Completion of assigned curriculum videos</p>
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr; gap: 2rem;" class="lg:grid-cols-2">
+            <!-- Attendance History -->
+            <div class="card-custom" style="padding: 0; overflow: hidden;">
+                <div style="padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border-color); background-color: var(--bg-alt);">
+                    <h3 style="font-size: 0.875rem; font-weight: 800; color: var(--text-main); margin: 0; text-transform: uppercase; letter-spacing: 0.05em;">Attendance History</h3>
+                </div>
+                <div style="overflow-x: auto; max-height: 400px; overflow-y: auto;">
+                    <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.875rem;">
+                        <thead style="background-color: var(--bg-alt); position: sticky; top: 0; z-index: 10;">
+                            <tr style="border-bottom: 1px solid var(--border-color);">
+                                <th style="padding: 1rem 1.5rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Date</th>
+                                <th style="padding: 1rem 1.5rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; text-align: center;">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody style="background-color: var(--bg-card);">
+                            @forelse($student->attendances->sortByDesc('date') as $attendance)
+                                <tr style="border-bottom: 1px solid var(--border-color);">
+                                    <td style="padding: 1rem 1.5rem; color: var(--text-main); font-weight: 500;">{{ $attendance->date->format('M d, Y') }}</td>
+                                    <td style="padding: 1rem 1.5rem; text-align: center;">
+                                        <span style="padding: 0.25rem 0.625rem; border-radius: 0.5rem; font-size: 0.625rem; font-weight: 800; text-transform: uppercase; {{ $attendance->status === 'present' ? 'background-color: rgba(16, 185, 129, 0.1); color: #10b981;' : 'background-color: rgba(239, 68, 68, 0.1); color: #ef4444;' }}">
+                                            {{ $attendance->status }}
+                                        </span>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr><td colspan="2" style="padding: 3rem; text-align: center; color: var(--text-muted); font-style: italic;">No attendance records found.</td></tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Performance Grid -->
+            <div style="display: flex; flex-direction: column; gap: 2rem;">
+                <!-- Exams -->
+                <div class="card-custom" style="padding: 0; overflow: hidden;">
+                    <div style="padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border-color); background-color: var(--bg-alt);">
+                        <h3 style="font-size: 0.875rem; font-weight: 800; color: var(--text-main); margin: 0; text-transform: uppercase; letter-spacing: 0.05em;">Exam Results</h3>
                     </div>
-                    <div class="border-t border-gray-200">
-                        <dl>
-                            <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                <dt class="text-sm font-medium text-gray-500">Name</dt>
-                                <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{{ $student->name }}</dd>
-                            </div>
-                            <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                <dt class="text-sm font-medium text-gray-500">Student Code</dt>
-                                <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{{ $student->code }}</dd>
-                            </div>
-                            <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                <dt class="text-sm font-medium text-gray-500">Academic Year</dt>
-                                <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                    {{ ucfirst(str_replace('_', ' ', $student->academicYear)) }}
-                                </dd>
-                            </div>
-                            <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                <dt class="text-sm font-medium text-gray-500">Student Phone</dt>
-                                <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                    {{ $student->phone ?? 'N/A' }}
-                                </dd>
-                            </div>
-                            <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                <dt class="text-sm font-medium text-gray-500">Parent Phone</dt>
-                                <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                    {{ $student->parent_phone ?? 'N/A' }}
-                                </dd>
-                            </div>
-                            <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                <dt class="text-sm font-medium text-gray-500">Password</dt>
-                                <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                    <span class="font-mono bg-gray-100 px-2 py-1 rounded">{{ $student->plain_password ?? 'N/A' }}</span>
-                                </dd>
-                            </div>
-                        </dl>
+                    <div style="overflow-x: auto;">
+                        <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.875rem;">
+                            <tbody style="background-color: var(--bg-card);">
+                                @forelse($student->examResults as $result)
+                                    <tr style="border-bottom: 1px solid var(--border-color);">
+                                        <td style="padding: 1rem 1.5rem;">
+                                            <div style="font-weight: 700; color: var(--text-main);">{{ $result->exam->title ?? 'N/A' }}</div>
+                                            <div style="font-size: 0.75rem; color: var(--text-muted);">{{ $result->created_at->format('M d, Y') }}</div>
+                                        </td>
+                                        <td style="padding: 1rem 1.5rem; text-align: right;">
+                                            <span style="font-weight: 800; color: var(--text-main);">{{ $result->marks_obtained }}</span>
+                                            <span style="font-size: 0.75rem; color: var(--text-muted);"> / {{ $result->exam->total_marks ?? '?' }}</span>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr><td colspan="2" style="padding: 2rem; text-align: center; color: var(--text-muted); font-style: italic;">No exam results.</td></tr>
+                                @endforelse
+                            </tbody>
+                        </table>
                     </div>
                 </div>
 
-                <!-- Attendance -->
-                <div class="mb-8">
-                    <h3 class="text-lg font-medium text-gray-900 mb-4">Attendance Record</h3>
-                    @if($student->attendances->count() > 0)
-                        <div class="overflow-x-auto">
-                            <table class="min-w-full divide-y divide-gray-200">
-                                <thead class="bg-gray-50">
-                                    <tr>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                <!-- Quizzes -->
+                <div class="card-custom" style="padding: 0; overflow: hidden;">
+                    <div style="padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border-color); background-color: var(--bg-alt);">
+                        <h3 style="font-size: 0.875rem; font-weight: 800; color: var(--text-main); margin: 0; text-transform: uppercase; letter-spacing: 0.05em;">Quiz Results</h3>
+                    </div>
+                    <div style="overflow-x: auto;">
+                        <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.875rem;">
+                            <tbody style="background-color: var(--bg-card);">
+                                @forelse($student->quizResults as $result)
+                                    <tr style="border-bottom: 1px solid var(--border-color);">
+                                        <td style="padding: 1rem 1.5rem;">
+                                            <div style="font-weight: 700; color: var(--text-main);">{{ $result->quiz->title ?? 'N/A' }}</div>
+                                            <div style="font-size: 0.75rem; color: var(--text-muted);">{{ $result->created_at->format('M d, Y') }}</div>
+                                        </td>
+                                        <td style="padding: 1rem 1.5rem; text-align: right;">
+                                            <span style="font-weight: 800; color: var(--text-main);">{{ $result->marks_obtained }}</span>
+                                            <span style="font-size: 0.75rem; color: var(--text-muted);"> / {{ $result->quiz->total_marks ?? '?' }}</span>
+                                        </td>
                                     </tr>
-                                </thead>
-                                <tbody class="bg-white divide-y divide-gray-200">
-                                    @foreach($student->attendances as $attendance)
-                                        <tr>
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $attendance->date->format('M d, Y') }}</td>
-                                            <td class="px-6 py-4 whitespace-nowrap">
-                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $attendance->status === 'present' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
-                                                    {{ ucfirst($attendance->status) }}
-                                                </span>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                    @else
-                        <p class="text-sm text-gray-500">No attendance records found.</p>
-                    @endif
+                                @empty
+                                    <tr><td colspan="2" style="padding: 2rem; text-align: center; color: var(--text-muted); font-style: italic;">No quiz results.</td></tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
-                <!-- Exam Results -->
-                <div class="mb-8">
-                    <h3 class="text-lg font-medium text-gray-900 mb-4">Exam Results</h3>
-                    @if($student->examResults->count() > 0)
-                        <div class="overflow-x-auto">
-                            <table class="min-w-full divide-y divide-gray-200">
-                                <thead class="bg-gray-50">
-                                    <tr>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Exam</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Score</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Max Score</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Percentage</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                <!-- Auto-Revision Attempts -->
+                <div class="card-custom" style="padding: 0; overflow: hidden;">
+                    <div style="padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border-color); background-color: var(--bg-alt);">
+                        <h3 style="font-size: 0.875rem; font-weight: 800; color: var(--text-main); margin: 0; text-transform: uppercase; letter-spacing: 0.05em;">Auto-Revision History</h3>
+                    </div>
+                    <div style="overflow-x: auto;">
+                        <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.875rem;">
+                            <tbody style="background-color: var(--bg-card);">
+                                @foreach($student->adminExamAttempts as $attempt)
+                                    <tr style="border-bottom: 1px solid var(--border-color);">
+                                        <td style="padding: 1rem 1.5rem;">
+                                            <div style="font-weight: 700; color: var(--text-main);">[Exam] {{ $attempt->exam->title ?? 'N/A' }}</div>
+                                            <div style="font-size: 0.75rem; color: var(--text-muted);">{{ $attempt->submitted_at ? $attempt->submitted_at->format('M d, Y') : 'In Progress' }}</div>
+                                        </td>
+                                        <td style="padding: 1rem 1.5rem; text-align: right;">
+                                            <span style="font-weight: 800; color: #4f46e5;">{{ $attempt->score }}%</span>
+                                        </td>
                                     </tr>
-                                </thead>
-                                <tbody class="bg-white divide-y divide-gray-200">
-                                    @foreach($student->examResults as $result)
-                                        <tr>
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $result->exam->title ?? 'N/A' }}</td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $result->marks_obtained }}</td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $result->exam->total_marks ?? 'N/A' }}</td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                @if($result->exam)
-                                                    {{ number_format(($result->marks_obtained / $result->exam->total_marks) * 100, 2) }}%
-                                                @else
-                                                    N/A
-                                                @endif
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                {{ $result->created_at->format('M d, Y') }}
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                    @else
-                        <p class="text-sm text-gray-500">No exam results found.</p>
-                    @endif
-                </div>
-
-                <!-- Quiz Results -->
-                <div class="mb-8">
-                    <h3 class="text-lg font-medium text-gray-900 mb-4">Quiz Results</h3>
-                    @if($student->quizResults->count() > 0)
-                        <div class="overflow-x-auto">
-                            <table class="min-w-full divide-y divide-gray-200">
-                                <thead class="bg-gray-50">
-                                    <tr>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quiz</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Score</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Max Score</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Percentage</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                                @endforeach
+                                @foreach($student->adminQuizAttempts as $attempt)
+                                    <tr style="border-bottom: 1px solid var(--border-color);">
+                                        <td style="padding: 1rem 1.5rem;">
+                                            <div style="font-weight: 700; color: var(--text-main);">[Quiz] {{ $attempt->quiz->title ?? 'N/A' }}</div>
+                                            <div style="font-size: 0.75rem; color: var(--text-muted);">{{ $attempt->submitted_at ? $attempt->submitted_at->format('M d, Y') : 'In Progress' }}</div>
+                                        </td>
+                                        <td style="padding: 1rem 1.5rem; text-align: right;">
+                                            <span style="font-weight: 800; color: #10b981;">{{ $attempt->score }}%</span>
+                                        </td>
                                     </tr>
-                                </thead>
-                                <tbody class="bg-white divide-y divide-gray-200">
-                                    @foreach($student->quizResults as $result)
-                                        <tr>
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $result->quiz->title ?? 'N/A' }}</td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $result->marks_obtained }}</td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $result->quiz->total_marks ?? 'N/A' }}</td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                @if($result->quiz)
-                                                    {{ number_format(($result->marks_obtained / $result->quiz->total_marks) * 100, 2) }}%
-                                                @else
-                                                    N/A
-                                                @endif
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                {{ $result->created_at->format('M d, Y') }}
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                    @else
-                        <p class="text-sm text-gray-500">No quiz results found.</p>
-                    @endif
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-@endsection
+</x-app-layout>

@@ -1,425 +1,379 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Student Dashboard') }}
-        </h2>
-    </x-slot>
+    <div style="display: flex; flex-direction: column; gap: 2rem;">
+        <!-- Student Header -->
+        <div style="display: flex; flex-direction: column; gap: 1rem; justify-content: space-between; align-items: flex-start;" class="md:flex-row md:items-center">
+            <div>
+                <h1 style="font-size: 1.5rem; font-weight: 700; color: var(--text-main); margin: 0;">{{ __('messages.student_dashboard_title') }}</h1>
+                <p style="color: var(--text-muted); margin-top: 0.25rem;">{{ __('messages.welcome_back') }}, {{ $student->name }}. {{ __('messages.track_progress') }}</p>
+            </div>
 
-    <div class="py-6">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <!-- Charts Section -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                <!-- Exam Performance Chart -->
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6">
-                        <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">Exam Performance</h3>
-                        <div class="chart-container" style="position: relative; height:300px;">
-                            <canvas id="examChart"></canvas>
-                        </div>
-                    </div>
+            <div style="display: flex; align-items: center; gap: 1rem; background-color: var(--bg-card); padding: 0.75rem 1.5rem; border-radius: 1.25rem; border: 1px solid var(--border-color); box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);">
+                <div style="text-align: {{ app()->getLocale() === 'ar' ? 'left' : 'right' }};">
+                    <p style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin: 0;">{{ __('messages.attendance') }}</p>
+                    <p style="font-size: 1.25rem; font-weight: 900; color: #10b981; margin: 0.25rem 0 0 0;">{{ $attendance['percentage'] }}%</p>
                 </div>
-
-                <!-- Quiz Performance Chart -->
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6">
-                        <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">Quiz Performance</h3>
-                        <div class="chart-container" style="position: relative; height:300px;">
-                            <canvas id="quizChart"></canvas>
-                        </div>
-                    </div>
+                <div style="height: 2rem; width: 1px; background-color: var(--border-color);"></div>
+                <div style="text-align: {{ app()->getLocale() === 'ar' ? 'right' : 'left' }};">
+                    <p style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin: 0;">{{ __('messages.status') }}</p>
+                    <span style="display: inline-flex; align-items: center; gap: 0.375rem; font-size: 0.875rem; font-weight: 700; color: #4f46e5; margin-top: 0.25rem;">
+                        <span style="width: 0.5rem; height: 0.5rem; border-radius: 9999px; background-color: #4f46e5;"></span> {{ __('messages.active') }}
+                    </span>
                 </div>
+            </div>
+        </div>
 
-                <!-- Attendance Overview Chart -->
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6">
-                        <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">Attendance Overview</h3>
-                        <div class="chart-container" style="position: relative; height:300px;">
-                            <canvas id="attendanceChart"></canvas>
+        <!-- Available Assessments -->
+        @if($availableQuizzes->count() > 0 || $availableExams->count() > 0)
+            <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                <h2 style="font-size: 1.125rem; font-weight: 700; color: var(--text-main); margin: 0;">Pending Assessments</h2>
+                <div style="display: grid; grid-template-columns: 1fr; gap: 1.5rem;" class="md:grid-cols-2 lg:grid-cols-3">
+                    @foreach($availableExams as $exam)
+                        <div class="card-custom" style="border-left: 4px solid #4f46e5; display: flex; flex-direction: column; gap: 1rem;">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                                <span style="padding: 0.25rem 0.5rem; background-color: rgba(79, 70, 229, 0.1); color: #4f46e5; border-radius: 0.375rem; font-size: 0.75rem; font-weight: 800; text-transform: uppercase;">Exam</span>
+                                <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">{{ $exam->duration_minutes }} mins</span>
+                            </div>
+                            <h3 style="font-size: 1rem; font-weight: 700; color: var(--text-main); margin: 0;">{{ $exam->title }}</h3>
+                            <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.8125rem; color: var(--text-muted);">
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <svg style="width: 1rem; height: 1rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                                    <span>Ends: {{ $exam->end_datetime->format('M d, H:i') }}</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <svg style="width: 1rem; height: 1rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
+                                    <span>{{ $exam->questions_count }} Questions</span>
+                                </div>
+                            </div>
+                            <form action="{{ route('student.exams.start', $exam->id) }}" method="POST" style="margin-top: auto;">
+                                @csrf
+                                <button type="submit" style="width: 100%; padding: 0.75rem; background-color: #4f46e5; color: white; border: none; border-radius: 0.75rem; font-weight: 700; font-size: 0.875rem; cursor: pointer; transition: opacity 0.2s;">
+                                    Start Exam
+                                </button>
+                            </form>
+                        </div>
+                    @endforeach
+
+                    @foreach($availableQuizzes as $quiz)
+                        <div class="card-custom" style="border-left: 4px solid #10b981; display: flex; flex-direction: column; gap: 1rem;">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                                <span style="padding: 0.25rem 0.5rem; background-color: rgba(16, 185, 129, 0.1); color: #10b981; border-radius: 0.375rem; font-size: 0.75rem; font-weight: 800; text-transform: uppercase;">Quiz</span>
+                                <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">{{ $quiz->duration_minutes }} mins</span>
+                            </div>
+                            <h3 style="font-size: 1rem; font-weight: 700; color: var(--text-main); margin: 0;">{{ $quiz->title }}</h3>
+                            <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.8125rem; color: var(--text-muted);">
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <svg style="width: 1rem; height: 1rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                                    <span>Ends: {{ $quiz->end_datetime->format('M d, H:i') }}</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <svg style="width: 1rem; height: 1rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
+                                    <span>{{ $quiz->questions_count }} Questions</span>
+                                </div>
+                            </div>
+                            <form action="{{ route('student.quizzes.start', $quiz->id) }}" method="POST" style="margin-top: auto;">
+                                @csrf
+                                <button type="submit" style="width: 100%; padding: 0.75rem; background-color: #10b981; color: white; border: none; border-radius: 0.75rem; font-weight: 700; font-size: 0.875rem; cursor: pointer; transition: opacity 0.2s;">
+                                    Start Quiz
+                                </button>
+                            </form>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        @endif
+
+        <!-- Charts Grid (Analytics) -->
+        <div style="display: grid; grid-template-columns: 1fr; gap: 2rem;" class="lg:grid-cols-2">
+            <!-- Manual Exams Performance -->
+            <div class="card-custom">
+                <h2 style="font-size: 1.125rem; font-weight: 700; color: var(--text-main); margin-bottom: 1.5rem;">{{ __('messages.manual_exams_performance') }}</h2>
+                <div style="height: 320px; width: 100%;">
+                    <canvas id="manualExamsChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Auto-Revision Exams Performance -->
+            <div class="card-custom">
+                <h2 style="font-size: 1.125rem; font-weight: 700; color: var(--text-main); margin-bottom: 1.5rem;">{{ __('messages.auto_exams_performance') }}</h2>
+                <div style="height: 320px; width: 100%;">
+                    <canvas id="autoExamsChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Manual Quizzes Performance -->
+            <div class="card-custom">
+                <h2 style="font-size: 1.125rem; font-weight: 700; color: var(--text-main); margin-bottom: 1.5rem;">{{ __('messages.manual_quizzes_performance') }}</h2>
+                <div style="height: 320px; width: 100%;">
+                    <canvas id="manualQuizzesChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Auto-Revision Quizzes Performance -->
+            <div class="card-custom">
+                <h2 style="font-size: 1.125rem; font-weight: 700; color: var(--text-main); margin-bottom: 1.5rem;">{{ __('messages.auto_quizzes_performance') }}</h2>
+                <div style="height: 320px; width: 100%;">
+                    <canvas id="autoQuizzesChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Attendance Overview Chart -->
+            <div class="card-custom lg:col-span-2">
+                <h2 style="font-size: 1.125rem; font-weight: 700; color: var(--text-main); margin-bottom: 1.5rem; text-align: center;">{{ __('messages.attendance_summary') }}</h2>
+                <div style="height: 320px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                    <div style="width: 100%; max-width: 256px; height: 256px;">
+                        <canvas id="attendanceChart"></canvas>
+                    </div>
+                    <div style="margin-top: 1rem; display: flex; gap: 1.5rem;">
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <span style="width: 0.75rem; height: 0.75rem; border-radius: 9999px; background-color: #10b981;"></span>
+                            <span style="font-size: 0.875rem; font-weight: 700; color: var(--text-muted);">{{ $attendance['present'] }} {{ __('messages.present') }}</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <span style="width: 0.75rem; height: 0.75rem; border-radius: 9999px; background-color: #f87171;"></span>
+                            <span style="font-size: 0.875rem; font-weight: 700; color: var(--text-muted);">{{ $attendance['absent'] }} {{ __('messages.absent') }}</span>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <!-- Student Info Card -->
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
-                <div class="p-6 bg-white border-b border-gray-200">
-                    <div class="flex justify-between items-center">
-                        <div>
-                            <h3 class="text-lg font-medium text-gray-900">Welcome, {{ $student->name }}</h3>
-                            <p class="text-gray-600">Student Code: {{ $student->code }}</p>
-                            <p class="text-gray-600">Academic Year: {{ $student->academicYear ?? 'N/A' }}</p>
-                            @if($student->phone)
-                                <p class="text-gray-600">Phone: {{ $student->phone }}</p>
-                            @endif
-                            @if($student->parent_phone)
-                                <p class="text-gray-600">Parent's Phone: {{ $student->parent_phone }}</p>
-                            @endif
-                        </div>
-                        <div class="text-right">
-                            <div class="text-2xl font-bold text-indigo-600">
-                                {{ $attendance['attendance_percentage'] }}%
-                            </div>
-                            <div class="text-sm text-gray-500">Attendance</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <!-- Results Table -->
+        <div style="display: grid; grid-template-columns: 1fr; gap: 2rem;" class="lg:grid-cols-3">
 
-            <!-- Stats Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                <!-- Exams Card -->
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6">
-                        <div class="flex items-center">
-                            <div class="p-3 rounded-full bg-indigo-100 text-indigo-600">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                                </svg>
-                            </div>
-                            <div class="ml-4">
-                                <h3 class="text-lg font-medium text-gray-900">Exams</h3>
-                                <p class="text-2xl font-semibold text-gray-700">{{ count($examResults) }}</p>
-                            </div>
-                        </div>
-                    </div>
+            <!-- My Courses Section -->
+            <div class="lg:col-span-1" style="display: flex; flex-direction: column; gap: 1.5rem;">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <h2 style="font-size: 1.125rem; font-weight: 700; color: var(--text-main); margin: 0;">{{ __('messages.courses') }}</h2>
+                    <a href="{{ route('student.courses.index') }}" style="font-size: 0.75rem; font-weight: 800; color: #4f46e5; text-decoration: none; text-transform: uppercase;">{{ __('messages.view_all') }} →</a>
                 </div>
 
-                <!-- Quizzes Card -->
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6">
-                        <div class="flex items-center">
-                            <div class="p-3 rounded-full bg-green-100 text-green-600">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                            </div>
-                            <div class="ml-4">
-                                <h3 class="text-lg font-medium text-gray-900">Quizzes</h3>
-                                <p class="text-2xl font-semibold text-gray-700">{{ count($quizResults) }}</p>
-                            </div>
-                        </div>
+                @if($courses->isEmpty())
+                    <div class="card-custom" style="padding: 2rem; text-align: center; border-style: dashed;">
+                        <p style="color: var(--text-muted); font-size: 0.875rem; margin: 0;">No courses assigned for this year yet.</p>
                     </div>
-                </div>
-
-                <!-- Attendance Card -->
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6">
-                        <div class="flex items-center">
-                            <div class="p-3 rounded-full bg-blue-100 text-blue-600">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                            </div>
-                            <div class="ml-4">
-                                <h3 class="text-lg font-medium text-gray-900">Attendance</h3>
-                                <p class="text-2xl font-semibold text-gray-700">{{ $attendance['present'] }}/{{ $attendance['total'] }}</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Courses Card -->
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6">
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center">
-                                <div class="p-3 rounded-full bg-orange-100 text-orange-600">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C6.5 6.253 2 10.998 2 17s4.5 10.747 10 10.747c5.5 0 10-4.998 10-10.747S17.5 6.253 12 6.253z" />
-                                    </svg>
-                                </div>
-                                <div class="ml-4">
-                                    <h3 class="text-lg font-medium text-gray-900">Courses</h3>
-                                    <p class="text-2xl font-semibold text-gray-700">Manage Lessons</p>
-                                </div>
-                            </div>
-                            <a href="{{ route('student.courses.index') }}" class="inline-flex items-center px-3 py-1 bg-orange-100 text-orange-600 rounded hover:bg-orange-200 font-medium text-sm">
-                                View →
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Available Exams Card -->
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6">
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center">
-                                <div class="p-3 rounded-full bg-pink-100 text-pink-600">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                                    </svg>
-                                </div>
-                                <div class="ml-4">
-                                    <h3 class="text-lg font-medium text-gray-900">Auto-Revision Exams</h3>
-                                    <p class="text-2xl font-semibold text-gray-700">Take Exams</p>
-                                </div>
-                            </div>
-                            <a href="{{ route('student.exams.index') }}" class="inline-flex items-center px-3 py-1 bg-pink-100 text-pink-600 rounded hover:bg-pink-200 font-medium text-sm">
-                                View →
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Recent Results Section -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                <!-- Recent Exams -->
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6">
-                        <h3 class="text-lg font-medium text-gray-900 mb-4">Recent Exam Results</h3>
-                        @if(count($examResults) > 0)
-                            <div class="overflow-x-auto">
-                                <table class="min-w-full divide-y divide-gray-200">
-                                    <thead class="bg-gray-50">
-                                        <tr>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Exam</th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Score</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="bg-white divide-y divide-gray-200">
-                                        @foreach($examResults->take(5) as $exam)
-                                            <tr>
-                                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $exam['exam'] }}</td>
-                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $exam['date'] }}</td>
-                                                <td class="px-6 py-4 whitespace-nowrap">
-                                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $exam['percentage'] >= 50 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
-                                                        {{ $exam['marks_obtained'] }}/{{ $exam['total_marks'] }} ({{ round($exam['percentage']) }}%)
-                                                    </span>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        @else
-                            <p class="text-gray-500">No exam results available.</p>
-                        @endif
-                    </div>
-                </div>
-
-                <!-- Recent Attendance -->
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6">
-                        <h3 class="text-lg font-medium text-gray-900 mb-4">Recent Attendance</h3>
-                        @if(count($attendance['recent']) > 0)
-                            <div class="space-y-4">
-                                @foreach($attendance['recent'] as $record)
-                                    <div class="flex items-center justify-between p-3 rounded-lg {{ $record['status'] === 'present' ? 'bg-green-50' : 'bg-red-50' }}">
-                                        <div>
-                                            <p class="text-sm font-medium text-gray-900">{{ $record['date'] }}</p>
-                                            <p class="text-sm text-gray-500">{{ $record['subject'] }}</p>
-                                        </div>
-                                        <span class="px-3 py-1 text-xs font-semibold rounded-full {{ $record['status'] === 'present' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
-                                            {{ ucfirst($record['status']) }}
-                                        </span>
+                @else
+                    <div style="display: flex; flex-direction: column; gap: 1rem;">
+                        @foreach($courses->take(4) as $course)
+                            <a href="{{ route('student.courses.show', $course) }}" style="text-decoration: none;" class="card-custom">
+                                <div style="display: flex; align-items: center; gap: 1rem;">
+                                    <div style="width: 2.5rem; height: 2.5rem; background-color: rgba(79, 70, 229, 0.1); color: #4f46e5; border-radius: 0.5rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                        <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
                                     </div>
-                                @endforeach
-                            </div>
-                        @else
-                            <p class="text-gray-500">No attendance records available.</p>
-                        @endif
+                                    <div style="flex: 1; min-width: 0;">
+                                        <h4 style="font-size: 0.875rem; font-weight: 700; color: var(--text-main); margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $course->name }}</h4>
+                                        <p style="font-size: 0.75rem; color: var(--text-muted); margin: 0.125rem 0 0 0;">{{ $course->lessons_count }} {{ __('messages.lessons') }}</p>
+                                    </div>
+                                    <svg style="width: 1rem; height: 1rem; color: var(--text-muted);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+                                </div>
+                            </a>
+                        @endforeach
                     </div>
+                @endif
+
+                <!-- My Quizzes Section -->
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 1rem;">
+                    <h2 style="font-size: 1.125rem; font-weight: 700; color: var(--text-main); margin: 0;">{{ __('messages.my_quizzes') }}</h2>
+                    <a href="{{ route('student.quizzes.index') }}" style="font-size: 0.75rem; font-weight: 800; color: #10b981; text-decoration: none; text-transform: uppercase;">{{ __('messages.view_all') }} →</a>
                 </div>
+                <a href="{{ route('student.quizzes.index') }}" style="text-decoration: none;" class="card-custom">
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <div style="width: 2.5rem; height: 2.5rem; background-color: rgba(16, 185, 129, 0.1); color: #10b981; border-radius: 0.5rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                            <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
+                        </div>
+                        <div style="flex: 1; min-width: 0;">
+                            <h4 style="font-size: 0.875rem; font-weight: 700; color: var(--text-main); margin: 0;">{{ __('messages.quizzes') }}</h4>
+                            <p style="font-size: 0.75rem; color: var(--text-muted); margin: 0.125rem 0 0 0;">View your active and past quizzes</p>
+                        </div>
+                        <svg style="width: 1rem; height: 1rem; color: var(--text-muted);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+                    </div>
+                </a>
+
+                <!-- My Exams Section -->
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 1rem;">
+                    <h2 style="font-size: 1.125rem; font-weight: 700; color: var(--text-main); margin: 0;">{{ __('messages.my_exams') }}</h2>
+                    <a href="{{ route('student.exams.index') }}" style="font-size: 0.75rem; font-weight: 800; color: #4f46e5; text-decoration: none; text-transform: uppercase;">{{ __('messages.view_all') }} →</a>
+                </div>
+                <a href="{{ route('student.exams.index') }}" style="text-decoration: none;" class="card-custom">
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <div style="width: 2.5rem; height: 2.5rem; background-color: rgba(79, 70, 229, 0.1); color: #4f46e5; border-radius: 0.5rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                            <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                        </div>
+                        <div style="flex: 1; min-width: 0;">
+                            <h4 style="font-size: 0.875rem; font-weight: 700; color: var(--text-main); margin: 0;">{{ __('messages.exams') }}</h4>
+                            <p style="font-size: 0.75rem; color: var(--text-muted); margin: 0.125rem 0 0 0;">View your scheduled and completed exams</p>
+                        </div>
+                        <svg style="width: 1rem; height: 1rem; color: var(--text-muted);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+                    </div>
+                </a>
             </div>
 
-            <!-- All Results Section -->
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6">
-                    <h3 class="text-lg font-medium text-gray-900 mb-4">All Quiz Results</h3>
-                    @if(count($quizResults) > 0)
-                        <div class="overflow-x-auto">
-                            <table class="min-w-full divide-y divide-gray-200">
-                                <thead class="bg-gray-50">
-                                    <tr>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quiz</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Score</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="bg-white divide-y divide-gray-200">
-                                    @foreach($quizResults as $quiz)
-                                        <tr>
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $quiz['quiz'] }}</td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $quiz['date'] }}</td>
-                                            <td class="px-6 py-4 whitespace-nowrap">
-                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $quiz['percentage'] >= 50 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
-                                                    {{ $quiz['marks_obtained'] }}/{{ $quiz['total_marks'] }} ({{ round($quiz['percentage']) }}%)
-                                                </span>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                    @else
-                        <p class="text-gray-500">No quiz results available.</p>
-                    @endif
-                </div>
+            <!-- Results Table -->
+            <div class="lg:col-span-2" style="display: flex; flex-direction: column; gap: 1.5rem;">
+                <div class="card-custom" style="padding: 0; overflow: hidden;">
+            <div style="padding: 1.5rem; border-bottom: 1px solid var(--border-color);">
+                <h2 style="font-size: 1.125rem; font-weight: 700; color: var(--text-main); margin: 0;">{{ __('messages.academic_results') }}</h2>
+                <p style="font-size: 0.875rem; color: var(--text-muted); margin-top: 0.25rem;">{{ __('messages.unified_view') }}</p>
+            </div>
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; text-align: {{ app()->getLocale() === 'ar' ? 'right' : 'left' }}; border-collapse: collapse; font-size: 0.875rem;">
+                    <thead style="background-color: var(--bg-alt);">
+                        <tr>
+                            <th style="padding: 1rem 1.5rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">{{ __('messages.assessment_title') }}</th>
+                            <th style="padding: 1rem 1.5rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">{{ __('messages.category') }}</th>
+                            <th style="padding: 1rem 1.5rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; text-align: center;">{{ __('messages.score') }}</th>
+                            <th style="padding: 1rem 1.5rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; text-align: {{ app()->getLocale() === 'ar' ? 'left' : 'right' }};">{{ __('messages.date') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody style="background-color: var(--bg-card);">
+                        @foreach($exams->concat($quizzes)->sortByDesc('date') as $item)
+                            <tr style="border-bottom: 1px solid var(--border-color); transition: background-color 0.2s;">
+                                <td style="padding: 1rem 1.5rem; font-weight: 500; color: var(--text-main);">{{ $item['title'] }}</td>
+                                <td style="padding: 1rem 1.5rem;">
+                                    <span style="padding: 0.25rem 0.625rem; border-radius: 0.5rem; font-size: 0.75rem; font-weight: 700; {{ $item['type'] === 'Auto-Revision' ? 'background-color: rgba(168, 85, 247, 0.1); color: #a855f7;' : 'background-color: rgba(245, 158, 11, 0.1); color: #f59e0b;' }}">
+                                        {{ $item['type'] }}
+                                    </span>
+                                </td>
+                                <td style="padding: 1rem 1.5rem; text-align: center;">
+                                    <span style="font-weight: 700; {{ $item['percentage'] >= 50 ? 'color: #10b981;' : 'color: #ef4444;' }}">
+                                        {{ round($item['percentage']) }}%
+                                    </span>
+                                </td>
+                                <td style="padding: 1rem 1.5rem; text-align: {{ app()->getLocale() === 'ar' ? 'left' : 'right' }}; color: var(--text-muted); font-weight: 500;">
+                                    {{ $item['date'] }}
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
 
+    @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Helper function to create a chart
-            function createChart(elementId, type, chartData, options = {}) {
-                const ctx = document.getElementById(elementId);
-                if (!ctx) return;
-                
-                const defaultOptions = {
+            const isDark = document.documentElement.classList.contains('dark');
+            Chart.defaults.font.family = "'Inter', sans-serif";
+            Chart.defaults.color = isDark ? "#94a3b8" : "#64748b";
+
+            const commonOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 110,
+                        grid: { color: isDark ? '#1e293b' : '#f1f5f9' },
+                        ticks: {
+                            callback: function(value) { return value <= 100 ? value + '%' : ''; }
+                        }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: { color: isDark ? '#f8fafc' : '#0f172a', font: { weight: 'bold' } }
+                    }
+                }
+            };
+
+            // Manual Exams Chart
+            new Chart(document.getElementById('manualExamsChart'), {
+                type: 'line',
+                data: {
+                    labels: @json($chartData['manualExam']['labels']),
+                    datasets: [{
+                        label: 'Manual Exam Scores (%)',
+                        data: @json($chartData['manualExam']['data']),
+                        borderColor: '#4f46e5',
+                        backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: commonOptions
+            });
+
+            // Auto Exams Chart
+            new Chart(document.getElementById('autoExamsChart'), {
+                type: 'line',
+                data: {
+                    labels: @json($chartData['autoExam']['labels']),
+                    datasets: [{
+                        label: 'Auto Exam Scores (%)',
+                        data: @json($chartData['autoExam']['data']),
+                        borderColor: '#6366f1',
+                        backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: commonOptions
+            });
+
+            // Manual Quizzes Chart
+            new Chart(document.getElementById('manualQuizzesChart'), {
+                type: 'line',
+                data: {
+                    labels: @json($chartData['manualQuiz']['labels']),
+                    datasets: [{
+                        label: 'Manual Quiz Scores (%)',
+                        data: @json($chartData['manualQuiz']['data']),
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: commonOptions
+            });
+
+            // Auto Quizzes Chart
+            new Chart(document.getElementById('autoQuizzesChart'), {
+                type: 'line',
+                data: {
+                    labels: @json($chartData['autoQuiz']['labels']),
+                    datasets: [{
+                        label: 'Auto Quiz Scores (%)',
+                        data: @json($chartData['autoQuiz']['data']),
+                        borderColor: '#34d399',
+                        backgroundColor: 'rgba(52, 211, 153, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: commonOptions
+            });
+
+            // Attendance Doughnut
+            new Chart(document.getElementById('attendanceChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: @json($chartData['attendance']['labels']),
+                    datasets: [{
+                        data: @json($chartData['attendance']['data']),
+                        backgroundColor: ['#10b981', '#f87171'],
+                        borderWidth: 0,
+                        hoverOffset: 15
+                    }]
+                },
+                options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    cutout: '80%',
                     plugins: {
-                        legend: {
-                            position: 'right',
-                            labels: {
-                                color: window.matchMedia('(prefers-color-scheme: dark)').matches ? '#fff' : '#374151'
-                            }
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    const label = context.label || '';
-                                    const value = context.raw || 0;
-                                    if (type === 'doughnut') {
-                                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                                        const percentage = total > 0 ? Math.round((value / total) * 100) : 0;
-                                        return `${label}: ${value} (${percentage}%)`;
-                                    }
-                                    return `${label}: ${value}%`;
-                                }
-                            }
-                        }
-                    },
-                    scales: {}
-                };
-
-                if (type === 'bar' || type === 'line') {
-                    defaultOptions.scales = {
-                        y: {
-                            beginAtZero: true,
-                            max: 100,
-                            ticks: {
-                                callback: function(value) {
-                                    return value + '%';
-                                },
-                                color: window.matchMedia('(prefers-color-scheme: dark)').matches ? '#fff' : '#374151'
-                            },
-                            grid: {
-                                color: window.matchMedia('(prefers-color-scheme: dark)').matches ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
-                            }
-                        },
-                        x: {
-                            ticks: {
-                                color: window.matchMedia('(prefers-color-scheme: dark)').matches ? '#fff' : '#374151'
-                            },
-                            grid: {
-                                display: false
-                            }
-                        }
-                    };
-                }
-
-                // Prepare dataset with proper fill settings
-                const dataset = {
-                    label: chartData.label || '',
-                    data: chartData.data || [],
-                    borderColor: chartData.borderColor || '#4f46e5',
-                    borderWidth: 2,
-                    fill: false, // Explicitly disable fill for all chart types
-                    pointBackgroundColor: chartData.pointBackgroundColor || chartData.borderColor || '#4f46e5',
-                    pointBorderColor: chartData.pointBorderColor || '#fff',
-                    pointHoverBackgroundColor: chartData.pointHoverBackgroundColor || '#fff',
-                    pointHoverBorderColor: chartData.pointHoverBorderColor || (chartData.borderColor || '#4f46e5'),
-                    pointRadius: chartData.pointRadius || 4,
-                    pointHoverRadius: chartData.pointHoverRadius || 6,
-                    borderDash: chartData.borderDash || [],
-                    tension: chartData.tension || 0.3
-                };
-
-                // Only set backgroundColor for non-line charts
-                if (type !== 'line') {
-                    dataset.backgroundColor = chartData.backgroundColors || '#4f46e5';
-                }
-
-                return new Chart(ctx.getContext('2d'), {
-                    type: type,
-                    data: {
-                        labels: chartData.labels || [],
-                        datasets: [dataset]
-                    },
-                    options: { ...defaultOptions, ...options }
-                });
-            }
-
-            // Initialize exam chart
-            @if(isset($chartData['exam']) && count($chartData['exam']['data']) > 0)
-            createChart('examChart', 'line', {
-                ...@json($chartData['exam']),
-                label: 'Score (%)',
-                borderColor: '#4f46e5',
-                backgroundColor: 'transparent',
-                pointBackgroundColor: '#4f46e5',
-                pointBorderColor: '#fff',
-                pointHoverBackgroundColor: '#fff',
-                pointHoverBorderColor: '#4f46e5',
-                pointRadius: 4,
-                pointHoverRadius: 6,
-                borderWidth: 2,
-                tension: 0.3
-            }, {
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                },
-                elements: {
-                    line: {
-                        fill: false
+                        legend: { display: false }
                     }
                 }
             });
-            @endif
-
-            // Initialize quiz chart
-            @if(isset($chartData['quiz']) && count($chartData['quiz']['data']) > 0)
-            createChart('quizChart', 'line', {
-                ...@json($chartData['quiz']),
-                label: 'Score (%)',
-                borderColor: '#10b981',
-                backgroundColor: 'transparent',
-                pointBackgroundColor: '#10b981',
-                pointBorderColor: '#fff',
-                pointHoverBackgroundColor: '#fff',
-                pointHoverBorderColor: '#10b981',
-                pointRadius: 4,
-                pointHoverRadius: 6,
-                borderWidth: 2,
-                borderDash: [],
-                tension: 0.3,
-                fill: false  // Explicitly set fill to false in the dataset
-            }, {
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                },
-                elements: {
-                    line: {
-                        fill: false
-                    }
-                }
-            });
-            @endif
-
-            // Initialize attendance chart
-            @if(isset($chartData['attendance']) && $attendance['total'] > 0)
-            createChart('attendanceChart', 'doughnut', @json($chartData['attendance']));
-            @endif
         });
     </script>
+    @endpush
 </x-app-layout>

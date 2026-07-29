@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\QuizController;
 use App\Http\Controllers\Admin\CourseController;
 use App\Http\Controllers\Admin\LessonController;
 use App\Http\Controllers\AdminExamController;
+use App\Http\Controllers\AdminQuizController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Parent\AuthController as ParentAuthController;
 use App\Http\Controllers\Parent\DashboardController as ParentDashboardController;
@@ -92,6 +93,7 @@ Route::get('/lang/{locale}', function (string $locale) {
 use App\Http\Controllers\Student\DashboardController as StudentDashboardController;
 use App\Http\Controllers\Student\CourseController as StudentCourseController;
 use App\Http\Controllers\StudentExamController;
+use App\Http\Controllers\StudentQuizController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\AcademicYearController;
 
@@ -122,7 +124,10 @@ Route::middleware(['redirect_if_parent', 'auth', 'verified', 'is_student'])->pre
     Route::get('/courses', [StudentCourseController::class, 'index'])->name('courses.index');
     Route::get('/courses/{course}', [StudentCourseController::class, 'show'])->name('courses.show');
     Route::get('/courses/{course}/lessons/{lesson}', [StudentCourseController::class, 'showLesson'])->name('lessons.show');
-    
+
+    // Student attendance routes
+    Route::post('/attendance/mark', [StudentCourseController::class, 'markAttendance'])->name('attendance.mark');
+
     // Student exam routes
     Route::prefix('exams')->name('exams.')->group(function () {
         Route::get('/', [StudentExamController::class, 'index'])->name('index');
@@ -131,6 +136,16 @@ Route::middleware(['redirect_if_parent', 'auth', 'verified', 'is_student'])->pre
         Route::post('/save-answer/{attempt}', [StudentExamController::class, 'saveAnswer'])->name('save-answer');
         Route::post('/submit/{attempt}', [StudentExamController::class, 'submit'])->name('submit');
         Route::get('/result/{attempt}', [StudentExamController::class, 'result'])->name('result');
+    });
+
+    // Student quiz routes
+    Route::prefix('quizzes')->name('quizzes.')->group(function () {
+        Route::get('/', [StudentQuizController::class, 'index'])->name('index');
+        Route::post('/{quiz}/start', [StudentQuizController::class, 'start'])->name('start');
+        Route::get('/take/{attempt}', [StudentQuizController::class, 'take'])->name('take');
+        Route::post('/save-answer/{attempt}', [StudentQuizController::class, 'saveAnswer'])->name('save-answer');
+        Route::post('/submit/{attempt}', [StudentQuizController::class, 'submit'])->name('submit');
+        Route::get('/result/{attempt}', [StudentQuizController::class, 'result'])->name('result');
     });
 });
 
@@ -158,6 +173,10 @@ Route::middleware(['redirect_if_parent', 'auth', 'is_admin'])->group(function ()
 
     Route::get('/admin/dashboard/{academicYear}', [DashboardController::class, 'showByYear'])
         ->name('admin.dashboard.year');
+
+    // Schedules
+    Route::get('/admin/schedules', [\App\Http\Controllers\Admin\ScheduleController::class, 'index'])->name('admin.schedules.index');
+    Route::post('/admin/schedules', [\App\Http\Controllers\Admin\ScheduleController::class, 'update'])->name('admin.schedules.update');
 
     // Students resource
     Route::resource('students', StudentController::class)
@@ -212,15 +231,15 @@ Route::middleware(['redirect_if_parent', 'auth', 'is_admin'])->group(function ()
     Route::delete('exams/{exam}/results/{result}', [ExamController::class, 'deleteResult'])
         ->name('admin.manual-exams.deleteResult');
 
-    // Quizzes resource
+    // Quizzes resource (manual result recording)
     Route::resource('quizzes', QuizController::class)
-        ->names('admin.quizzes');
+        ->names('admin.manual-quizzes');
     Route::get('quizzes/{quiz}/results', [QuizController::class, 'results'])
-        ->name('admin.quizzes.results');
+        ->name('admin.manual-quizzes.results');
     Route::post('quizzes/{quiz}/results', [QuizController::class, 'storeResult'])
-        ->name('admin.quizzes.storeResult');
+        ->name('admin.manual-quizzes.storeResult');
     Route::delete('quizzes/{quiz}/results/{result}', [QuizController::class, 'deleteResult'])
-        ->name('admin.quizzes.deleteResult');
+        ->name('admin.manual-quizzes.deleteResult');
 
     // Courses resource with academic year
     Route::prefix('{academicYear}')->group(function () {

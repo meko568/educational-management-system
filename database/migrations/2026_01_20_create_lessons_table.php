@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('pdf_url')->nullable();
             $table->integer('order')->default(0);
             $table->string('academicYear');
+            $table->date('scheduled_date');
             $table->timestamps();
         });
     }

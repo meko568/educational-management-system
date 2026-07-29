@@ -1,108 +1,91 @@
-@extends('layouts.admin')
+<x-app-layout>
+    <div style="display: flex; flex-direction: column; gap: 2rem;">
+        <!-- Header -->
+        <div style="display: flex; flex-direction: column; gap: 1rem; justify-content: space-between; align-items: flex-start;" class="md:flex-row md:items-center">
+            <div>
+                <h1 style="font-size: 1.5rem; font-weight: 700; color: var(--text-main); margin: 0;">{{ __('messages.attendance_management') }}</h1>
+                <p style="color: var(--text-muted); margin-top: 0.25rem; font-size: 0.875rem;">{{ __('messages.attendance_description') }} {{ strtoupper($academicYear ?? 'primary1') }}</p>
+            </div>
 
-@section('content')
-<div class="py-12">
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-            <div class="p-6 bg-white border-b border-gray-200">
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-2xl font-semibold text-gray-800">Attendance Management</h2>
-                    <a href="{{ route('admin.attendances.create', ['academicYear' => isset($academicYear) ? $academicYear : 'primary1']) }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 active:bg-indigo-800 focus:outline-none focus:border-indigo-900 focus:ring ring-indigo-300 disabled:opacity-25 transition ease-in-out duration-150">
-                        Mark Attendance
-                    </a>
-                </div>
+            <a href="{{ route('admin.attendances.create', ['academicYear' => $academicYear ?? 'primary1']) }}"
+               style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1.5rem; background-color: #4f46e5; color: white; border-radius: 0.75rem; font-weight: 800; font-size: 0.875rem; text-decoration: none; box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.2);">
+                <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
+                {{ __('messages.mark_attendance') }}
+            </a>
+        </div>
 
-                @if(session('success'))
-                    <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6" role="alert">
-                        <div class="flex">
-                            <div class="py-1">
-                                <svg class="fill-current h-6 w-6 text-green-500 mr-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                                </svg>
-                            </div>
-                            <div>
-                                <p class="font-bold">Success</p>
-                                <p>{{ session('success') }}</p>
-                            </div>
-                        </div>
-                    </div>
-                @endif
-
-                <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student Name</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student Code</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Notes</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
-                            @forelse($attendances as $attendance)
-                                <tr>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="text-sm font-medium text-gray-900">{{ $attendance->student->name }}</div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="text-sm text-gray-900">{{ $attendance->student->code }}</div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="text-sm text-gray-900">{{ $attendance->date->format('Y-m-d') }}</div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                            @if($attendance->status === 'present') bg-green-100 text-green-800
-                                            @else bg-red-100 text-red-800
-                                            @endif">
-                                            {{ ucfirst($attendance->status) }}
+        <!-- Attendance Table -->
+        <div class="card-custom" style="padding: 0; overflow: hidden;">
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; text-align: {{ app()->getLocale() === 'ar' ? 'right' : 'left' }}; font-size: 0.875rem;">
+                    <thead style="background-color: var(--bg-alt);">
+                        <tr style="border-bottom: 1px solid var(--border-color);">
+                            <th style="padding: 1rem 1.5rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">{{ __('messages.student') }}</th>
+                            <th style="padding: 1rem 1.5rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">{{ __('messages.log_date') }}</th>
+                            <th style="padding: 1rem 1.5rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; text-align: center;">{{ __('messages.status') }}</th>
+                            <th style="padding: 1rem 1.5rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">{{ __('messages.internal_notes') }}</th>
+                            <th style="padding: 1rem 1.5rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; text-align: {{ app()->getLocale() === 'ar' ? 'left' : 'right' }};">{{ __('messages.actions') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody style="background-color: var(--bg-card);">
+                        @forelse($attendances as $attendance)
+                            <tr style="border-bottom: 1px solid var(--border-color); transition: background-color 0.2s;">
+                                <td style="padding: 1.25rem 1.5rem;">
+                                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                        <div style="width: 2.25rem; height: 2.25rem; border-radius: 0.625rem; background-color: var(--bg-alt); border: 1px solid var(--border-color); color: var(--text-main); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.75rem;">
+                                            {{ substr($attendance->student->name, 0, 1) }}
+                                        </div>
+                                        <div>
+                                            <div style="font-weight: 700; color: var(--text-main);">{{ $attendance->student->name }}</div>
+                                            <div style="font-size: 0.75rem; color: var(--text-muted); font-family: monospace;">{{ $attendance->student->code }}</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td style="padding: 1.25rem 1.5rem; color: var(--text-main); font-weight: 500;">
+                                    {{ $attendance->date->format('M d, Y') }}
+                                </td>
+                                <td style="padding: 1.25rem 1.5rem; text-align: center;">
+                                    @if($attendance->status === 'present')
+                                        <span style="padding: 0.25rem 0.75rem; background-color: rgba(16, 185, 129, 0.1); color: #10b981; border-radius: 0.5rem; font-size: 0.625rem; font-weight: 800; text-transform: uppercase; border: 1px solid rgba(16, 185, 129, 0.2);">
+                                            {{ __('messages.present') }}
                                         </span>
-                                    </td>
-                                    <td class="px-6 py-4 text-sm text-gray-900">
-                                        {{ $attendance->notes ?? 'N/A' }}
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm space-x-2">
-                                        <a href="{{ route('admin.attendances.edit', $attendance->id) }}" 
-                                           class="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700">
-                                            Edit
+                                    @else
+                                        <span style="padding: 0.25rem 0.75rem; background-color: rgba(239, 68, 68, 0.1); color: #ef4444; border-radius: 0.5rem; font-size: 0.625rem; font-weight: 800; text-transform: uppercase; border: 1px solid rgba(239, 68, 68, 0.2);">
+                                            {{ __('messages.absent') }}
+                                        </span>
+                                    @endif
+                                </td>
+                                <td style="padding: 1.25rem 1.5rem; color: var(--text-muted); font-style: italic; max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                    {{ $attendance->notes ?? __('messages.no_notes') }}
+                                </td>
+                                <td style="padding: 1.25rem 1.5rem; text-align: {{ app()->getLocale() === 'ar' ? 'left' : 'right' }};">
+                                    <div style="display: flex; align-items: center; justify-content: flex-end; gap: 0.5rem;">
+                                        <a href="{{ route('admin.attendances.edit', $attendance->id) }}" style="padding: 0.5rem; color: var(--accent-color);" title="Edit">
+                                            <svg style="width: 1.125rem; height: 1.125rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
                                         </a>
-                                        <button type="button" onclick="confirmDelete('{{ route('admin.attendances.destroy', $attendance->id) }}')"
-                                                class="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700">
-                                            Delete
-                                        </button>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="6" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
-                                        No attendance records found.
-                                    </td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
+                                        <form action="{{ route('admin.attendances.destroy', $attendance->id) }}" method="POST" style="display: inline;" onsubmit="return confirm('{{ __('messages.delete_record_question') }}');">
+                                            @csrf @method('DELETE')
+                                            <button type="submit" style="padding: 0.5rem; background: transparent; border: none; color: #ef4444; cursor: pointer;">
+                                                <svg style="width: 1.125rem; height: 1.125rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="5" style="padding: 4rem 1.5rem; text-align: center; color: var(--text-muted); font-style: italic;">{{ __('messages.no_attendance_records') }}</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
 
-                <div class="mt-4">
+            @if($attendances->hasPages())
+                <div style="padding: 1.25rem 1.5rem; background-color: var(--bg-alt); border-top: 1px solid var(--border-color);">
                     {{ $attendances->links() }}
                 </div>
-            </div>
+            @endif
         </div>
     </div>
-</div>
-
-<script>
-function confirmDelete(url) {
-    if (confirm('Are you sure you want to delete this attendance record?')) {
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = url;
-        form.innerHTML = '@csrf @method("DELETE")';
-        document.body.appendChild(form);
-        form.submit();
-    }
-}
-</script>
-@endsection
+</x-app-layout>

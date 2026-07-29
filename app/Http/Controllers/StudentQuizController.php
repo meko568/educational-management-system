@@ -16,7 +16,7 @@ class StudentQuizController extends Controller
     public function index()
     {
         $student = auth()->user();
-        
+
         $availableQuizzes = AdminQuiz::where('grade', $student->academicYear)
             ->where('start_datetime', '<=', now())
             ->where('end_datetime', '>=', now())
@@ -105,8 +105,10 @@ class StudentQuizController extends Controller
                 ->with('error', 'Time expired. Quiz submitted automatically.');
         }
 
-        // Get questions with randomization
-        $questions = $quiz->questions->shuffle();
+        // Get questions with stable randomization per attempt
+        $questions = $quiz->questions->sortBy(function ($question) use ($attempt) {
+            return md5($attempt->id . $question->id);
+        })->values();
 
         // Load existing answers
         $attempt->load('answers');
@@ -220,21 +222,18 @@ class StudentQuizController extends Controller
                 'score' => $score,
             ]);
 
-            // Create QuizResult entry for old system compatibility
-            $oldQuiz = Quiz::where('admin_quiz_id', $attempt->quiz->id)->first();
-            
-            if ($oldQuiz) {
-                QuizResult::updateOrCreate(
-                    [
-                        'quiz_id' => $oldQuiz->id,
-                        'student_code' => $attempt->user_id,
-                    ],
-                    [
-                        'marks_obtained' => $earnedPoints,
-                        'academicYear' => $attempt->quiz->grade,
-                    ]
-                );
-            }
+            // Automated Attendance
+            \App\Models\Attendance::updateOrCreate(
+                [
+                    'student_code' => $attempt->user_id,
+                    'date' => now()->startOfDay(),
+                ],
+                [
+                    'status' => 'present',
+                    'academicYear' => $attempt->quiz->grade,
+                    'notes' => 'Auto-present via Quiz: ' . $attempt->quiz->title
+                ]
+            );
 
             DB::commit();
             return true;

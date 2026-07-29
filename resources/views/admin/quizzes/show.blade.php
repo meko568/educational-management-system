@@ -7,7 +7,7 @@
             <div class="p-6 bg-white border-b border-gray-200">
                 <div class="flex justify-between items-center mb-6">
                     <h2 class="text-2xl font-semibold text-gray-800">{{ $quiz->title }}</h2>
-                    <a href="{{ route('admin.quizzes.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700">
+                    <a href="{{ route('admin.manual-quizzes.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700">
                         Back
                     </a>
                 </div>
@@ -57,7 +57,7 @@
                 <h3 class="text-lg font-semibold text-gray-800 mb-4">Record Student Results</h3>
                 
                 <div class="mb-8 p-6 bg-gray-50 rounded-lg border border-gray-200">
-                    <form method="POST" action="{{ route('admin.quizzes.storeResult', $quiz->id) }}">
+                    <form method="POST" action="{{ route('admin.manual-quizzes.storeResult', $quiz->id) }}">
                         @csrf
                         <input type="hidden" name="academicYear" value="{{ $quiz->academicYear ?? 'primary1' }}">
                         
@@ -129,7 +129,7 @@
                                             {{ number_format(($result->marks_obtained / $quiz->total_marks) * 100, 2) }}%
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm space-x-2">
-                                            <form action="{{ route('admin.quizzes.deleteResult', [$quiz->id, $result->id]) }}" method="POST" style="display:inline;">
+                                            <form action="{{ route('admin.manual-quizzes.deleteResult', [$quiz->id, $result->id]) }}" method="POST" style="display:inline;">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" onclick="return confirm('Are you sure?')" 
@@ -150,11 +150,11 @@
                 @endif
 
                 <div class="flex gap-4">
-                    <a href="{{ route('admin.quizzes.edit', $quiz->id) }}" 
+                    <a href="{{ route('admin.manual-quizzes.edit', $quiz->id) }}" 
                        class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700">
                         Edit Quiz
                     </a>
-                    <button type="button" onclick="confirmDelete('{{ route('admin.quizzes.destroy', $quiz->id) }}')"
+                    <button type="button" onclick="confirmDelete('{{ route('admin.manual-quizzes.destroy', $quiz->id) }}')"
                             class="inline-flex items-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-700">
                         Delete Quiz
                     </button>

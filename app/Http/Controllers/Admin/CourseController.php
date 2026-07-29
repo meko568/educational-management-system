@@ -16,7 +16,7 @@ class CourseController extends Controller
         $courses = Course::withCount('lessons')
             ->forAcademicYear($academicYear)
             ->get();
-            
+
         return $this->localeView('admin.courses.index', compact('courses', 'academicYear'));
     }
 
@@ -37,8 +37,10 @@ class CourseController extends Controller
             'name' => 'required|string|max:255',
             'code' => 'required|string|unique:courses,code,NULL,id,academicYear,' . $academicYear,
             'description' => 'nullable|string',
+            'month' => 'required|integer|min:1|max:12',
+            'year' => 'required|integer|min:2020|max:2100',
         ]);
-        
+
         $validated['academicYear'] = $academicYear;
 
         Course::create($validated);

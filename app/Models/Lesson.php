@@ -18,6 +18,11 @@ class Lesson extends Model
         'pdf_url',
         'order',
         'academicYear',
+        'scheduled_date',
+    ];
+
+    protected $casts = [
+        'scheduled_date' => 'date',
     ];
 
     /**

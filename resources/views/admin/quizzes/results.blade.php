@@ -1,124 +1,107 @@
-@extends('layouts.admin')
+<x-app-layout>
+    <div style="display: flex; flex-direction: column; gap: 2rem;">
+        <!-- Header -->
+        <div style="display: flex; flex-direction: column; gap: 1rem; justify-content: space-between; align-items: flex-start;" class="md:flex-row md:items-center">
+            <div>
+                <h1 style="font-size: 1.5rem; font-weight: 700; color: var(--text-main); margin: 0;">{{ $quiz->title }} - Results</h1>
+                <p style="color: var(--text-muted); margin-top: 0.25rem; font-size: 0.875rem;">Max Score: <span style="font-weight: 700; color: #ea580c;">{{ $quiz->total_marks }}</span> • Record offline scores</p>
+            </div>
 
-@section('content')
-<div class="py-12">
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-            <div class="p-6 bg-white border-b border-gray-200">
-                <div class="flex justify-between items-center mb-6">
-                    <div>
-                        <h2 class="text-2xl font-semibold text-gray-800">{{ $quiz->title }}</h2>
-                        <p class="text-sm text-gray-600 mt-1">Max Score: <span class="font-bold">{{ $quiz->total_marks }}</span></p>
-                    </div>
-                    <a href="{{ route('admin.quizzes.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700">
-                        Back
-                    </a>
+            <a href="{{ route('admin.manual-quizzes.index', ['academicYear' => $quiz->academicYear]) }}"
+               style="padding: 0.625rem 1.25rem; background-color: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 0.75rem; font-size: 0.875rem; font-weight: 700; text-decoration: none;">
+                {{ __('messages.back') }}
+            </a>
+        </div>
+
+        <!-- Add Result Section -->
+        <div class="card-custom">
+            <h3 style="font-size: 1rem; font-weight: 800; color: var(--text-main); margin: 0 0 1.5rem 0; text-transform: uppercase; letter-spacing: 0.05em;">Record Student Mark</h3>
+
+            <form method="POST" action="{{ route('admin.manual-quizzes.storeResult', $quiz->id) }}" style="display: grid; grid-template-columns: 1fr; gap: 1.5rem;" class="md:grid-cols-3">
+                @csrf
+                <input type="hidden" name="academicYear" value="{{ $quiz->academicYear ?? 'primary1' }}">
+
+                <!-- Student -->
+                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <label for="student_code" style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted);">{{ __('messages.student') }}</label>
+                    <select id="student_code" name="student_code" required
+                            style="width: 100%; padding: 0.625rem 1rem; background-color: var(--bg-alt); border: 1px solid var(--border-color); border-radius: 0.75rem; color: var(--text-main); font-size: 0.875rem; cursor: pointer;">
+                        <option value="">-- Select Student --</option>
+                        @foreach($students as $student)
+                            <option value="{{ $student->code }}">{{ $student->code }} - {{ $student->name }}</option>
+                        @endforeach
+                    </select>
                 </div>
 
-                @if(session('success'))
-                    <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6" role="alert">
-                        <p class="font-bold">Success</p>
-                        <p>{{ session('success') }}</p>
-                    </div>
-                @endif
-
-                <!-- Add Result Form -->
-                <div class="mb-8 p-6 bg-gray-50 rounded-lg border border-gray-200">
-                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Add Student Result</h3>
-                    
-                    <form method="POST" action="{{ route('admin.quizzes.storeResult', $quiz->id) }}">
-                        @csrf
-                        <input type="hidden" name="academicYear" value="{{ $quiz->academicYear ?? 'primary1' }}">
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <!-- Student Code -->
-                            <div>
-                                <label for="student_code" class="block text-sm font-medium text-gray-700">Student Code</label>
-                                <select id="student_code" name="student_code" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" required>
-                                    <option value="">-- Select Student --</option>
-                                    @foreach($students as $student)
-                                        <option value="{{ $student->code }}">
-                                            {{ $student->code }} - {{ $student->name }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                                @error('student_code')
-                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                                @enderror
-                            </div>
-
-                            <!-- Marks Obtained -->
-                            <div>
-                                <label for="marks_obtained" class="block text-sm font-medium text-gray-700">Result (0-{{ $quiz->total_marks }})</label>
-                                <input type="number" id="marks_obtained" name="marks_obtained" min="0" max="{{ $quiz->total_marks }}" 
-                                       class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" required>
-                                @error('marks_obtained')
-                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                                @enderror
-                            </div>
-
-                            <!-- Submit Button -->
-                            <div class="flex items-end">
-                                <button type="submit" class="w-full inline-flex items-center justify-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700">
-                                    Save Result
-                                </button>
-                            </div>
-                        </div>
-                    </form>
+                <!-- Marks -->
+                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <label for="marks_obtained" style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted);">Score (0-{{ $quiz->total_marks }})</label>
+                    <input id="marks_obtained" name="marks_obtained" type="number" min="0" max="{{ $quiz->total_marks }}" required
+                           style="width: 100%; padding: 0.625rem 1rem; background-color: var(--bg-alt); border: 1px solid var(--border-color); border-radius: 0.75rem; color: var(--text-main); font-size: 0.875rem;" placeholder="e.g., 90">
                 </div>
 
-                <!-- Results Table -->
-                <h3 class="text-lg font-semibold text-gray-800 mb-4">Student Results</h3>
-                
-                @if($results->count() > 0)
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student Code</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student Name</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Result</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Max Score</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Percentage</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
-                                @foreach($results as $result)
-                                    <tr>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $result->student->code }}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $result->student->name }}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <span class="px-3 py-1 inline-flex text-sm leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
-                                                {{ $result->marks_obtained }}
-                                            </span>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $quiz->total_marks }}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                            {{ number_format(($result->marks_obtained / $quiz->total_marks) * 100, 2) }}%
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm space-x-2">
-                                            <form action="{{ route('admin.quizzes.deleteResult', [$quiz->id, $result->id]) }}" method="POST" style="display:inline;">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" onclick="return confirm('Are you sure?')" 
-                                                        class="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700">
-                                                    Delete
-                                                </button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                @else
-                    <div class="text-center py-8 text-gray-500">
-                        <p>No results recorded yet.</p>
-                    </div>
-                @endif
+                <!-- Action -->
+                <div style="display: flex; align-items: flex-end;">
+                    <button type="submit" style="width: 100%; padding: 0.625rem 1rem; background-color: #ea580c; color: white; border: none; border-radius: 0.75rem; font-weight: 800; font-size: 0.75rem; text-transform: uppercase; cursor: pointer; box-shadow: 0 4px 6px -1px rgba(234, 88, 12, 0.1);">
+                        Save Record
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Results Table -->
+        <div class="card-custom" style="padding: 0; overflow: hidden;">
+            <div style="padding: 1.5rem; border-bottom: 1px solid var(--border-color); background-color: var(--bg-alt);">
+                <h3 style="font-size: 0.875rem; font-weight: 800; color: var(--text-main); margin: 0; text-transform: uppercase; letter-spacing: 0.05em;">Recorded Results</h3>
+            </div>
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; text-align: {{ app()->getLocale() === 'ar' ? 'right' : 'left' }}; font-size: 0.875rem;">
+                    <thead style="background-color: var(--bg-alt);">
+                        <tr style="border-bottom: 1px solid var(--border-color);">
+                            <th style="padding: 1rem 1.5rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Student</th>
+                            <th style="padding: 1rem 1.5rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; text-align: center;">Result</th>
+                            <th style="padding: 1rem 1.5rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; text-align: center;">Percentage</th>
+                            <th style="padding: 1rem 1.5rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; text-align: {{ app()->getLocale() === 'ar' ? 'left' : 'right' }};">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody style="background-color: var(--bg-card);">
+                        @forelse($results as $result)
+                            <tr style="border-bottom: 1px solid var(--border-color); transition: background-color 0.2s;">
+                                <td style="padding: 1.25rem 1.5rem;">
+                                    <div style="font-weight: 700; color: var(--text-main);">{{ $result->student->name }}</div>
+                                    <div style="font-size: 0.75rem; color: var(--text-muted); font-family: monospace;">{{ $result->student->code }}</div>
+                                </td>
+                                <td style="padding: 1.25rem 1.5rem; text-align: center;">
+                                    <span style="padding: 0.25rem 0.625rem; background-color: var(--bg-alt); border: 1px solid var(--border-color); border-radius: 0.5rem; font-size: 0.625rem; font-weight: 800; color: var(--text-main);">
+                                        {{ $result->marks_obtained }} / {{ $quiz->total_marks }}
+                                    </span>
+                                </td>
+                                <td style="padding: 1.25rem 1.5rem; text-align: center;">
+                                    @php $pct = ($result->marks_obtained / $quiz->total_marks) * 100; @endphp
+                                    <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                                        <div style="width: 3rem; height: 0.375rem; background-color: var(--bg-alt); border-radius: 9999px; overflow: hidden;">
+                                            <div style="width: {{ $pct }}%; height: 100%; background-color: {{ $pct >= 50 ? '#10b981' : '#ef4444' }};"></div>
+                                        </div>
+                                        <span style="font-weight: 700; color: {{ $pct >= 50 ? '#10b981' : '#ef4444' }};">{{ number_format($pct, 1) }}%</span>
+                                    </div>
+                                </td>
+                                <td style="padding: 1.25rem 1.5rem; text-align: {{ app()->getLocale() === 'ar' ? 'left' : 'right' }};">
+                                    <form action="{{ route('admin.manual-quizzes.deleteResult', [$quiz->id, $result->id]) }}" method="POST" onsubmit="return confirm('Delete this result?')">
+                                        @csrf @method('DELETE')
+                                        <button type="submit" style="padding: 0.5rem; background: transparent; border: none; color: #ef4444; cursor: pointer;">
+                                            <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="4" style="padding: 5rem 1.5rem; text-align: center; color: var(--text-muted); font-style: italic;">No results recorded yet for this quiz.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
-</div>
-@endsection
+</x-app-layout>

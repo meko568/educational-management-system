@@ -11,8 +11,14 @@ use App\Models\ExamResult;
 use App\Models\QuizResult;
 use App\Models\AdminExam;
 use App\Models\AdminExamAttempt;
+use App\Models\AdminQuiz;
+use App\Models\AdminQuizAttempt;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+
+use App\Models\StudentParent;
+use App\Models\Course;
+use App\Models\GradeSchedule;
 
 class DashboardController extends Controller
 {
@@ -28,6 +34,11 @@ class DashboardController extends Controller
         $totalExams = Exam::where('academicYear', $academicYear)->count();
         $totalQuizzes = Quiz::where('academicYear', $academicYear)->count();
         $totalAttendance = Attendance::where('academicYear', $academicYear)->count();
+        $totalParents = StudentParent::count();
+        $totalCourses = Course::where('academicYear', $academicYear)->count();
+        $totalAutoExams = AdminExam::where('grade', $academicYear)->count();
+        $totalAutoQuizzes = AdminQuiz::where('grade', $academicYear)->count();
+        $totalSchedules = GradeSchedule::count();
 
         // Prepare chart data
         $chartData = [
@@ -35,23 +46,31 @@ class DashboardController extends Controller
             'examStats' => $this->getExamStatisticsData($academicYear),
             'quizStats' => $this->getQuizStatisticsData($academicYear),
             'autoRevisionExamStats' => $this->getAutoRevisionExamStatisticsData($academicYear),
+            'autoRevisionQuizStats' => $this->getAutoRevisionQuizStatisticsData($academicYear),
             'attendance' => $this->getAttendanceData($academicYear)
         ];
 
-        // Test: Force Arabic view for testing
-        $viewName = 'admin.dashboard';
-        if (app()->getLocale() === 'ar') {
-            $viewName = 'ar.admin.dashboard';
-        }
-        
-        return view($viewName, [
+        // Recent Exams and Quizzes for the table
+        $recentExams = AdminExam::where('grade', $academicYear)->latest()->take(5)->get();
+        $recentQuizzes = AdminQuiz::where('grade', $academicYear)->latest()->take(5)->get();
+        $courses = Course::withCount('lessons')->where('academicYear', $academicYear)->get();
+
+        return $this->localeView('admin.dashboard', [
             'totalStudents' => $totalStudents,
             'totalExams' => $totalExams,
             'totalQuizzes' => $totalQuizzes,
             'totalAttendance' => $totalAttendance,
+            'totalParents' => $totalParents,
+            'totalCourses' => $totalCourses,
+            'totalAutoExams' => $totalAutoExams,
+            'totalAutoQuizzes' => $totalAutoQuizzes,
+            'totalSchedules' => $totalSchedules,
             'chartData' => $chartData,
             'hasCharts' => $this->hasChartData($chartData),
-            'academicYear' => $academicYear
+            'academicYear' => $academicYear,
+            'recentExams' => $recentExams,
+            'recentQuizzes' => $recentQuizzes,
+            'courses' => $courses
         ]);
     }
 
@@ -265,8 +284,8 @@ class DashboardController extends Controller
 
         foreach ($exams as $exam) {
             $labels[] = $exam->title;
-            $totalPoints = $exam->total_points > 0 ? $exam->total_points : 1;
-            $avgScore = $exam->avg_score ? round(($exam->avg_score / $totalPoints) * 100, 2) : 0;
+            // The 'score' column in admin_exam_attempts is already a percentage (0-100)
+            $avgScore = $exam->avg_score ? round($exam->avg_score, 2) : 0;
             $avgScores[] = (float) $avgScore;
             $totalAttempts[] = (int) $exam->total_attempts;
         }
@@ -277,6 +296,65 @@ class DashboardController extends Controller
             'totalAttempts' => $totalAttempts,
             'avgScoreColor' => '#ec4899',
             'attemptsColor' => '#f97316'
+        ];
+    }
+
+    private function getAutoRevisionQuizStatisticsData($academicYear = null)
+    {
+        // Get the latest 5 auto-revision quizzes with their statistics
+        $query = DB::table('admin_quizzes')
+            ->select(
+                'admin_quizzes.id',
+                'admin_quizzes.title',
+                DB::raw('(SELECT SUM(points) FROM admin_quiz_questions WHERE quiz_id = admin_quizzes.id) as total_points'),
+                DB::raw('COUNT(admin_quiz_attempts.id) as total_attempts'),
+                DB::raw('AVG(admin_quiz_attempts.score) as avg_score')
+            )
+            ->leftJoin('admin_quiz_attempts', function($join) {
+                $join->on('admin_quizzes.id', '=', 'admin_quiz_attempts.quiz_id')
+                     ->where('admin_quiz_attempts.status', 'submitted');
+            })
+            ->groupBy('admin_quizzes.id', 'admin_quizzes.title');
+
+        if ($academicYear) {
+            $query->where('admin_quizzes.grade', $academicYear);
+        }
+
+        $quizzes = $query
+            ->orderBy('admin_quizzes.created_at', 'desc')
+            ->limit(5)
+            ->get();
+
+        // If no auto-revision quizzes yet, return empty data
+        if ($quizzes->isEmpty()) {
+            return [
+                'labels' => [],
+                'avgScores' => [],
+                'totalAttempts' => [],
+                'avgScoreColor' => '#f97316',
+                'attemptsColor' => '#fb923c'
+            ];
+        }
+
+        // Prepare the data for the chart
+        $labels = [];
+        $avgScores = [];
+        $totalAttempts = [];
+
+        foreach ($quizzes as $quiz) {
+            $labels[] = $quiz->title;
+            // The 'score' column in admin_quiz_attempts is already a percentage (0-100)
+            $avgScore = $quiz->avg_score ? round($quiz->avg_score, 2) : 0;
+            $avgScores[] = (float) $avgScore;
+            $totalAttempts[] = (int) $quiz->total_attempts;
+        }
+
+        return [
+            'labels' => $labels,
+            'avgScores' => $avgScores,
+            'totalAttempts' => $totalAttempts,
+            'avgScoreColor' => '#f97316',
+            'attemptsColor' => '#fb923c'
         ];
     }
 

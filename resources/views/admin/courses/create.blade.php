@@ -1,57 +1,74 @@
-@extends('layouts.admin')
+<x-app-layout>
+    <div style="display: flex; flex-direction: column; gap: 2rem; max-width: 42rem; margin: 0 auto;">
+        <!-- Header -->
+        <div style="display: flex; flex-direction: column; gap: 1rem; justify-content: space-between; align-items: flex-start;" class="md:flex-row md:items-center">
+            <div>
+                <h1 style="font-size: 1.5rem; font-weight: 700; color: var(--text-main); margin: 0;">Create New Course</h1>
+                <p style="color: var(--text-muted); margin-top: 0.25rem; font-size: 0.875rem;">Add a new curriculum entry for {{ strtoupper($academicYear) }}</p>
+            </div>
 
-@section('content')
-<div class="py-12">
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-            <div class="p-6 bg-white border-b border-gray-200">
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-2xl font-semibold text-gray-800">Create New Course</h2>
-                    <a href="{{ route('admin.courses.index', $academicYear) }}" class="inline-flex items-center px-4 py-2 bg-gray-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700">
-                        Back
-                    </a>
+            <a href="{{ route('admin.courses.index', $academicYear) }}"
+               style="padding: 0.625rem 1.25rem; background-color: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 0.75rem; font-size: 0.875rem; font-weight: 700; text-decoration: none;">
+                {{ __('messages.back') }}
+            </a>
+        </div>
+
+        <div class="card-custom">
+            <form method="POST" action="{{ route('admin.courses.store', $academicYear) }}" style="display: flex; flex-direction: column; gap: 1.5rem;">
+                @csrf
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                    <!-- Month Selection -->
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                        <label for="month" style="font-size: 0.875rem; font-weight: 700; color: var(--text-main);">Target Month</label>
+                        <select id="month" name="month" required
+                                style="width: 100%; padding: 0.75rem 1rem; background-color: var(--bg-alt); border: 1px solid var(--border-color); border-radius: 0.75rem; color: var(--text-main); font-size: 0.875rem; cursor: pointer;">
+                            @foreach(range(1, 12) as $m)
+                                <option value="{{ $m }}" {{ date('n') == $m ? 'selected' : '' }}>
+                                    {{ date('F', mktime(0, 0, 0, $m, 1)) }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <!-- Year Selection -->
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                        <label for="year" style="font-size: 0.875rem; font-weight: 700; color: var(--text-main);">Target Year</label>
+                        <input id="year" name="year" type="number" value="{{ date('Y') }}" required
+                               style="width: 100%; padding: 0.75rem 1rem; background-color: var(--bg-alt); border: 1px solid var(--border-color); border-radius: 0.75rem; color: var(--text-main); font-size: 0.875rem;">
+                    </div>
                 </div>
 
-                <form method="POST" action="{{ route('admin.courses.store', $academicYear) }}" class="space-y-6">
-                    @csrf
+                <!-- Course Code -->
+                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <label for="code" style="font-size: 0.875rem; font-weight: 700; color: var(--text-main);">{{ __('messages.course_code') }}</label>
+                    <input id="code" name="code" type="text" value="{{ old('code') }}" required
+                           style="width: 100%; padding: 0.75rem 1rem; background-color: var(--bg-alt); border: 1px solid var(--border-color); border-radius: 0.75rem; color: var(--text-main); font-size: 0.875rem; font-family: monospace;" placeholder="e.g., MATH-101-OCT">
+                    <x-input-error :messages="$errors->get('code')" />
+                </div>
 
-                    <div>
-                        <label for="code" class="block text-sm font-medium text-gray-700">Course Code</label>
-                        <input type="text" id="code" name="code" value="{{ old('code') }}"
-                               class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" 
-                               required>
-                        @error('code')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
+                <!-- Course Name -->
+                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <label for="name" style="font-size: 0.875rem; font-weight: 700; color: var(--text-main);">{{ __('messages.course_name') }}</label>
+                    <input id="name" name="name" type="text" value="{{ old('name') }}" required
+                           style="width: 100%; padding: 0.75rem 1rem; background-color: var(--bg-alt); border: 1px solid var(--border-color); border-radius: 0.75rem; color: var(--text-main); font-size: 0.875rem;" placeholder="Course Title">
+                    <x-input-error :messages="$errors->get('name')" />
+                </div>
 
-                    <div>
-                        <label for="name" class="block text-sm font-medium text-gray-700">Course Name</label>
-                        <input type="text" id="name" name="name" value="{{ old('name') }}"
-                               class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" 
-                               required>
-                        @error('name')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
+                <!-- Description -->
+                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <label for="description" style="font-size: 0.875rem; font-weight: 700; color: var(--text-main);">Description (Optional)</label>
+                    <textarea id="description" name="description" rows="4"
+                              style="width: 100%; padding: 0.75rem 1rem; background-color: var(--bg-alt); border: 1px solid var(--border-color); border-radius: 0.75rem; color: var(--text-main); font-size: 0.875rem; resize: vertical;" placeholder="Overview of what students will learn...">{{ old('description') }}</textarea>
+                    <x-input-error :messages="$errors->get('description')" />
+                </div>
 
-                    <div>
-                        <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
-                        <textarea id="description" name="description" rows="4"
-                                  class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">{{ old('description') }}</textarea>
-                        @error('description')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    <div class="flex items-center gap-4">
-                        <button type="submit" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700">
-                            Create Course
-                        </button>
-                    </div>
-                </form>
-            </div>
+                <div style="margin-top: 1rem;">
+                    <button type="submit" style="width: 100%; padding: 1rem; background-color: #7c3aed; color: white; border: none; border-radius: 1rem; font-weight: 800; font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; box-shadow: 0 10px 15px -3px rgba(124, 58, 237, 0.2);">
+                        Create Monthly Course
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
-</div>
-@endsection
+</x-app-layout>

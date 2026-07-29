@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\StudentParent;
 use App\Models\Student;
+use App\Models\Payment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -104,10 +105,32 @@ class StudentController extends Controller
         $student = Student::with([
             'attendances',
             'examResults.exam',
-            'quizResults.quiz'
+            'quizResults.quiz',
+            'lessonProgress.lesson',
+            'adminExamAttempts.exam',
+            'adminQuizAttempts.quiz',
         ])->where('code', $code)->firstOrFail();
 
-        return $this->localeView('admin.students.show', compact('student'));
+        // Calculate progress stats
+        $manualExamAvg = $student->examResults->avg(function($r) {
+            return $r->exam && $r->exam->total_marks > 0 ? ($r->marks_obtained / $r->exam->total_marks) * 100 : 0;
+        }) ?? 0;
+
+        $manualQuizAvg = $student->quizResults->avg(function($r) {
+            return $r->quiz && $r->quiz->total_marks > 0 ? ($r->marks_obtained / $r->quiz->total_marks) * 100 : 0;
+        }) ?? 0;
+
+        $autoExamAvg = $student->adminExamAttempts->where('status', 'submitted')->avg('score') ?? 0;
+        $autoQuizAvg = $student->adminQuizAttempts->where('status', 'submitted')->avg('score') ?? 0;
+
+        $totalExamAvg = ($manualExamAvg + $autoExamAvg) / ($manualExamAvg > 0 && $autoExamAvg > 0 ? 2 : 1);
+        $totalQuizAvg = ($manualQuizAvg + $autoQuizAvg) / ($manualQuizAvg > 0 && $autoQuizAvg > 0 ? 2 : 1);
+
+        $lessonsInYear = \App\Models\Lesson::where('academicYear', $student->academicYear)->count();
+        $lessonsWatched = $student->lessonProgress->where('watch_percentage', '>=', 80)->count();
+        $lessonProgress = $lessonsInYear > 0 ? ($lessonsWatched / $lessonsInYear) * 100 : 0;
+
+        return $this->localeView('admin.students.show', compact('student', 'manualExamAvg', 'manualQuizAvg', 'autoExamAvg', 'autoQuizAvg', 'totalExamAvg', 'totalQuizAvg', 'lessonProgress'));
     }
 
     public function edit(Request $request, Student $student)
@@ -146,18 +169,26 @@ class StudentController extends Controller
 
     public function showPayment(Student $student)
     {
-        return $this->localeView('admin.students.payment', compact('student'));
+        $latestPayment = $student->payments()->latest('paid_at')->first();
+        return $this->localeView('admin.students.payment', compact('student', 'latestPayment'));
     }
 
     public function processPayment(Student $student)
     {
-        $student->update([
-            'paid_at' => now()
-        ]);
+        \App\Models\Payment::updateOrCreate(
+            [
+                'student_code' => $student->code,
+                'month' => now()->month,
+                'year' => now()->year,
+            ],
+            [
+                'paid_at' => now()
+            ]
+        );
 
         return redirect()
             ->route('admin.students.payment', $student)
-            ->with('success', 'Payment recorded successfully!');
+            ->with('success', 'Payment recorded successfully for ' . now()->format('F Y') . '!');
     }
     public function destroy(Request $request, Student $student)
     {

@@ -1,78 +1,71 @@
-@extends('layouts.admin')
+<x-app-layout>
+    <div style="display: flex; flex-direction: column; gap: 2rem; max-width: 42rem; margin: 0 auto;">
+        <!-- Header -->
+        <div style="display: flex; flex-direction: column; gap: 1rem; justify-content: space-between; align-items: flex-start;" class="md:flex-row md:items-center">
+            <div>
+                <h1 style="font-size: 1.5rem; font-weight: 700; color: var(--text-main); margin: 0;">Edit Attendance</h1>
+                <p style="color: var(--text-muted); margin-top: 0.25rem; font-size: 0.875rem;">Updating record for: <span style="font-weight: 700; color: var(--accent-color);">{{ $attendance->student->name }}</span></p>
+            </div>
 
-@section('content')
-<div class="py-12">
-    <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
-        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-            <div class="p-6 bg-white border-b border-gray-200">
-                <h2 class="text-2xl font-semibold text-gray-800 mb-6">Edit Attendance</h2>
+            <a href="{{ route('admin.attendances.index', ['academicYear' => $academicYear ?? 'primary1']) }}"
+               style="padding: 0.625rem 1.25rem; background-color: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 0.75rem; font-size: 0.875rem; font-weight: 700; text-decoration: none;">
+                {{ __('messages.back') }}
+            </a>
+        </div>
 
-                @if ($errors->any())
-                    <div class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
-                        <ul class="list-disc list-inside">
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
+        <div class="card-custom">
+            <form method="POST" action="{{ route('admin.attendances.update', $attendance->id) }}" style="display: flex; flex-direction: column; gap: 1.5rem;">
+                @csrf
+                @method('PUT')
+                <input type="hidden" name="academicYear" value="{{ $academicYear ?? 'primary1' }}">
+
+                <!-- Student (Read-only) -->
+                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <label style="font-size: 0.875rem; font-weight: 700; color: var(--text-muted);">{{ __('messages.student') }}</label>
+                    <div style="width: 100%; padding: 0.75rem 1rem; background-color: var(--bg-alt); border: 1px solid var(--border-color); border-radius: 0.75rem; color: var(--text-muted); font-size: 0.875rem; font-weight: 600;">
+                        {{ $attendance->student->name }} ({{ $attendance->student->code }})
                     </div>
-                @endif
+                </div>
 
-                <form method="POST" action="{{ route('admin.attendances.update', $attendance->id) }}">
-                    @csrf
-                    @method('PUT')
-                    <input type="hidden" name="academicYear" value="{{ $academicYear ?? 'primary1' }}">
-
-                    <!-- Student (Read-only) -->
-                    <div class="mb-6">
-                        <label for="student_code" class="block text-sm font-medium text-gray-700">Student</label>
-                        <input type="text" id="student_code_display" value="{{ $attendance->student->name }} ({{ $attendance->student->code }})" 
-                               class="mt-1 block w-full border-gray-300 rounded-md shadow-sm bg-gray-100 sm:text-sm" disabled>
-                    </div>
-
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
                     <!-- Date -->
-                    <div class="mb-6">
-                        <label for="date" class="block text-sm font-medium text-gray-700">Date</label>
-                        <input type="date" id="date" name="date" value="{{ old('date', $attendance->date->format('Y-m-d')) }}" 
-                               class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" required>
-                        @error('date')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                        <label for="date" style="font-size: 0.875rem; font-weight: 700; color: var(--text-main);">{{ __('messages.log_date') }}</label>
+                        <input id="date" name="date" type="date" value="{{ old('date', $attendance->date->format('Y-m-d')) }}" required
+                               style="width: 100%; padding: 0.75rem 1rem; background-color: var(--bg-alt); border: 1px solid var(--border-color); border-radius: 0.75rem; color: var(--text-main); font-size: 0.875rem;">
+                        <x-input-error :messages="$errors->get('date')" />
                     </div>
 
                     <!-- Status -->
-                    <div class="mb-6">
-                        <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
-                        <select id="status" name="status" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" required>
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                        <label for="status" style="font-size: 0.875rem; font-weight: 700; color: var(--text-main);">{{ __('messages.status') }}</label>
+                        <select id="status" name="status" required
+                                style="width: 100%; padding: 0.75rem 1rem; background-color: var(--bg-alt); border: 1px solid var(--border-color); border-radius: 0.75rem; color: var(--text-main); font-size: 0.875rem; cursor: pointer;">
                             <option value="present" {{ old('status', $attendance->status) === 'present' ? 'selected' : '' }}>Present</option>
                             <option value="absent" {{ old('status', $attendance->status) === 'absent' ? 'selected' : '' }}>Absent</option>
                         </select>
-                        @error('status')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
+                        <x-input-error :messages="$errors->get('status')" />
                     </div>
+                </div>
 
-                    <!-- Notes -->
-                    <div class="mb-6">
-                        <label for="notes" class="block text-sm font-medium text-gray-700">Notes</label>
-                        <textarea id="notes" name="notes" rows="4" 
-                                  class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">{{ old('notes', $attendance->notes) }}</textarea>
-                        @error('notes')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
+                <!-- Notes -->
+                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <label for="notes" style="font-size: 0.875rem; font-weight: 700; color: var(--text-main);">{{ __('messages.internal_notes') }}</label>
+                    <textarea id="notes" name="notes" rows="3"
+                              style="width: 100%; padding: 0.75rem 1rem; background-color: var(--bg-alt); border: 1px solid var(--border-color); border-radius: 0.75rem; color: var(--text-main); font-size: 0.875rem; resize: vertical;">{{ old('notes', $attendance->notes) }}</textarea>
+                    <x-input-error :messages="$errors->get('notes')" />
+                </div>
 
-                    <!-- Submit Button -->
-                    <div class="flex justify-between items-center">
-                        <a href="{{ route('admin.attendances.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700">
-                            Back
-                        </a>
-                        <button type="submit" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700">
-                            Update Attendance
-                        </button>
-                    </div>
-                </form>
-            </div>
+                <div style="margin-top: 1rem; display: flex; gap: 1rem;">
+                    <a href="{{ route('admin.attendances.index', ['academicYear' => $academicYear ?? 'primary1']) }}"
+                       style="flex: 1; padding: 1rem; background-color: var(--bg-alt); color: var(--text-muted); border: 1px solid var(--border-color); border-radius: 1rem; font-weight: 700; font-size: 0.875rem; text-decoration: none; text-align: center; text-transform: uppercase;">
+                        {{ __('messages.cancel') }}
+                    </a>
+                    <button type="submit" style="flex: 2; padding: 1rem; background-color: #4f46e5; color: white; border: none; border-radius: 1rem; font-weight: 800; font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.2);">
+                        Update Record
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
-</div>
-@endsection
+</x-app-layout>

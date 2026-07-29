@@ -1,93 +1,75 @@
-@extends('layouts.admin')
+<x-app-layout>
+    <div style="display: flex; flex-direction: column; gap: 2rem; max-width: 42rem; margin: 0 auto;">
+        <!-- Header -->
+        <div style="display: flex; flex-direction: column; gap: 1rem; justify-content: space-between; align-items: flex-start;" class="md:flex-row md:items-center">
+            <div>
+                <h1 style="font-size: 1.5rem; font-weight: 700; color: var(--text-main); margin: 0;">Create New Manual Exam</h1>
+                <p style="color: var(--text-muted); margin-top: 0.25rem; font-size: 0.875rem;">Set up an offline assessment for {{ strtoupper($academicYear ?? 'primary1') }}</p>
+            </div>
 
-@section('content')
-<div class="py-12">
-    <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
-        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-            <div class="p-6 bg-white border-b border-gray-200">
-                <h2 class="text-2xl font-semibold text-gray-800 mb-6">Create Exam</h2>
+            <a href="{{ route('admin.manual-exams.index', ['academicYear' => $academicYear ?? 'primary1']) }}"
+               style="padding: 0.625rem 1.25rem; background-color: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 0.75rem; font-size: 0.875rem; font-weight: 700; text-decoration: none;">
+                {{ __('messages.back') }}
+            </a>
+        </div>
 
-                @if ($errors->any())
-                    <div class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
-                        <ul class="list-disc list-inside">
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
+        <div class="card-custom">
+            <form method="POST" action="{{ route('admin.manual-exams.store') }}" style="display: flex; flex-direction: column; gap: 1.5rem;">
+                @csrf
+                <input type="hidden" name="academicYear" value="{{ $academicYear ?? 'primary1' }}">
 
-                <form method="POST" action="{{ route('admin.exams.store') }}">
-                    @csrf
-                    <input type="hidden" name="academicYear" value="{{ $academicYear ?? 'primary1' }}">
+                <!-- Title -->
+                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <label for="title" style="font-size: 0.875rem; font-weight: 700; color: var(--text-main);">Exam Title</label>
+                    <input id="title" name="title" type="text" value="{{ old('title') }}" required autofocus
+                           style="width: 100%; padding: 0.75rem 1rem; background-color: var(--bg-alt); border: 1px solid var(--border-color); border-radius: 0.75rem; color: var(--text-main); font-size: 0.875rem;" placeholder="Midterm, Final, etc.">
+                    <x-input-error :messages="$errors->get('title')" />
+                </div>
 
-                    <!-- Title -->
-                    <div class="mb-6">
-                        <label for="title" class="block text-sm font-medium text-gray-700">Title</label>
-                        <input type="text" id="title" name="title" value="{{ old('title') }}" 
-                               class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" required>
-                        @error('title')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
+                <!-- Description -->
+                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <label for="description" style="font-size: 0.875rem; font-weight: 700; color: var(--text-main);">Description (Optional)</label>
+                    <textarea id="description" name="description" rows="3"
+                              style="width: 100%; padding: 0.75rem 1rem; background-color: var(--bg-alt); border: 1px solid var(--border-color); border-radius: 0.75rem; color: var(--text-main); font-size: 0.875rem; resize: vertical;">{{ old('description') }}</textarea>
+                    <x-input-error :messages="$errors->get('description')" />
+                </div>
 
-                    <!-- Description -->
-                    <div class="mb-6">
-                        <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
-                        <textarea id="description" name="description" rows="4" 
-                                  class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">{{ old('description') }}</textarea>
-                        @error('description')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
-
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
                     <!-- Exam Date -->
-                    <div class="mb-6">
-                        <label for="exam_date" class="block text-sm font-medium text-gray-700">Exam Date</label>
-                        <input type="date" id="exam_date" name="exam_date" value="{{ old('exam_date', $defaultDate) }}" 
-                               class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" required>
-                        @error('exam_date')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                        <label for="exam_date" style="font-size: 0.875rem; font-weight: 700; color: var(--text-main);">Exam Date</label>
+                        <input id="exam_date" name="exam_date" type="date" value="{{ old('exam_date', date('Y-m-d')) }}" required
+                               style="width: 100%; padding: 0.75rem 1rem; background-color: var(--bg-alt); border: 1px solid var(--border-color); border-radius: 0.75rem; color: var(--text-main); font-size: 0.875rem;">
+                        <x-input-error :messages="$errors->get('exam_date')" />
                     </div>
 
                     <!-- Total Marks -->
-                    <div class="mb-6">
-                        <label for="total_marks" class="block text-sm font-medium text-gray-700">Max Score</label>
-                        <input type="number" id="total_marks" name="total_marks" value="{{ old('total_marks') }}" 
-                               class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" required>
-                        @error('total_marks')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                        <label for="total_marks" style="font-size: 0.875rem; font-weight: 700; color: var(--text-main);">Maximum Score</label>
+                        <input id="total_marks" name="total_marks" type="number" value="{{ old('total_marks') }}" required
+                               style="width: 100%; padding: 0.75rem 1rem; background-color: var(--bg-alt); border: 1px solid var(--border-color); border-radius: 0.75rem; color: var(--text-main); font-size: 0.875rem;" placeholder="100">
+                        <x-input-error :messages="$errors->get('total_marks')" />
                     </div>
+                </div>
 
-                    <!-- Status -->
-                    <div class="mb-6">
-                        <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
-                        <select id="status" name="status" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" required>
-                            <option value="draft" {{ old('status') === 'draft' ? 'selected' : '' }}>Draft</option>
-                            <option value="scheduled" {{ old('status') === 'scheduled' ? 'selected' : '' }}>Scheduled</option>
-                            <option value="in_progress" {{ old('status') === 'in_progress' ? 'selected' : '' }}>In Progress</option>
-                            <option value="completed" {{ old('status') === 'completed' ? 'selected' : '' }}>Completed</option>
-                            <option value="cancelled" {{ old('status') === 'cancelled' ? 'selected' : '' }}>Cancelled</option>
-                        </select>
-                        @error('status')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
+                <!-- Status -->
+                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <label for="status" style="font-size: 0.875rem; font-weight: 700; color: var(--text-main);">Status</label>
+                    <select id="status" name="status"
+                            style="width: 100%; padding: 0.75rem 1rem; background-color: var(--bg-alt); border: 1px solid var(--border-color); border-radius: 0.75rem; color: var(--text-main); font-size: 0.875rem; cursor: pointer;">
+                        <option value="draft" {{ old('status') === 'draft' ? 'selected' : '' }}>Draft</option>
+                        <option value="scheduled" {{ old('status') === 'scheduled' ? 'selected' : '' }}>Scheduled</option>
+                        <option value="completed" {{ old('status') === 'completed' ? 'selected' : '' }}>Completed</option>
+                    </select>
+                    <x-input-error :messages="$errors->get('status')" />
+                </div>
 
-                    <!-- Submit Button -->
-                    <div class="flex justify-between items-center">
-                        <a href="{{ route('admin.exams.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700">
-                            Back
-                        </a>
-                        <button type="submit" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700">
-                            Create Exam
-                        </button>
-                    </div>
-                </form>
-            </div>
+                <div style="margin-top: 1rem;">
+                    <button type="submit" style="width: 100%; padding: 1rem; background-color: #f59e0b; color: white; border: none; border-radius: 1rem; font-weight: 800; font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; box-shadow: 0 10px 15px -3px rgba(245, 158, 11, 0.2);">
+                        Create Exam Record
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
-</div>
-@endsection
+</x-app-layout>

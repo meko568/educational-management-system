@@ -16,7 +16,7 @@ class StudentExamController extends Controller
     public function index()
     {
         $student = auth()->user();
-        
+
         $availableExams = AdminExam::where('grade', $student->academicYear)
             ->where('start_datetime', '<=', now())
             ->where('end_datetime', '>=', now())
@@ -105,8 +105,10 @@ class StudentExamController extends Controller
                 ->with('error', 'Time expired. Exam submitted automatically.');
         }
 
-        // Get questions with randomization
-        $questions = $exam->questions->shuffle();
+        // Get questions with stable randomization per attempt
+        $questions = $exam->questions->sortBy(function ($question) use ($attempt) {
+            return md5($attempt->id . $question->id);
+        })->values();
 
         // Load existing answers
         $attempt->load('answers');
@@ -220,21 +222,18 @@ class StudentExamController extends Controller
                 'score' => $score,
             ]);
 
-            // Create ExamResult entry for old system compatibility
-            $oldExam = Exam::where('admin_exam_id', $attempt->exam->id)->first();
-            
-            if ($oldExam) {
-                ExamResult::updateOrCreate(
-                    [
-                        'exam_id' => $oldExam->id,
-                        'student_code' => $attempt->user_id,
-                    ],
-                    [
-                        'marks_obtained' => $earnedPoints,
-                        'academicYear' => $attempt->exam->grade,
-                    ]
-                );
-            }
+            // Automated Attendance
+            \App\Models\Attendance::updateOrCreate(
+                [
+                    'student_code' => $attempt->user_id,
+                    'date' => now()->startOfDay(),
+                ],
+                [
+                    'status' => 'present',
+                    'academicYear' => $attempt->exam->grade,
+                    'notes' => 'Auto-present via Exam: ' . $attempt->exam->title
+                ]
+            );
 
             DB::commit();
             return true;

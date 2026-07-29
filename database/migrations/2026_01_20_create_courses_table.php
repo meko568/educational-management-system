@@ -17,6 +17,8 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->string('code')->unique();
             $table->string('academicYear');
+            $table->integer('month');
+            $table->integer('year');
             $table->timestamps();
         });
     }

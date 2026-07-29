@@ -1,51 +1,63 @@
-<section>
+<section class="space-y-8">
     <header>
-        <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
-            {{ __('Profile Information') }}
+        <h2 class="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tight">
+            {{ __('messages.update_information') }}
         </h2>
-
-        <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-            {{ __("Update your account's profile information and email address.") }}
+        <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">
+            {{ __("messages.update_info_description") }}
         </p>
     </header>
 
-    <form id="send-verification" method="post" action="{{ route('verification.send') }}">
-        @csrf
-    </form>
-
-    <form method="post" action="{{ route('profile.update') }}" class="mt-6 space-y-6">
+    <form method="post" action="{{ route('profile.update') }}" class="space-y-6">
         @csrf
         @method('patch')
 
-<div>
-    <x-input-label for="name" :value="__('Name')" />
-    <x-text-input id="name" type="text" class="mt-1 block w-full" :value="$user->name" disabled />
-</div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Name (Read-only) -->
+            <div class="space-y-2">
+                <x-input-label for="name" :value="__('messages.display_name')" class="text-[10px] font-black uppercase text-slate-400 dark:text-slate-500 tracking-widest" />
+                <div class="px-4 py-3 bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 rounded-xl text-sm font-bold text-slate-500 dark:text-slate-400 cursor-not-allowed">
+                    {{ $user->name }}
+                </div>
+            </div>
 
-<div class="mt-4">
-    <x-input-label for="academic_year" :value="__('Academic Year')" />
-    <x-text-input id="academic_year" type="text" class="mt-1 block w-full" :value="$user->academicYear" disabled />
-</div>
+            <!-- Email (Read-only/Placeholder) -->
+            <div class="space-y-2">
+                <x-input-label for="email" :value="__('messages.email_address')" class="text-[10px] font-black uppercase text-slate-400 dark:text-slate-500 tracking-widest" />
+                <div class="px-4 py-3 bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 rounded-xl text-sm font-bold text-slate-500 dark:text-slate-400 cursor-not-allowed">
+                    {{ $user->email ?? 'no-email@school.edu' }}
+                </div>
+            </div>
 
-<div class="mt-4">
-    <x-input-label for="code" :value="__('Code')" />
-    <x-text-input id="code" type="text" class="mt-1 block w-full" :value="$user->code" disabled />
-</div>
+            <!-- Phone -->
+            <div class="space-y-2">
+                <x-input-label for="phone" :value="__('messages.personal_phone')" class="text-[10px] font-black uppercase text-slate-400 dark:text-slate-500 tracking-widest" />
+                <x-text-input id="phone" name="phone" type="text" class="block w-full border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 text-slate-900 dark:text-white focus:ring-teal-500/20 focus:border-teal-500 rounded-xl font-bold text-sm" :value="old('phone', $user->phone)" />
+                <x-input-error class="mt-2" :messages="$errors->get('phone')" />
+            </div>
 
-@if($user->phone)
-<div class="mt-4">
-    <x-input-label :value="__('Phone Number')" />
-    <p class="mt-1">{{ $user->phone }}</p>
-</div>
-@endif
+            <!-- Parent Phone -->
+            <div class="space-y-2">
+                <x-input-label for="parent_phone" :value="__('messages.guardian_phone')" class="text-[10px] font-black uppercase text-slate-400 dark:text-slate-500 tracking-widest" />
+                <x-text-input id="parent_phone" name="parent_phone" type="text" class="block w-full border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 text-slate-900 dark:text-white focus:ring-teal-500/20 focus:border-teal-500 rounded-xl font-bold text-sm" :value="old('parent_phone', $user->parent_phone)" />
+                <x-input-error class="mt-2" :messages="$errors->get('parent_phone')" />
+            </div>
+        </div>
 
-@if($user->parent_phone)
-<div class="mt-4">
-    <x-input-label :value="__('Parent\'s Phone Number')" />
-    <p class="mt-1">{{ $user->parent_phone }}</p>
-</div>
-@endif
+        <div class="flex items-center gap-4 pt-4">
+            <button type="submit" class="px-8 py-3 bg-[#1E293B] dark:bg-teal-600 text-white rounded-2xl font-black text-sm shadow-xl shadow-slate-900/10 hover:bg-slate-800 dark:hover:bg-teal-500 transition-all">
+                {{ __('messages.save_changes') }}
+            </button>
 
+            @if (session('status') === 'profile-updated')
+                <p
+                    x-data="{ show: true }"
+                    x-show="show"
+                    x-transition
+                    x-init="setTimeout(() => show = false, 2000)"
+                    class="text-sm font-bold text-teal-600 dark:text-teal-400"
+                >{{ __('messages.information_saved') }}</p>
+            @endif
         </div>
     </form>
 </section>

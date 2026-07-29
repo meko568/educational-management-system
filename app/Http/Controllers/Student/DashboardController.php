@@ -6,16 +6,20 @@ use App\Http\Controllers\Controller;
 use App\Models\Student;
 use App\Models\ExamResult;
 use App\Models\QuizResult;
+use App\Models\AdminExamAttempt;
+use App\Models\AdminQuizAttempt;
 use App\Models\Attendance;
+use App\Models\Course;
+use App\Models\AdminQuiz;
+use App\Models\AdminExam;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use ConsoleTVs\Charts\Classes\Chartjs\Chart;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        $student = Student::with(['examResults.exam.adminExam', 'quizResults.quiz', 'attendances'])
+        $student = Student::with(['examResults.exam', 'quizResults.quiz', 'attendances'])
             ->findOrFail(Auth::id());
 
         return $this->getDashboardData($student, $student->academicYear);
@@ -23,174 +27,146 @@ class DashboardController extends Controller
 
     private function getDashboardData($student, $academicYear)
     {
-        $examResults = $student->examResults()
+        // 1. Fetch Manual Exam Results
+        $manualExamResults = $student->examResults()
             ->with('exam')
             ->get()
-            ->filter(function ($result) use ($student) {
-                // Filter by academicYear - either from exam's academicYear or from linked admin_exam
-                if ($result->exam->academicYear) {
-                    return $result->exam->academicYear === $student->academicYear;
-                }
-                // For auto-revision exams, check the linked admin_exam's grade
-                if ($result->exam->admin_exam_id) {
-                    return $result->exam->adminExam && $result->exam->adminExam->grade === $student->academicYear;
-                }
-                return false;
-            })
-            ->map(function ($result) {
-                return [
-                    'exam' => $result->exam->title,
-                    'marks_obtained' => $result->marks_obtained,
-                    'total_marks' => $result->exam->total_marks,
-                    'percentage' => $result->exam->total_marks > 0 ? ($result->marks_obtained / $result->exam->total_marks) * 100 : 0,
-                    'date' => $result->exam->exam_date ? $result->exam->exam_date->format('Y-m-d') : now()->format('Y-m-d')
-                ];
-            });
+            ->filter(fn($r) => $r->exam && $r->exam->academicYear === $academicYear && is_null($r->exam->admin_exam_id))
+            ->map(fn($r) => [
+                'title' => $r->exam->title,
+                'type' => 'Manual',
+                'marks' => $r->marks_obtained,
+                'total' => $r->exam->total_marks,
+                'percentage' => $r->exam->total_marks > 0 ? ($r->marks_obtained / $r->exam->total_marks) * 100 : 0,
+                'date' => $r->exam->exam_date ? $r->exam->exam_date->format('Y-m-d') : $r->created_at->format('Y-m-d')
+            ]);
 
-        $quizResults = $student->quizResults()
-            ->whereHas('quiz', function ($query) use ($academicYear) {
-                $query->where('academicYear', $academicYear);
-            })
+        // 2. Fetch Auto-Revision Exam Results
+        $autoExamAttempts = AdminExamAttempt::where('user_id', $student->code)
+            ->where('status', 'submitted')
+            ->with('exam')
+            ->get()
+            ->filter(fn($a) => $a->exam && $a->exam->grade === $academicYear)
+            ->map(fn($a) => [
+                'title' => $a->exam->title,
+                'type' => 'Auto-Revision',
+                'marks' => $a->score,
+                'total' => 100, // Score is usually percentage in auto-revision or check total_points
+                'percentage' => (float) $a->score,
+                'date' => $a->submitted_at ? $a->submitted_at->format('Y-m-d') : $a->created_at->format('Y-m-d')
+            ]);
+
+        $allExams = $manualExamResults->concat($autoExamAttempts)->sortByDesc('date');
+
+        // 3. Fetch Manual Quiz Results
+        $manualQuizResults = $student->quizResults()
             ->with('quiz')
             ->get()
-            ->map(function ($result) {
-                return [
-                    'quiz' => $result->quiz->title,
-                    'marks_obtained' => $result->marks_obtained,
-                    'total_marks' => $result->quiz->total_marks,
-                    'percentage' => ($result->marks_obtained / $result->quiz->total_marks) * 100,
-                    'date' => $result->created_at->format('Y-m-d')
-                ];
-            });
+            ->filter(fn($r) => $r->quiz && $r->quiz->academicYear === $academicYear && is_null($r->quiz->admin_quiz_id))
+            ->map(fn($r) => [
+                'title' => $r->quiz->title,
+                'type' => 'Manual',
+                'marks' => $r->marks_obtained,
+                'total' => $r->quiz->total_marks,
+                'percentage' => $r->quiz->total_marks > 0 ? ($r->marks_obtained / $r->quiz->total_marks) * 100 : 0,
+                'date' => $r->created_at->format('Y-m-d')
+            ]);
+
+        // 4. Fetch Auto-Revision Quiz Results
+        $autoQuizAttempts = AdminQuizAttempt::where('user_id', $student->code)
+            ->where('status', 'submitted')
+            ->with('quiz')
+            ->get()
+            ->filter(fn($a) => $a->quiz && $a->quiz->grade === $academicYear)
+            ->map(fn($a) => [
+                'title' => $a->quiz->title,
+                'type' => 'Auto-Revision',
+                'marks' => $a->score,
+                'total' => 100,
+                'percentage' => (float) $a->score,
+                'date' => $a->submitted_at ? $a->submitted_at->format('Y-m-d') : $a->created_at->format('Y-m-d')
+            ]);
+
+        $allQuizzes = $manualQuizResults->concat($autoQuizAttempts)->sortByDesc('date');
+
+        // 5. Fetch Available Quizzes and Exams for the student
+        $availableQuizzes = AdminQuiz::where('grade', $academicYear)
+            ->where('start_datetime', '<=', now())
+            ->where('end_datetime', '>=', now())
+            ->whereDoesntHave('attempts', function ($query) use ($student) {
+                $query->where('user_id', $student->code);
+            })
+            ->withCount('questions')
+            ->orderBy('start_datetime')
+            ->get();
+
+        $availableExams = AdminExam::where('grade', $academicYear)
+            ->where('start_datetime', '<=', now())
+            ->where('end_datetime', '>=', now())
+            ->whereDoesntHave('attempts', function ($query) use ($student) {
+                $query->where('user_id', $student->code);
+            })
+            ->withCount('questions')
+            ->orderBy('start_datetime')
+            ->get();
+
+        // 6. Fetch Courses
+        $courses = Course::withCount('lessons')
+            ->where('academicYear', $academicYear)
+            ->get();
 
         $attendances = $student->attendances()
             ->where('academicYear', $academicYear)
             ->get();
 
-        $attendance = [
+        $attendanceData = [
             'total' => $attendances->count(),
             'present' => $attendances->where('status', 'present')->count(),
             'absent' => $attendances->where('status', 'absent')->count(),
-            'attendance_percentage' => $attendances->count() > 0
+            'percentage' => $attendances->count() > 0
                 ? round(($attendances->where('status', 'present')->count() / $attendances->count()) * 100, 2)
                 : 0,
-            'recent' => $attendances
-                ->sortByDesc('created_at')
-                ->take(5)
-                ->map(fn($att) => [
-                    'date' => $att->date->format('Y-m-d'),
-                    'status' => $att->status,
-                    'subject' => $att->subject ?? 'N/A'
-                ])
+            'recent' => $attendances->sortByDesc('date')->take(5)->map(fn($att) => [
+                'date' => $att->date->format('Y-m-d'),
+                'status' => $att->status,
+                'subject' => $att->subject ?? 'General'
+            ])
         ];
 
-        // Prepare chart data
         $chartData = [
-            'exam' => [
-                'labels' => $examResults->pluck('exam')->toArray(),
-                'data' => $examResults->map(function ($exam) {
-                    return round($exam['percentage']);
-                })->toArray(),
-                'backgroundColors' => array_fill(0, count($examResults), '#4f46e5')
+            'manualExam' => [
+                'labels' => $manualExamResults->values()->pluck('title')->toArray(),
+                'data' => $manualExamResults->values()->pluck('percentage')->map(fn($p) => round($p))->toArray(),
             ],
-            'quiz' => [
-                'labels' => $quizResults->pluck('quiz')->toArray(),
-                'data' => $quizResults->map(function ($quiz) {
-                    return round($quiz['percentage']);
-                })->toArray(),
-                'backgroundColors' => array_fill(0, count($quizResults), '#10b981')
+            'autoExam' => [
+                'labels' => $autoExamAttempts->values()->pluck('title')->toArray(),
+                'data' => $autoExamAttempts->values()->pluck('percentage')->map(fn($p) => round($p))->toArray(),
+            ],
+            'manualQuiz' => [
+                'labels' => $manualQuizResults->values()->pluck('title')->toArray(),
+                'data' => $manualQuizResults->values()->pluck('percentage')->map(fn($p) => round($p))->toArray(),
+            ],
+            'autoQuiz' => [
+                'labels' => $autoQuizAttempts->values()->pluck('title')->toArray(),
+                'data' => $autoQuizAttempts->values()->pluck('percentage')->map(fn($p) => round($p))->toArray(),
             ],
             'attendance' => [
                 'labels' => ['Present', 'Absent'],
-                'data' => [
-                    (int)($attendance['present'] ?? 0),
-                    (int)($attendance['absent'] ?? 0)
-                ],
+                'data' => [(int)$attendanceData['present'], (int)$attendanceData['absent']],
                 'backgroundColors' => ['#10b981', '#ef4444']
             ]
         ];
 
-        // Load appropriate view based on locale
-        $viewName = 'student.dashboard';
-        if (app()->getLocale() === 'ar') {
-            $viewName = 'ar.student.dashboard';
-        }
-        
-        return view($viewName, [
+        return $this->localeView('student.dashboard', [
             'student' => $student,
-            'examResults' => $examResults,
-            'quizResults' => $quizResults,
-            'attendance' => $attendance,
+            'exams' => $allExams,
+            'quizzes' => $allQuizzes,
+            'availableQuizzes' => $availableQuizzes,
+            'availableExams' => $availableExams,
+            'courses' => $courses,
+            'attendance' => $attendanceData,
             'chartData' => $chartData,
             'academicYear' => $academicYear
         ]);
     }
-
-    private function createExamChart($examResults)
-    {
-        if ($examResults->isEmpty()) {
-            return null;
-        }
-
-        $labels = $examResults->pluck('exam');
-        $scores = $examResults->pluck('percentage');
-
-        $chart = new Chart();
-        $chart->labels($labels);
-        $chart->dataset('Score', 'bar', $scores)
-            ->color('#4f46e5')
-            ->backgroundColor('#4f46e5')
-            ->fill(false);
-
-        // Add explicit scale configuration
-        $chart->options([
-            'scales' => [
-                'y' => [
-                    'beginAtZero' => true,
-                    'max' => 100,
-                    'title' => ['display' => true, 'text' => 'Score (%)']
-                ],
-                'x' => [
-                    'title' => ['display' => true, 'text' => 'Exams']
-                ]
-            ]
-        ]);
-
-        return $chart;
-    }
-
-    private function createQuizChart($quizResults)
-    {
-        if ($quizResults->isEmpty()) {
-            return null;
-        }
-
-        $labels = $quizResults->pluck('quiz');
-        $scores = $quizResults->pluck('percentage');
-
-        $chart = new Chart();
-        $chart->labels($labels);
-        $chart->dataset('Score', 'line', $scores)
-            ->color('#10b981')
-            ->backgroundColor('rgba(16, 185, 129, 0.1)')
-            ->fill(true);
-
-        // Add explicit scale configuration
-        $chart->options([
-            'scales' => [
-                'y' => [
-                    'beginAtZero' => true,
-                    'max' => 100,
-                    'title' => ['display' => true, 'text' => 'Score (%)']
-                ],
-                'x' => [
-                    'title' => ['display' => true, 'text' => 'Quizzes']
-                ]
-            ]
-        ]);
-
-        return $chart;
-    }
-
-    // Removed createAttendanceChart method as we're handling it in the view now
 }

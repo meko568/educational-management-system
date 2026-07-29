@@ -8,25 +8,52 @@ use App\Models\AdminQuizChoice;
 use App\Models\Quiz;
 use Illuminate\Http\Request;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
+use Illuminate\Support\Facades\DB;
 
 class AdminQuizController extends Controller
 {
     public function index()
     {
         $quizzes = AdminQuiz::with('creator')->orderBy('created_at', 'desc')->get();
-        return view('admin.quizzes.admin-index', compact('quizzes'));
+        return $this->localeView('admin.quizzes.admin-index', compact('quizzes'));
     }
 
     public function create(Request $request)
     {
         $selectedGrade = $request->query('grade', 'primary1');
-        return view('admin.quizzes.admin-create', compact('selectedGrade'));
+        $suggestedDates = $this->getSuggestedDates($selectedGrade);
+        return $this->localeView('admin.quizzes.admin-create', compact('selectedGrade', 'suggestedDates'));
+    }
+
+    private function getSuggestedDates($grade)
+    {
+        $schedule = \App\Models\GradeSchedule::where('grade', $grade)->first();
+        $days = $schedule ? $schedule->days : [];
+
+        if (empty($days)) return [];
+
+        $suggestedDates = [];
+        $date = now();
+        $count = 0;
+
+        // Loop through the next 60 days but stop once we find 8 matches
+        for ($d = $date->copy(); $count < 8 && $d->diffInDays($date) < 60; $d->addDay()) {
+            if (in_array($d->format('l'), $days)) {
+                $suggestedDates[] = [
+                    'date' => $d->format('Y-m-d'),
+                    'label' => $d->format('l, M d')
+                ];
+                $count++;
+            }
+        }
+
+        return $suggestedDates;
     }
 
     public function store(Request $request)
     {
         $selectedGrade = $request->query('grade', 'primary1');
-        
+
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -37,38 +64,27 @@ class AdminQuizController extends Controller
 
         $quiz = AdminQuiz::create([
             'title' => $validated['title'],
-            'description' => $validated['description'],
+            'description' => $validated['description'] ?? null,
             'duration_minutes' => $validated['duration_minutes'],
             'start_datetime' => $validated['start_datetime'],
             'end_datetime' => $validated['end_datetime'],
             'grade' => trim($selectedGrade),
-            'created_by' => auth()->id(),
-        ]);
-
-        // Also create entry in old Quiz system for compatibility
-        $oldQuiz = Quiz::create([
-            'title' => $validated['title'],
-            'description' => $validated['description'],
-            'quiz_date' => $validated['start_datetime'],
-            'total_marks' => 0, // Will be updated when questions are added
-            'status' => 'active',
-            'created_by' => auth()->id(),
-            'admin_quiz_id' => $quiz->id,
+            'created_by' => auth()->user()->code,
         ]);
 
         return redirect()->route('admin.quizzes.questions.create', $quiz->id)
-            ->with('success', 'Quiz created successfully. Now add questions.');
+            ->with('success', 'Quiz created. Now add questions.');
     }
 
     public function show(AdminQuiz $quiz)
     {
         $quiz->load('questions.choices', 'attempts.student');
-        return view('admin.quizzes.admin-show', compact('quiz'));
+        return $this->localeView('admin.quizzes.admin-show', compact('quiz'));
     }
 
     public function edit(Request $request, AdminQuiz $quiz)
     {
-        return view('admin.quizzes.admin-edit', compact('quiz'));
+        return $this->localeView('admin.quizzes.admin-edit', compact('quiz'));
     }
 
     public function update(Request $request, AdminQuiz $quiz)
@@ -81,28 +97,22 @@ class AdminQuizController extends Controller
             'end_datetime' => 'required|date|after:start_datetime',
         ]);
 
-        $quiz->update([
-            'title' => $validated['title'],
-            'description' => $validated['description'],
-            'duration_minutes' => $validated['duration_minutes'],
-            'start_datetime' => $validated['start_datetime'],
-            'end_datetime' => $validated['end_datetime'],
-        ]);
+        $quiz->update($validated);
 
         return redirect()->route('admin.quizzes.index')
-            ->with('success', 'Quiz updated successfully.');
+            ->with('success', 'Quiz updated.');
     }
 
     public function destroy(AdminQuiz $quiz)
     {
         $quiz->delete();
         return redirect()->route('admin.quizzes.index')
-            ->with('success', 'Quiz deleted successfully.');
+            ->with('success', 'Quiz deleted.');
     }
 
     public function createQuestions(AdminQuiz $quiz)
     {
-        return view('admin.quizzes.questions.create', compact('quiz'));
+        return $this->localeView('admin.quizzes.questions.create', compact('quiz'));
     }
 
     public function storeQuestions(Request $request, AdminQuiz $quiz)
@@ -110,52 +120,53 @@ class AdminQuizController extends Controller
         $validated = $request->validate([
             'questions' => 'required|array|min:1',
             'questions.*.question_text' => 'required|string',
-            'questions.*.question_image' => 'nullable|image|max:5120',
             'questions.*.type' => 'required|in:multiple_choice,true_false,fill_blank',
             'questions.*.points' => 'required|integer|min:1',
-            'questions.*.choices' => 'required_if:questions.*.type,multiple_choice|array',
-            'questions.*.choices.*.choice_text' => 'required_if:questions.*.type,multiple_choice|string',
-            'questions.*.correct_choice' => 'required_if:questions.*.type,multiple_choice|integer',
+            'questions.*.choices' => 'array',
+            'questions.*.choices.*.choice_text' => 'string',
+            'questions.*.correct_choice' => 'nullable|integer',
+            'questions.*.correct_answer_tf' => 'nullable|in:true,false',
+            'questions.*.correct_answer_text' => 'nullable|string',
         ]);
 
-        foreach ($validated['questions'] as $index => $questionData) {
-            $imagePath = null;
-            if (isset($request->file('questions')[$index]['question_image'])) {
-                $uploadedFile = Cloudinary::upload($request->file('questions')[$index]['question_image']->getRealPath());
-                $imagePath = $uploadedFile->getSecurePath();
-            }
+        DB::transaction(function () use ($request, $quiz, $validated) {
+            $quiz->questions()->delete();
 
-            $question = AdminQuizQuestion::create([
-                'quiz_id' => $quiz->id,
-                'question_text' => $questionData['question_text'],
-                'question_image' => $imagePath,
-                'order' => $index + 1,
-                'points' => $questionData['points'],
-                'type' => $questionData['type'],
-            ]);
+            foreach ($validated['questions'] as $index => $qData) {
+                $imagePath = null;
+                if ($request->hasFile("questions.{$index}.question_image")) {
+                    $res = Cloudinary::upload($request->file("questions.{$index}.question_image")->getRealPath());
+                    $imagePath = $res->getSecurePath();
+                }
 
-            if ($questionData['type'] === 'multiple_choice' && isset($questionData['choices'])) {
-                foreach ($questionData['choices'] as $choiceIndex => $choiceData) {
-                    $isCorrect = ($choiceIndex == $questionData['correct_choice']);
-                    AdminQuizChoice::create([
-                        'question_id' => $question->id,
-                        'choice_text' => $choiceData['choice_text'],
-                        'is_correct' => $isCorrect,
-                        'order' => $choiceIndex + 1,
-                    ]);
+                $question = AdminQuizQuestion::create([
+                    'quiz_id' => $quiz->id,
+                    'question_text' => $qData['question_text'],
+                    'question_image' => $imagePath,
+                    'order' => $index + 1,
+                    'points' => $qData['points'],
+                    'type' => $qData['type'],
+                ]);
+
+                if ($qData['type'] === 'multiple_choice' && !empty($qData['choices'])) {
+                    foreach ($qData['choices'] as $cIdx => $cData) {
+                        AdminQuizChoice::create([
+                            'question_id' => $question->id,
+                            'choice_text' => $cData['choice_text'],
+                            'is_correct' => ($cIdx == ($qData['correct_choice'] ?? -1)),
+                            'order' => $cIdx + 1,
+                        ]);
+                    }
+                } elseif ($qData['type'] === 'true_false') {
+                    AdminQuizChoice::create(['question_id' => $question->id, 'choice_text' => 'True', 'is_correct' => ($qData['correct_answer_tf'] === 'true'), 'order' => 1]);
+                    AdminQuizChoice::create(['question_id' => $question->id, 'choice_text' => 'False', 'is_correct' => ($qData['correct_answer_tf'] === 'false'), 'order' => 2]);
+                } elseif ($qData['type'] === 'fill_blank') {
+                    AdminQuizChoice::create(['question_id' => $question->id, 'choice_text' => $qData['correct_answer_text'] ?? '', 'is_correct' => true, 'order' => 1]);
                 }
             }
-        }
+        });
 
-        // Update total_marks in old Quiz system
-        $totalPoints = $quiz->questions()->sum('points');
-        $oldQuiz = Quiz::where('admin_quiz_id', $quiz->id)->first();
-        
-        if ($oldQuiz) {
-            $oldQuiz->update(['total_marks' => $totalPoints]);
-        }
-
-        return redirect()->route('admin.quizzes.show', $quiz->id)
-            ->with('success', 'Questions added successfully.');
+        return redirect()->route('admin.quizzes.index')
+            ->with('success', 'Questions saved successfully.');
     }
 }

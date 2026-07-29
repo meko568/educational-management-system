@@ -35,7 +35,8 @@ class AttendanceController extends Controller
         $students = Student::where('role', '!=', 'admin')
             ->where('academicYear', $academicYear)
             ->get();
-        return $this->localeView('admin.attendances.create', compact('students', 'academicYear'));
+        $schedules = \App\Models\GradeSchedule::where('grade', $academicYear)->first();
+        return $this->localeView('admin.attendances.create', compact('students', 'academicYear', 'schedules'));
     }
 
     /**
@@ -59,6 +60,9 @@ class AttendanceController extends Controller
             ->first();
 
         if ($existingAttendance) {
+            if ($request->wantsJson()) {
+                return response()->json(['message' => 'Attendance already marked for this student on this date.'], 422);
+            }
             return redirect()->back()
                 ->withInput()
                 ->with('error', 'Attendance already marked for this student on this date.');
@@ -66,6 +70,10 @@ class AttendanceController extends Controller
 
         $validated['academicYear'] = $academicYear;
         Attendance::create($validated);
+
+        if ($request->wantsJson()) {
+            return response()->json(['status' => 'success']);
+        }
 
         return redirect()->route('admin.attendances.index', ['academicYear' => $academicYear])
             ->with('success', 'Attendance marked successfully.');

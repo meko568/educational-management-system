@@ -15,6 +15,7 @@ class Quiz extends Model
      */
     protected $fillable = [
         'title',
+        'academicYear',
         'description',
         'exam_id',
         'total_marks',

@@ -34,6 +34,21 @@ class Student extends Authenticatable
     {
         return $this->hasMany(QuizResult::class, 'student_code', 'code');
     }
+
+    public function lessonProgress()
+    {
+        return $this->hasMany(LessonProgress::class, 'student_code', 'code');
+    }
+
+    public function adminExamAttempts()
+    {
+        return $this->hasMany(AdminExamAttempt::class, 'user_id', 'code');
+    }
+
+    public function adminQuizAttempts()
+    {
+        return $this->hasMany(AdminQuizAttempt::class, 'user_id', 'code');
+    }
     public function getPlainPasswordAttribute()
     {
         return $this->attributes['plain_password'] ?? null;
@@ -47,7 +62,6 @@ class Student extends Authenticatable
         'academicYear',
         'phone',
         'parent_phone',
-        'paid_at',
     ];
 
     /**
@@ -63,9 +77,13 @@ class Student extends Authenticatable
      */
     protected $casts = [
         'code' => 'integer',
-        'paid_at' => 'datetime',
         'password' => 'hashed'
     ];
+
+    public function payments(): HasMany
+    {
+        return $this->hasMany(Payment::class, 'student_code', 'code');
+    }
 
     /**
      * Get the exams created by this student.
@@ -109,32 +127,33 @@ class Student extends Authenticatable
     }
 
     /**
-     * Send the password reset notification.
+     * Check if the student has paid for a specific month and year.
      */
-
-    /**
-     * Check if the student's payment is still valid (not expired).
-     * Assumes paid_at + 1 month = subscription valid until.
-     */
-    public function hasValidSubscription(): bool
+    public function hasPaidForMonth($month, $year): bool
     {
-        if (!$this->paid_at) {
-            return false;
-        }
-
-        $expiryDate = $this->paid_at->copy()->addMonth();
-        return now()->lessThanOrEqualTo($expiryDate);
+        return $this->payments()->where('month', $month)->where('year', $year)->exists();
     }
 
     /**
-     * Get the subscription expiry date.
+     * Check if the student has valid subscription for CURRENT month.
+     */
+    public function hasValidSubscription(): bool
+    {
+        return $this->hasPaidForMonth(now()->month, now()->year);
+    }
+
+    /**
+     * Get the subscription expiry date based on latest payment.
      */
     public function getSubscriptionExpiryDate()
     {
-        if (!$this->paid_at) {
+        $latestPayment = $this->payments()->latest('paid_at')->first();
+
+        if (!$latestPayment) {
             return null;
         }
 
-        return $this->paid_at->copy()->addMonth();
+        // Return the last day of the month they paid for
+        return \Carbon\Carbon::create($latestPayment->year, $latestPayment->month, 1)->endOfMonth();
     }
 }

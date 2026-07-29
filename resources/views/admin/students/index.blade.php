@@ -1,196 +1,102 @@
-@extends('layouts.admin')
+<x-app-layout>
+    <div style="display: flex; flex-direction: column; gap: 2rem;">
+        <!-- Header -->
+        <div style="display: flex; flex-direction: column; gap: 1rem; justify-content: space-between; align-items: flex-start;" class="md:flex-row md:items-center">
+            <div>
+                <h1 style="font-size: 1.5rem; font-weight: 700; color: var(--text-main); margin: 0;">{{ __('messages.manage_students') }}</h1>
+                <p style="color: var(--text-muted); margin-top: 0.25rem; font-size: 0.875rem;">Manage and monitor all student profiles for {{ strtoupper($academicYear ?? 'primary1') }}</p>
+            </div>
 
-@section('content')
-<div class="py-12">
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-            <div class="p-6 bg-white border-b border-gray-200">
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-2xl font-semibold text-gray-800">Students Management</h2>
-                    <a href="{{ route('admin.students.create', ['academicYear' => isset($academicYear) ? $academicYear : 'primary1']) }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 active:bg-indigo-800 focus:outline-none focus:border-indigo-900 focus:ring ring-indigo-300 disabled:opacity-25 transition ease-in-out duration-150">
-                        Add New Student
-                    </a>
-                </div>
+            <a href="{{ route('admin.students.create', ['academicYear' => $academicYear ?? 'primary1']) }}"
+               style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1.5rem; background-color: #0d9488; color: white; border-radius: 0.75rem; font-weight: 800; font-size: 0.875rem; text-decoration: none; box-shadow: 0 10px 15px -3px rgba(13, 148, 136, 0.2);">
+                <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+                {{ __('messages.add_student') }}
+            </a>
+        </div>
 
-                @if(session('success'))
-                    <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6" role="alert">
-                        <div class="flex">
-                            <div class="py-1">
-                                <svg class="fill-current h-6 w-6 text-green-500 mr-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                                </svg>
-                            </div>
-                            <div>
-                                <p class="font-bold">Success</p>
-                                <p>{{ session('success') }}</p>
-                            </div>
-                        </div>
-                    </div>
-                @endif
-
-<div class="overflow-x-auto">
-    <table class="min-w-full divide-y divide-gray-200">
-        <thead class="bg-gray-50">
-            <tr>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student Code</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Password</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Academic Year</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-            </tr>
-        </thead>
-        <tbody class="bg-white divide-y divide-gray-200">
-            @forelse($students as $student)
-                @if($student->role != 'admin')
-                <tr>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $student->id }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm font-medium text-gray-900">{{ $student->name }}</div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-900">{{ $student->code }}</div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-900">
-                            <span class="font-mono bg-gray-100 px-2 py-1 rounded">{{ $student->plain_password ?? 'N/A' }}</span>
-                        </div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                            {{ ucfirst(str_replace('_', ' ', $student->academicYear)) }}
-                        </span>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="flex gap-4 items-center space-x-2">
-                            <!-- Show Button -->
-                            <a href="{{ route('admin.students.show', $student->code) }}" 
-                               class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                                <svg class="h-4 w-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                </svg>
-                                View
-                            </a>
-
-                            <!-- Edit Button -->
-                            <a href="{{ route('admin.students.edit', $student->code) }}" 
-                               class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                                <svg class="h-4 w-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                </svg>
-                                Edit
-                            </a>
-                            
-                            <!-- Payment Button -->
-                            <a href="{{ route('admin.students.payment', $student) }}" 
-                               class="inline-flex items-center px-4 py-2 mx-4 border border-transparent text-sm font-medium rounded-md shadow-sm {{ $student->paid_at && now()->diffInDays($student->paid_at) <= 30 ? 'bg-green-100 hover:bg-green-200 text-green-900 focus:ring-green-500' : 'bg-yellow-100 hover:bg-yellow-200 text-yellow-900 focus:ring-yellow-500' }} focus:outline-none focus:ring-2 focus:ring-offset-2 bg-green-100">
-                                <svg class="h-4 w-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 3v2m3-2v2m3-2v2m3-2v2m3 13h1a2 2 0 002-2V9.5a2 2 0 00-2-2H5.5a2 2 0 00-2 2v10a2 2 0 002 2h1m6-13h2m-6 5h8m-8 3h8m-8 3h6" />
-                                </svg>
-                                <span class="text-black">Payment</span>
-                            </a>
-                            
-                            <!-- Delete Button with Modal -->
-                            <div x-data="{ showModal: false }">
-                                <!-- Delete Button -->
-                                <button type="button" 
-                                        @click="showModal = true"
-                                        class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
-                                    <svg class="h-4 w-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                    </svg>
-                                    Delete
-                                </button>
-
-                                <!-- Modal -->
-                                <div x-show="showModal" 
-                                     class="fixed inset-0 z-50 overflow-y-auto" 
-                                     aria-labelledby="modal-title" 
-                                     role="dialog" 
-                                     aria-modal="true"
-                                     style="display: none;"
-                                     x-transition:opacity="300ms ease-out"
-                                     x-show.transition.opacity.duration.300ms="showModal"
-                                     x-cloak>
-                                    <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
-                                        <!-- Background overlay -->
-                                        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" 
-                                             aria-hidden="true"
-                                             x-show="showModal"
-                                             x-transition:opacity.duration.300
-                                             @click="showModal = false"></div>
-
-                                        <!-- Modal panel -->
-                                        <div class="relative w-full max-w-xl mx-auto my-8 bg-white rounded-lg shadow-xl transform transition-all"
-                                             x-show="showModal"
-                                             x-transition:opacity.duration.300
-                                             @click.away="showModal = false"
-                                             style="min-width: 300px;">
-                                            <div class="p-6">
-                                                <div class="flex flex-col sm:flex-row">
-                                                    <div class="flex-shrink-0 mx-auto sm:mx-0 sm:mr-4 mb-4 sm:mb-0">
-                                                        <div class="h-12 w-12 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
-                                                            <svg class="h-6 w-6 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                                                            </svg>
-                                                        </div>
-                                                    </div>
-                                                    <div class="text-center sm:text-left">
-                                                        <h3 class="text-lg font-medium text-gray-900 mb-2" id="modal-title">
-                                                            Delete Student
-                                                        </h3>
-                                                        <p class="text-sm text-gray-600">Are you sure you want to delete this student?</p>
-                                                    </div>
-                                                </div>
-                                                <div class="mt-6 flex flex-col-reverse sm:flex-row sm:justify-end gap-3">
-                                                    <button type="button"
-                                                            @click="showModal = false"
-                                                            class="w-full sm:w-auto justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                                                        Cancel
-                                                    </button>
-                                                    <form action="{{ route('admin.students.destroy', $student->code) }}" method="POST" class="w-full sm:w-auto">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit"
-                                                                class="w-full justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
-                                                            Delete
-                                                        </button>
-                                                    </form>
-                                                </div>
-                                            </div>
+        <!-- Students Table -->
+        <div class="card-custom" style="padding: 0; overflow: hidden;">
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; text-align: {{ app()->getLocale() === 'ar' ? 'right' : 'left' }}; font-size: 0.875rem;">
+                    <thead style="background-color: var(--bg-alt);">
+                        <tr style="border-bottom: 1px solid var(--border-color);">
+                            <th style="padding: 1rem 1.5rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">{{ __('messages.student_info') }}</th>
+                            <th style="padding: 1rem 1.5rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">{{ __('messages.access_credentials') }}</th>
+                            <th style="padding: 1rem 1.5rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">{{ __('messages.academic_year') }}</th>
+                            <th style="padding: 1rem 1.5rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">{{ __('messages.status') }}</th>
+                            <th style="padding: 1rem 1.5rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; text-align: {{ app()->getLocale() === 'ar' ? 'left' : 'right' }};">{{ __('messages.actions') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody style="background-color: var(--bg-card);">
+                        @forelse($students as $student)
+                            <tr style="border-bottom: 1px solid var(--border-color); transition: background-color 0.2s;">
+                                <td style="padding: 1rem 1.5rem;">
+                                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                        <div style="width: 2.5rem; height: 2.5rem; border-radius: 9999px; background-color: rgba(79, 70, 229, 0.1); color: #4f46e5; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.75rem; border: 1px solid rgba(79, 70, 229, 0.2);">
+                                            {{ substr($student->name, 0, 1) }}
+                                        </div>
+                                        <div>
+                                            <div style="font-weight: 700; color: var(--text-main);">{{ $student->name }}</div>
+                                            <div style="font-size: 0.75rem; color: var(--text-muted); font-family: monospace;">{{ $student->code }}</div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-                @endif
-            @empty
-                <tr>
-                    <td colspan="6" class="px-6 py-4 text-center text-sm text-gray-500">
-                        No students found.
-                    </td>
-                </tr>
-            @endforelse
-        </tbody>
-    </table>
-</div>
-@if($students->hasPages())
-    <div class="mt-4">
-        {{ $students->links() }}
-    </div>
-@endif
-
-                @if($students->hasPages())
-                    <div class="mt-4">
-                        {{ $students->links() }}
-                    </div>
-                @endif
+                                </td>
+                                <td style="padding: 1rem 1.5rem;">
+                                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <span style="font-size: 0.625rem; font-weight: 900; color: var(--text-muted); text-transform: uppercase; background-color: var(--bg-alt); padding: 0.125rem 0.375rem; border-radius: 0.25rem;">Pass:</span>
+                                        <span style="font-weight: 700; color: var(--text-main); font-family: monospace;">{{ $student->plain_password ?? 'N/A' }}</span>
+                                    </div>
+                                </td>
+                                <td style="padding: 1rem 1.5rem;">
+                                    <span style="padding: 0.25rem 0.625rem; background-color: rgba(20, 184, 166, 0.1); color: #14b8a6; border-radius: 0.5rem; font-size: 0.625rem; font-weight: 800; text-transform: uppercase;">
+                                        {{ str_replace('_', ' ', $student->academicYear) }}
+                                    </span>
+                                </td>
+                                <td style="padding: 1rem 1.5rem;">
+                                    @if($student->hasValidSubscription())
+                                        <span style="display: inline-flex; align-items: center; gap: 0.375rem; font-size: 0.75rem; font-weight: 700; color: #10b981;">
+                                            <span style="width: 0.5rem; height: 0.5rem; border-radius: 9999px; background-color: #10b981;"></span> {{ __('messages.active') }}
+                                        </span>
+                                    @else
+                                        <span style="display: inline-flex; align-items: center; gap: 0.375rem; font-size: 0.75rem; font-weight: 700; color: #f59e0b;">
+                                            <span style="width: 0.5rem; height: 0.5rem; border-radius: 9999px; background-color: #f59e0b;"></span> {{ __('messages.payment_due') }}
+                                        </span>
+                                    @endif
+                                </td>
+                                <td style="padding: 1rem 1.5rem; text-align: {{ app()->getLocale() === 'ar' ? 'left' : 'right' }};">
+                                    <div style="display: flex; align-items: center; justify-content: flex-end; gap: 0.5rem;">
+                                        <a href="{{ route('admin.students.show', $student->code) }}" style="padding: 0.5rem; color: var(--text-muted);" title="View">
+                                            <svg style="width: 1.125rem; height: 1.125rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                                        </a>
+                                        <a href="{{ route('admin.students.edit', $student->code) }}" style="padding: 0.5rem; color: #f59e0b;" title="Edit">
+                                            <svg style="width: 1.125rem; height: 1.125rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                                        </a>
+                                        <a href="{{ route('admin.students.payment', $student) }}" style="padding: 0.5rem; color: #14b8a6;" title="Payment">
+                                            <svg style="width: 1.125rem; height: 1.125rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 3v2m3-2v2m3-2v2m3-2v2m3 13h1a2 2 0 002-2V9.5a2 2 0 00-2-2H5.5a2 2 0 00-2 2v10a2 2 0 002 2h1m6-13h2m-6 5h8m-8 3h8m-8 3h6" /></svg>
+                                        </a>
+                                        <form action="{{ route('admin.students.destroy', $student->code) }}" method="POST" style="display: inline;" onsubmit="return confirm('Delete this student?');">
+                                            @csrf @method('DELETE')
+                                            <button type="submit" style="padding: 0.5rem; background: transparent; border: none; color: #ef4444; cursor: pointer;">
+                                                <svg style="width: 1.125rem; height: 1.125rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="5" style="padding: 4rem 1.5rem; text-align: center; color: var(--text-muted); font-style: italic;">No students found for this grade.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
             </div>
+
+            @if($students->hasPages())
+                <div style="padding: 1.25rem 1.5rem; background-color: var(--bg-alt); border-top: 1px solid var(--border-color);">
+                    {{ $students->links() }}
+                </div>
+            @endif
         </div>
     </div>
-</div>
-<script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
-@endsection
+</x-app-layout>

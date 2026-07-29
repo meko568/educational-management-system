@@ -1,125 +1,108 @@
-@extends('layouts.admin')
+<x-app-layout>
+    <div style="display: flex; flex-direction: column; gap: 2rem; max-width: 48rem; margin: 0 auto;">
+        <!-- Header -->
+        <div style="display: flex; flex-direction: column; gap: 1rem; justify-content: space-between; align-items: flex-start;" class="md:flex-row md:items-center">
+            <div>
+                <h1 style="font-size: 1.5rem; font-weight: 700; color: var(--text-main); margin: 0;">Payment Details</h1>
+                <p style="color: var(--text-muted); margin-top: 0.25rem; font-size: 0.875rem;">Manage subscription and payment status for {{ $student->name }}</p>
+            </div>
 
-@section('content')
-<div class="py-12">
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-            <div class="p-6 bg-white border-b border-gray-200">
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-2xl font-semibold text-gray-800">Payment Details - {{ $student->name }}</h2>
-                    <a href="{{ route('admin.students.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-800 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
-                        Back to Students
-                    </a>
+            <a href="{{ route('admin.students.index', ['academicYear' => $student->academicYear]) }}"
+               style="padding: 0.625rem 1.25rem; background-color: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 0.75rem; font-size: 0.875rem; font-weight: 700; text-decoration: none;">
+                {{ __('messages.back_to_list') }}
+            </a>
+        </div>
+
+        <!-- Student Summary Card -->
+        <div class="card-custom">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem;">
+                <div>
+                    <p style="font-size: 0.625rem; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin: 0;">{{ __('messages.name') }}</p>
+                    <p style="font-size: 1.125rem; font-weight: 700; color: var(--text-main); margin: 0.25rem 0 0 0;">{{ $student->name }}</p>
                 </div>
-
-                @if(session('success'))
-                    <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6" role="alert">
-                        <div class="flex">
-                            <div class="py-1">
-                                <svg class="fill-current h-6 w-6 text-green-500 mr-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                                </svg>
-                            </div>
-                            <div>
-                                <p class="font-bold">Success</p>
-                                <p>{{ session('success') }}</p>
-                            </div>
-                        </div>
-                    </div>
-                @endif
-
-                <div class="bg-white shadow overflow-hidden sm:rounded-lg">
-                    <div class="px-4 py-5 sm:px-6">
-                        <h3 class="text-lg leading-6 font-medium text-gray-900">
-                            Student Information
-                        </h3>
-                    </div>
-                    <div class="border-t border-gray-200">
-                        <dl>
-                            <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                <dt class="text-sm font-medium text-gray-500">Name</dt>
-                                <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{{ $student->name }}</dd>
-                            </div>
-                            <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                <dt class="text-sm font-medium text-gray-500">Student Code</dt>
-                                <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{{ $student->code }}</dd>
-                            </div>
-                            <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                <dt class="text-sm font-medium text-gray-500">Academic Year</dt>
-                                <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                    {{ ucfirst(str_replace('_', ' ', $student->academicYear)) }}
-                                </dd>
-                            </div>
-                            <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                <dt class="text-sm font-medium text-gray-500">Payment Status</dt>
-                                <dd class="mt-1 text-sm sm:mt-0 sm:col-span-2">
-                                    @if($student->paid_at)
-                                        @php
-                                            $paymentDate = \Carbon\Carbon::parse($student->paid_at);
-                                            $expiryDate = $paymentDate->copy()->addMonth(); // 1 month validity
-                                            $now = now();
-                                            $isExpired = $now->greaterThan($expiryDate);
-                                            $daysRemaining = $now->diffInDays($expiryDate, false);
-                                        @endphp
-                                        
-                                        @if($isExpired)
-                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
-                                                Payment Expired ({{ $expiryDate->format('M d, Y') }})
-                                            </span>
-                                        @else
-                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                                Paid ({{ $paymentDate->format('M d, Y') }})
-                                            </span>
-                                            <p class="mt-1 text-sm text-gray-500">
-                                                Expires in {{ $daysRemaining }} days ({{ $expiryDate->format('M d, Y') }})
-                                            </p>
-                                        @endif
-                                    @else
-                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
-                                            Not Paid
-                                        </span>
-                                    @endif
-                                </dd>
-                            </div>
-                        </dl>
-                    </div>
+                <div>
+                    <p style="font-size: 0.625rem; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin: 0;">{{ __('messages.code') }}</p>
+                    <p style="font-size: 1.125rem; font-weight: 700; color: var(--text-main); margin: 0.25rem 0 0 0; font-family: monospace;">{{ $student->code }}</p>
                 </div>
-
-                @php
-                    $isExpired = !$student->paid_at || 
-                              now()->greaterThan(\Carbon\Carbon::parse($student->paid_at)->addMonth());
-                @endphp
-                @if($isExpired)
-                    <div class="mt-6 bg-yellow-50 border-l-4 border-yellow-400 p-4">
-                        <div class="flex">
-                            <div class="flex-shrink-0">
-                                <svg class="h-5 w-5 text-yellow-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
-                                </svg>
-                            </div>
-                            <div class="ml-3
-                            ">
-                                <p class="text-sm text-yellow-700">
-                                    This student's payment is {{ $student->paid_at ? 'expired' : 'not recorded' }}. 
-                                    Please record the payment once received.
-                                </p>
-                                <div class="mt-4">
-                                    <form action="{{ route('admin.students.process-payment', $student) }}" method="POST" class="inline">
-                                        @csrf
-                                        <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                                            <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                                <path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 001.5 1.937v1.126a2 2 0 001.5 1.937v1.5a2 2 0 002 2h7a2 2 0 002-2v-1.5a2 2 0 001.5-1.937V11.94A2 2 0 0018 10V6a2 2 0 00-2-2H4zm2 2h8v4h-1V7a1 1 0 00-1-1H8a1 1 0 00-1 1v1H6V6zm0 5h8v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-1zm10 2.5v1a.5.5 0 01-.5.5h-11a.5.5 0 01-.5-.5v-1a.5.5 0 01.5-.5h11a.5.5 0 01.5.5z" clip-rule="evenodd" />
-                                            </svg>
-                                            Record Payment
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                @endif
+                <div>
+                    <p style="font-size: 0.625rem; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin: 0;">{{ __('messages.academic_year') }}</p>
+                    <p style="font-size: 1.125rem; font-weight: 700; color: var(--text-main); margin: 0.25rem 0 0 0;">{{ strtoupper(str_replace('_', ' ', $student->academicYear)) }}</p>
+                </div>
             </div>
         </div>
+
+        <!-- Payment Status Card -->
+        <div class="card-custom" style="display: flex; flex-direction: column; gap: 2rem;">
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <div style="width: 3rem; height: 3rem; background-color: rgba(16, 185, 129, 0.1); color: #10b981; border-radius: 0.75rem; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(16, 185, 129, 0.2);">
+                    <svg style="width: 1.5rem; height: 1.5rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 3v2m3-2v2m3-2v2m3-2v2m3 13h1a2 2 0 002-2V9.5a2 2 0 00-2-2H5.5a2 2 0 00-2 2v10a2 2 0 002 2h1m6-13h2m-6 5h8m-8 3h8m-8 3h6" /></svg>
+                </div>
+                <h3 style="font-size: 1.125rem; font-weight: 800; color: var(--text-main); margin: 0;">Current Payment Status</h3>
+            </div>
+
+            @if($latestPayment)
+                @php
+                    $paymentDate = $latestPayment->paid_at;
+                    $expiryDate = $paymentDate->copy()->addMonth();
+                    $now = now();
+                    $isExpired = $now->greaterThan($expiryDate);
+                    $daysRemaining = $now->diffInDays($expiryDate, false);
+                @endphp
+
+                <div style="padding: 2rem; border-radius: 1.5rem; border: 1px solid {{ $isExpired ? 'rgba(239, 68, 68, 0.2)' : 'rgba(16, 185, 129, 0.2)' }}; background-color: {{ $isExpired ? 'rgba(239, 68, 68, 0.05)' : 'rgba(16, 185, 129, 0.05)' }};">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem;">
+                        <span style="padding: 0.375rem 1rem; border-radius: 0.625rem; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; background-color: {{ $isExpired ? '#ef4444' : '#10b981' }}; color: white;">
+                            {{ $isExpired ? 'Expired' : 'Active' }}
+                        </span>
+                        <div style="text-align: right;">
+                            <p style="font-size: 0.625rem; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin: 0;">Last Payment ({{ date('F Y', mktime(0,0,0, $latestPayment->month, 1, $latestPayment->year)) }})</p>
+                            <p style="font-size: 0.875rem; font-weight: 700; color: var(--text-main); margin: 0.125rem 0 0 0;">Recorded: {{ $paymentDate->format('M d, Y') }}</p>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                        <p style="font-size: 0.875rem; color: var(--text-muted); margin: 0;">
+                            Subscription valid until: <span style="font-weight: 700; color: var(--text-main);">{{ $expiryDate->format('F d, Y') }}</span>
+                        </p>
+                        @if(!$isExpired)
+                            <div style="display: flex; align-items: center; gap: 0.5rem; margin-top: 0.5rem;">
+                                <div style="flex: 1; height: 0.5rem; background-color: var(--bg-alt); border-radius: 9999px; overflow: hidden;">
+                                    <div style="width: {{ max(0, min(100, ($daysRemaining / 30) * 100)) }}%; height: 100%; background-color: #10b981; border-radius: 9999px;"></div>
+                                </div>
+                                <span style="font-size: 0.75rem; font-weight: 700; color: #10b981;">{{ $daysRemaining }} days left</span>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            @else
+                <div style="padding: 3rem; border-radius: 1.5rem; border: 1px solid var(--border-color); background-color: var(--bg-alt); text-align: center;">
+                    <div style="width: 3.5rem; height: 3.5rem; background-color: rgba(234, 88, 12, 0.1); color: #ea580c; border-radius: 9999px; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem auto;">
+                        <svg style="width: 1.75rem; height: 1.75rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                    </div>
+                    <p style="color: var(--text-main); font-weight: 700; margin: 0;">No payment record found</p>
+                    <p style="font-size: 0.875rem; color: var(--text-muted); margin: 0.5rem 0 0 0;">This student currently has no access to course materials.</p>
+                </div>
+            @endif
+
+            @php
+                $canRecordNew = !$latestPayment || $latestPayment->paid_at->copy()->addDays(20)->isPast();
+            @endphp
+
+            @if($canRecordNew)
+                <div style="padding-top: 1rem;">
+                    <form action="{{ route('admin.students.process-payment', $student) }}" method="POST">
+                        @csrf
+                        <button type="submit" style="width: 100%; padding: 1rem; background-color: #4f46e5; color: white; border: none; border-radius: 1rem; font-weight: 800; font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.2); display: flex; align-items: center; justify-content: center; gap: 0.75rem;">
+                            <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            Record New Payment ({{ now()->format('F Y') }})
+                        </button>
+                    </form>
+                </div>
+            @else
+                <div style="text-align: center; padding: 1rem; background-color: var(--bg-alt); border-radius: 1rem;">
+                    <p style="font-size: 0.75rem; color: var(--text-muted); margin: 0; font-weight: 700;">A payment for this month was recently recorded. You can record the next one in a few weeks.</p>
+                </div>
+            @endif
+        </div>
     </div>
-</div>
-@endsection
+</x-app-layout>

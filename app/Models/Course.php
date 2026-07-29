@@ -15,8 +15,10 @@ class Course extends Model
         'description',
         'code',
         'academicYear',
+        'month',
+        'year',
     ];
-    
+
     /**
      * Scope a query to only include courses for a specific academic year.
      */

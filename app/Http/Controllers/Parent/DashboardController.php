@@ -22,13 +22,7 @@ class DashboardController extends Controller
             ->orderBy('code')
             ->get();
 
-        // Load appropriate view based on locale
-        $viewName = 'parent.dashboard';
-        if (app()->getLocale() === 'ar') {
-            $viewName = 'ar.parent.dashboard';
-        }
-        
-        return view($viewName, compact('parent', 'sons'));
+        return $this->localeView('parent.dashboard', compact('parent', 'sons'));
     }
 
     public function showSon(Request $request, Student $student): View
@@ -117,13 +111,7 @@ class DashboardController extends Controller
             ]
         ];
 
-        // Load appropriate view based on locale
-        $viewName = 'parent.son-dashboard';
-        if (app()->getLocale() === 'ar') {
-            $viewName = 'ar.parent.son-dashboard';
-        }
-        
-        return view($viewName, [
+        return $this->localeView('parent.son-dashboard', [
             'parent' => $parent,
             'student' => $student,
             'examResults' => $examResults,

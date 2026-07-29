@@ -20,7 +20,6 @@ return new class extends Migration
             $table->string('academicYear');
             $table->string('phone')->nullable();
             $table->string('parent_phone')->nullable();
-            $table->timestamp('paid_at')->nullable();
             $table->string('role')->default('student');
             $table->rememberToken();
             $table->timestamps();

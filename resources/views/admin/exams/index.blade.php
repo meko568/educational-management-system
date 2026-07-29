@@ -1,117 +1,96 @@
-@extends('layouts.admin')
+<x-app-layout>
+    <div style="display: flex; flex-direction: column; gap: 2rem;">
+        <!-- Header -->
+        <div style="display: flex; flex-direction: column; gap: 1rem; justify-content: space-between; align-items: flex-start;" class="md:flex-row md:items-center">
+            <div>
+                <h1 style="font-size: 1.5rem; font-weight: 700; color: var(--text-main); margin: 0;">{{ __('Manual Exams Management') }}</h1>
+                <p style="color: var(--text-muted); margin-top: 0.25rem; font-size: 0.875rem;">Record and manage offline exam results for {{ strtoupper($academicYear ?? 'primary1') }}</p>
+            </div>
 
-@section('content')
-<div class="py-12">
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-            <div class="p-6 bg-white border-b border-gray-200">
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-2xl font-semibold text-gray-800">Exams Management</h2>
-                    <a href="{{ route('admin.exams.create', ['academicYear' => isset($academicYear) ? $academicYear : 'primary1']) }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 active:bg-indigo-800 focus:outline-none focus:border-indigo-900 focus:ring ring-indigo-300 disabled:opacity-25 transition ease-in-out duration-150">
-                        Create Exam
-                    </a>
-                </div>
+            <a href="{{ route('admin.manual-exams.create', ['academicYear' => $academicYear ?? 'primary1']) }}"
+               style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1.5rem; background-color: #f59e0b; color: white; border-radius: 0.75rem; font-weight: 800; font-size: 0.875rem; text-decoration: none; box-shadow: 0 10px 15px -3px rgba(245, 158, 11, 0.2);">
+                <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                Create Exam
+            </a>
+        </div>
 
-                @if(session('success'))
-                    <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6" role="alert">
-                        <div class="flex">
-                            <div class="py-1">
-                                <svg class="fill-current h-6 w-6 text-green-500 mr-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                                </svg>
-                            </div>
-                            <div>
-                                <p class="font-bold">Success</p>
-                                <p>{{ session('success') }}</p>
-                            </div>
-                        </div>
-                    </div>
-                @endif
-
-                <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Marks</th>
-
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created By</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+        <!-- Content -->
+        <div class="card-custom" style="padding: 0; overflow: hidden;">
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; text-align: {{ app()->getLocale() === 'ar' ? 'right' : 'left' }}; font-size: 0.875rem;">
+                    <thead style="background-color: var(--bg-alt);">
+                        <tr style="border-bottom: 1px solid var(--border-color);">
+                            <th style="padding: 1rem 1.5rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Exam Title</th>
+                            <th style="padding: 1rem 1.5rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Exam Date</th>
+                            <th style="padding: 1rem 1.5rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; text-align: center;">Max Marks</th>
+                            <th style="padding: 1rem 1.5rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; text-align: center;">Status</th>
+                            <th style="padding: 1rem 1.5rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; text-align: {{ app()->getLocale() === 'ar' ? 'left' : 'right' }};">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody style="background-color: var(--bg-card);">
+                        @forelse($exams as $exam)
+                            <tr style="border-bottom: 1px solid var(--border-color); transition: background-color 0.2s;">
+                                <td style="padding: 1.25rem 1.5rem;">
+                                    <div style="display: flex; align-items: center; gap: 1rem;">
+                                        <div style="width: 2.75rem; height: 2.75rem; background-color: rgba(245, 158, 11, 0.1); color: #f59e0b; border-radius: 0.75rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                            <svg style="width: 1.5rem; height: 1.5rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                                        </div>
+                                        <div style="font-weight: 700; color: var(--text-main);">{{ $exam->title }}</div>
+                                    </div>
+                                </td>
+                                <td style="padding: 1.25rem 1.5rem; color: var(--text-main); font-weight: 500;">
+                                    {{ $exam->exam_date->format('M d, Y') }}
+                                </td>
+                                <td style="padding: 1.25rem 1.5rem; text-align: center;">
+                                    <span style="padding: 0.25rem 0.625rem; background-color: var(--bg-alt); border: 1px solid var(--border-color); border-radius: 0.5rem; font-size: 0.625rem; font-weight: 800; color: var(--text-main);">
+                                        {{ $exam->total_marks }}
+                                    </span>
+                                </td>
+                                <td style="padding: 1.25rem 1.5rem; text-align: center;">
+                                    @php
+                                        $cls = match($exam->status) {
+                                            'draft' => 'background-color: var(--bg-alt); color: var(--text-muted); border: 1px solid var(--border-color);',
+                                            'scheduled' => 'background-color: rgba(59, 130, 246, 0.1); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.2);',
+                                            'completed' => 'background-color: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.2);',
+                                            default => 'background-color: var(--bg-alt); color: var(--text-muted);'
+                                        };
+                                    @endphp
+                                    <span style="padding: 0.25rem 0.75rem; border-radius: 0.5rem; font-size: 0.625rem; font-weight: 800; text-transform: uppercase; {{ $cls }}">
+                                        {{ str_replace('_', ' ', $exam->status) }}
+                                    </span>
+                                </td>
+                                <td style="padding: 1.25rem 1.5rem; text-align: {{ app()->getLocale() === 'ar' ? 'left' : 'right' }};">
+                                    <div style="display: flex; align-items: center; justify-content: flex-end; gap: 0.5rem;">
+                                        <a href="{{ route('admin.manual-exams.show', $exam->id) }}" style="display: flex; align-items: center; gap: 0.375rem; padding: 0.4rem 0.75rem; background-color: rgba(79, 70, 229, 0.1); color: #4f46e5; border-radius: 0.5rem; text-decoration: none; font-size: 0.75rem; font-weight: 700;">
+                                            <svg style="width: 1rem; height: 1rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                                            Results
+                                        </a>
+                                        <a href="{{ route('admin.manual-exams.edit', $exam->id) }}" style="padding: 0.5rem; color: #f59e0b;" title="Edit">
+                                            <svg style="width: 1.125rem; height: 1.125rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                                        </a>
+                                        <form action="{{ route('admin.manual-exams.destroy', $exam->id) }}" method="POST" style="display: inline;" onsubmit="return confirm('Delete this manual exam record?')">
+                                            @csrf @method('DELETE')
+                                            <button type="submit" style="padding: 0.5rem; background: transparent; border: none; color: #ef4444; cursor: pointer;">
+                                                <svg style="width: 1.125rem; height: 1.125rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
-                            @forelse($exams as $exam)
-                                <tr>
-                                    <td class="px-6 py-4">
-                                        <div class="text-sm font-medium text-gray-900">{{ $exam->title }}</div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="text-sm text-gray-900">{{ $exam->exam_date->format('Y-m-d') }}</div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="text-sm text-gray-900">{{ $exam->total_marks }}</div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
+                        @empty
+                            <tr>
+                                <td colspan="5" style="padding: 5rem 1.5rem; text-align: center; color: var(--text-muted); font-style: italic;">No manual exams found for this period.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
 
-                                        <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                            @if($exam->status === 'draft') bg-gray-100 text-gray-800
-                                            @elseif($exam->status === 'scheduled') bg-blue-100 text-blue-800
-                                            @elseif($exam->status === 'in_progress') bg-yellow-100 text-yellow-800
-                                            @elseif($exam->status === 'completed') bg-green-100 text-green-800
-                                            @else bg-red-100 text-red-800
-                                            @endif">
-                                            {{ ucfirst(str_replace('_', ' ', $exam->status)) }}
-                                        </span>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                        {{ $exam->creator->name ?? 'N/A' }}
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm space-x-2">
-                                        <a href="{{ route('admin.exams.show', $exam->id) }}" 
-                                           class="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700">
-                                            View & Record Results
-                                        </a>
-                                        <a href="{{ route('admin.exams.edit', $exam->id) }}" 
-                                           class="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700">
-                                            Edit
-                                        </a>
-                                        <button type="button" onclick="confirmDelete('{{ route('admin.exams.destroy', $exam->id) }}')"
-                                                class="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700">
-                                            Delete
-                                        </button>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="7" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
-                                        No exams found. <a href="{{ route('admin.exams.create') }}" class="text-indigo-600 hover:text-indigo-900">Create one</a>
-                                    </td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="mt-4">
+            @if($exams->hasPages())
+                <div style="padding: 1.25rem 1.5rem; background-color: var(--bg-alt); border-top: 1px solid var(--border-color);">
                     {{ $exams->links() }}
                 </div>
-            </div>
+            @endif
         </div>
     </div>
-</div>
-
-<script>
-function confirmDelete(url) {
-    if (confirm('Are you sure you want to delete this exam?')) {
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = url;
-        form.innerHTML = '@csrf @method("DELETE")';
-        document.body.appendChild(form);
-        form.submit();
-    }
-}
-</script>
-@endsection
+</x-app-layout>
