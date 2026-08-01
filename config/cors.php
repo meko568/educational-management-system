@@ -19,7 +19,7 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['*'],
+    'allowed_origins' => ['https://management-system.osc-fr1.scalingo.io'],
 
     'allowed_origins_patterns' => [],
 

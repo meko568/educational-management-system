@@ -62,6 +62,7 @@ class Student extends Authenticatable
         'academicYear',
         'phone',
         'parent_phone',
+        'role',
     ];
 
     /**
