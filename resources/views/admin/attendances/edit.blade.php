@@ -61,7 +61,7 @@
                        style="flex: 1; padding: 1rem; background-color: var(--bg-alt); color: var(--text-muted); border: 1px solid var(--border-color); border-radius: 1rem; font-weight: 700; font-size: 0.875rem; text-decoration: none; text-align: center; text-transform: uppercase;">
                         {{ __('messages.cancel') }}
                     </a>
-                    <button type="submit" style="flex: 2; padding: 1rem; background-color: #4f46e5; color: white; border: none; border-radius: 1rem; font-weight: 800; font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.2);">
+                    <button type="submit" style="flex: 2; padding: 1rem; background-color: #b5501f; color: white; border: none; border-radius: 1rem; font-weight: 800; font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.2);">
                         Update Record
                     </button>
                 </div>

@@ -19,6 +19,7 @@ class QuizController extends Controller
     {
         // Get academic year from URL parameter or session or default
         $academicYear = $request->query('academicYear') ?? session('selectedAcademicYear', 'primary1');
+        session(['selectedAcademicYear' => $academicYear]);
 
         // Filter exams by academic year and status
         $exams = Exam::where('status', '!=', 'cancelled')
@@ -51,6 +52,8 @@ class QuizController extends Controller
     public function create(Request $request)
     {
         $academicYear = $request->query('academicYear') ?? session('selectedAcademicYear', 'primary1');
+        session(['selectedAcademicYear' => $academicYear]);
+
         $exams = Exam::where('status', '!=', 'cancelled')
             ->where('academicYear', $academicYear)
             ->get();
@@ -97,12 +100,12 @@ class QuizController extends Controller
     public function show(Request $request, Quiz $quiz)
     {
         $academicYear = $request->query('academicYear') ?? $quiz->academicYear ?? session('selectedAcademicYear', 'primary1');
-        
+
         // Store the academic year in the session
         if ($academicYear) {
             session(['selectedAcademicYear' => $academicYear]);
         }
-        
+
         $quiz->load(['exam', 'creator']);
         $students = Student::where('role', '!=', 'admin')
             ->where('academicYear', $academicYear)

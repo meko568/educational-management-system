@@ -37,7 +37,7 @@
                     ['label' => __('messages.manual_quizzes'), 'value' => $totalQuizzes, 'route' => 'admin.manual-quizzes.index', 'params' => ['academicYear' => $academicYear], 'color' => 'orange', 'icon' => 'M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z'],
                     ['label' => __('messages.auto_exams'), 'value' => $totalAutoExams, 'route' => 'admin.exams.index', 'params' => [], 'color' => 'pink', 'icon' => 'M13 10V3L4 14h7v7l9-11h-7z'],
                     ['label' => __('messages.auto_quizzes'), 'value' => $totalAutoQuizzes, 'route' => 'admin.quizzes.index', 'params' => [], 'color' => 'teal', 'icon' => 'M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.183.445l-1.676 1.189c-.643.456-1.191.135-1.191-.652V5c0-.787.548-1.108 1.191-.652l1.676 1.189a2 2 0 001.183.445l1.933-.092a6 6 0 013.86.517l.318.158a6 6 0 003.86.517l2.387-.477a2 2 0 011.022.547l.572.572z'],
-                    ['label' => 'Schedules', 'value' => $totalSchedules, 'route' => 'admin.schedules.index', 'params' => [], 'color' => 'blue', 'icon' => 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z'],
+                    ['label' => __('messages.schedules'), 'value' => $totalSchedules, 'route' => 'admin.schedules.index', 'params' => [], 'color' => 'blue', 'icon' => 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z'],
                 ];
 @endphp
 
@@ -87,7 +87,7 @@
                     @foreach($courses as $course)
                         <div class="card-custom" style="display: flex; flex-direction: column; gap: 1.5rem; position: relative;">
                             <div style="display: flex; align-items: flex-start; justify-content: space-between;">
-                                <div style="width: 3rem; height: 3rem; background-color: rgba(79, 70, 229, 0.1); color: #4f46e5; border-radius: 0.75rem; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(79, 70, 229, 0.2);">
+                                <div style="width: 3rem; height: 3rem; background-color: rgba(79, 70, 229, 0.1); color: #b5501f; border-radius: 0.75rem; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(79, 70, 229, 0.2);">
                                     <svg style="width: 1.5rem; height: 1.5rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
                                 </div>
                                 <div style="display: flex; gap: 0.5rem;">
@@ -114,15 +114,11 @@
         </div>
 
         <!-- Charts Grid -->
-        <div style="display: grid; grid-template-columns: 1fr; gap: 2rem;" class="lg:grid-cols-2">
+        <div style="display: grid; grid-template-columns: 1fr; gap: 2rem;" class="md:grid-cols-2 lg:grid-cols-2">
+            <!-- Exams Section -->
             <div class="card-custom">
                 <h2 style="font-size: 1.125rem; font-weight: 800; color: var(--text-main); margin-bottom: 2rem; text-transform: uppercase; letter-spacing: 0.05em;">{{ __('messages.auto_revision_exam_stats') }}</h2>
                 <div style="height: 320px;"><canvas id="autoRevisionExamStatsChart"></canvas></div>
-            </div>
-
-            <div class="card-custom">
-                <h2 style="font-size: 1.125rem; font-weight: 800; color: var(--text-main); margin-bottom: 2rem; text-transform: uppercase; letter-spacing: 0.05em;">{{ __('messages.auto_revision_quiz_stats') }}</h2>
-                <div style="height: 320px;"><canvas id="autoRevisionQuizStatsChart"></canvas></div>
             </div>
 
             <div class="card-custom">
@@ -130,12 +126,19 @@
                 <div style="height: 320px;"><canvas id="examStatsChart"></canvas></div>
             </div>
 
+            <!-- Quizzes Section -->
+            <div class="card-custom">
+                <h2 style="font-size: 1.125rem; font-weight: 800; color: var(--text-main); margin-bottom: 2rem; text-transform: uppercase; letter-spacing: 0.05em;">{{ __('messages.auto_revision_quiz_stats') }}</h2>
+                <div style="height: 320px;"><canvas id="autoRevisionQuizStatsChart"></canvas></div>
+            </div>
+
             <div class="card-custom">
                 <h2 style="font-size: 1.125rem; font-weight: 800; color: var(--text-main); margin-bottom: 2rem; text-transform: uppercase; letter-spacing: 0.05em;">{{ __('messages.manual_quiz_history') }}</h2>
                 <div style="height: 320px;"><canvas id="quizStatsChart"></canvas></div>
             </div>
 
-            <div class="card-custom lg:col-span-2">
+            <!-- Attendance -->
+            <div class="card-custom md:col-span-2 lg:col-span-2">
                 <h2 style="font-size: 1.125rem; font-weight: 800; color: var(--text-main); margin-bottom: 2rem; text-transform: uppercase; letter-spacing: 0.05em; text-align: center;">{{ __('messages.attendance_breakdown') }}</h2>
                 <div style="height: 256px; display: flex; align-items: center; justify-content: center;">
                     <div style="width: 100%; max-width: 384px; height: 100%;"><canvas id="attendanceChart"></canvas></div>
@@ -150,7 +153,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             const isDark = document.documentElement.classList.contains('dark');
             Chart.defaults.font.family = "'Inter', sans-serif";
-            Chart.defaults.color = isDark ? "#94a3b8" : "#64748b";
+            Chart.defaults.color = isDark ? "#a89a83" : "#6b6255";
 
             const createChartObj = (id, labels, datasets) => {
                 const ctx = document.getElementById(id);
@@ -165,9 +168,9 @@
                             y: {
                                 beginAtZero: true,
                                 max: 110,
-                                grid: { color: isDark ? '#1e293b' : '#f1f5f9' },
+                                grid: { color: isDark ? '#3a3126' : '#ded2b5' },
                                 ticks: {
-                                    color: isDark ? '#94a3b8' : '#64748b',
+                                    color: isDark ? '#a89a83' : '#6b6255',
                                     callback: function(value) { return value <= 100 ? value + '%' : ''; }
                                 }
                             },
@@ -175,16 +178,16 @@
                                 position: 'right',
                                 beginAtZero: true,
                                 grid: { display: false },
-                                ticks: { color: isDark ? '#94a3b8' : '#64748b' }
+                                ticks: { color: isDark ? '#a89a83' : '#6b6255' }
                             },
                             x: {
                                 grid: { display: false },
-                                ticks: { color: isDark ? '#94a3b8' : '#64748b' }
+                                ticks: { color: isDark ? '#a89a83' : '#6b6255' }
                             }
                         },
                         plugins: {
                             legend: {
-                                labels: { color: isDark ? '#f8fafc' : '#0f172a', font: { weight: 'bold' } }
+                                labels: { color: isDark ? '#fbf7ee' : '#201a12', font: { weight: 'bold' } }
                             }
                         }
                     }
@@ -193,8 +196,8 @@
 
             @if(!empty($chartData['autoRevisionExamStats']['avgScores']))
                 createChartObj('autoRevisionExamStatsChart', @json($chartData['autoRevisionExamStats']['labels']), [
-                    { label: '{{ __("messages.avg_percentage") }}', data: @json($chartData['autoRevisionExamStats']['avgScores']), backgroundColor: '#0d9488', borderRadius: 8, yAxisID: 'y' },
-                    { label: '{{ __("messages.attempts") }}', data: @json($chartData['autoRevisionExamStats']['totalAttempts']), backgroundColor: '#6366f1', borderRadius: 8, yAxisID: 'y1' }
+                    { label: '{{ __("messages.avg_percentage") }}', data: @json($chartData['autoRevisionExamStats']['avgScores']), backgroundColor: '#b5501f', borderRadius: 8, yAxisID: 'y' },
+                    { label: '{{ __("messages.attempts") }}', data: @json($chartData['autoRevisionExamStats']['totalAttempts']), backgroundColor: '#e78a4a', borderRadius: 8, yAxisID: 'y1' }
                 ]);
             @endif
 
@@ -208,14 +211,14 @@
             @if(!empty($chartData['examStats']['avgScores']))
                 createChartObj('examStatsChart', @json($chartData['examStats']['labels']), [
                     { label: '{{ __("messages.avg_percentage") }}', data: @json($chartData['examStats']['avgScores']), backgroundColor: '#d97706', borderRadius: 8, yAxisID: 'y' },
-                    { label: '{{ __("messages.attempts") }}', data: @json($chartData['examStats']['totalAttempts']), backgroundColor: '#4f46e5', borderRadius: 8, yAxisID: 'y1' }
+                    { label: '{{ __("messages.attempts") }}', data: @json($chartData['examStats']['totalAttempts']), backgroundColor: '#b5501f', borderRadius: 8, yAxisID: 'y1' }
                 ]);
             @endif
 
             @if(!empty($chartData['quizStats']['avgScores']))
                 createChartObj('quizStatsChart', @json($chartData['quizStats']['labels']), [
                     { label: '{{ __("messages.avg_percentage") }}', data: @json($chartData['quizStats']['avgScores']), backgroundColor: '#7c3aed', borderRadius: 8, yAxisID: 'y' },
-                    { label: '{{ __("messages.attempts") }}', data: @json($chartData['quizStats']['totalAttempts']), backgroundColor: '#2dd4bf', borderRadius: 8, yAxisID: 'y1' }
+                    { label: '{{ __("messages.attempts") }}', data: @json($chartData['quizStats']['totalAttempts']), backgroundColor: '#e78a4a', borderRadius: 8, yAxisID: 'y1' }
                 ]);
             @endif
 
@@ -245,7 +248,7 @@
                                     padding: 30,
                                     usePointStyle: true,
                                     font: { weight: 'bold' },
-                                    color: isDark ? '#f1f5f9' : '#1e293b'
+                                    color: isDark ? '#ded2b5' : '#3a3126'
                                 }
                             }
                         }

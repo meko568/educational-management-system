@@ -42,7 +42,7 @@
 
                 <!-- Action -->
                 <div style="display: flex; align-items: flex-end;">
-                    <button type="submit" style="width: 100%; padding: 0.625rem 1rem; background-color: #4f46e5; color: white; border: none; border-radius: 0.75rem; font-weight: 800; font-size: 0.75rem; text-transform: uppercase; cursor: pointer; box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.1);">
+                    <button type="submit" style="width: 100%; padding: 0.625rem 1rem; background-color: #b5501f; color: white; border: none; border-radius: 0.75rem; font-weight: 800; font-size: 0.75rem; text-transform: uppercase; cursor: pointer; box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.1);">
                         Save Record
                     </button>
                 </div>

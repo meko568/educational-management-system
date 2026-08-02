@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+        <h2 class="font-semibold text-xl text-stone-800 dark:text-stone-200 leading-tight">
             My Exams
         </h2>
     </x-slot>
@@ -10,16 +10,16 @@
             <!-- Available Exams -->
             @if($availableExams->count() > 0)
                 <div class="mb-8">
-                    <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">Available Exams</h3>
+                    <h3 class="text-lg font-medium text-stone-900 dark:text-stone-100 mb-4">Available Exams</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         @foreach($availableExams as $exam)
-                            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                            <div class="bg-white dark:bg-stone-800 overflow-hidden shadow-sm sm:rounded-lg">
                                 <div class="p-6">
-                                    <h4 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">{{ $exam->title }}</h4>
+                                    <h4 class="text-lg font-medium text-stone-900 dark:text-stone-100 mb-2">{{ $exam->title }}</h4>
                                     @if($exam->description)
-                                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">{{ $exam->description }}</p>
+                                        <p class="text-sm text-stone-600 dark:text-stone-400 mb-4">{{ $exam->description }}</p>
                                     @endif
-                                    <div class="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+                                    <div class="space-y-2 text-sm text-stone-600 dark:text-stone-400">
                                         <div class="flex items-center">
                                             <svg class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -42,7 +42,7 @@
                                     <div class="mt-4">
                                         <form action="{{ route('student.exams.start', $exam->id) }}" method="POST">
                                             @csrf
-                                            <button type="submit" class="w-full inline-flex items-center justify-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700">
+                                            <button type="submit" class="w-full inline-flex items-center justify-center px-4 py-2 bg-orange-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-orange-700">
                                                 Start Exam
                                             </button>
                                         </form>
@@ -53,40 +53,40 @@
                     </div>
                 </div>
             @else
-                <div class="mb-8 p-6 bg-gray-50 dark:bg-gray-700 rounded-lg text-center">
-                    <p class="text-gray-600 dark:text-gray-400">No available exams at the moment.</p>
+                <div class="mb-8 p-6 bg-stone-50 dark:bg-stone-700 rounded-lg text-center">
+                    <p class="text-stone-600 dark:text-stone-400">No available exams at the moment.</p>
                 </div>
             @endif
 
             <!-- Completed Exams -->
             @if($completedExams->count() > 0)
                 <div>
-                    <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">Completed Exams</h3>
-                    <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                    <h3 class="text-lg font-medium text-stone-900 dark:text-stone-100 mb-4">Completed Exams</h3>
+                    <div class="bg-white dark:bg-stone-800 overflow-hidden shadow-sm sm:rounded-lg">
                         <div class="overflow-x-auto">
-                            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                                <thead class="bg-gray-50 dark:bg-gray-700">
+                            <table class="min-w-full divide-y divide-stone-200 dark:divide-stone-700">
+                                <thead class="bg-stone-50 dark:bg-stone-700">
                                     <tr>
-                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Exam</th>
-                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Score</th>
-                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Date</th>
-                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Status</th>
-                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Action</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-stone-500 dark:text-stone-300 uppercase tracking-wider">Exam</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-stone-500 dark:text-stone-300 uppercase tracking-wider">Score</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-stone-500 dark:text-stone-300 uppercase tracking-wider">Date</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-stone-500 dark:text-stone-300 uppercase tracking-wider">Status</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-stone-500 dark:text-stone-300 uppercase tracking-wider">Action</th>
                                     </tr>
                                 </thead>
-                                <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                                <tbody class="bg-white dark:bg-stone-800 divide-y divide-stone-200 dark:divide-stone-700">
                                     @foreach($completedExams as $exam)
                                         @foreach($exam->attempts as $attempt)
                                             <tr>
                                                 <td class="px-6 py-4 whitespace-nowrap">
-                                                    <div class="text-sm font-medium text-gray-900 dark:text-gray-100">{{ $exam->title }}</div>
+                                                    <div class="text-sm font-medium text-stone-900 dark:text-stone-100">{{ $exam->title }}</div>
                                                 </td>
                                                 <td class="px-6 py-4 whitespace-nowrap">
-                                                    <div class="text-sm text-gray-900 dark:text-gray-100">{{ $attempt->score }}%</div>
-                                                    <div class="text-xs text-gray-500 dark:text-gray-400">{{ $attempt->earned_points }}/{{ $attempt->total_points }} points</div>
+                                                    <div class="text-sm text-stone-900 dark:text-stone-100">{{ $attempt->score }}%</div>
+                                                    <div class="text-xs text-stone-500 dark:text-stone-400">{{ $attempt->earned_points }}/{{ $attempt->total_points }} points</div>
                                                 </td>
                                                 <td class="px-6 py-4 whitespace-nowrap">
-                                                    <div class="text-sm text-gray-900 dark:text-gray-100">{{ $attempt->submitted_at ? $attempt->submitted_at->format('M d, Y') : '-' }}</div>
+                                                    <div class="text-sm text-stone-900 dark:text-stone-100">{{ $attempt->submitted_at ? $attempt->submitted_at->format('M d, Y') : '-' }}</div>
                                                 </td>
                                                 <td class="px-6 py-4 whitespace-nowrap">
                                                     @if($attempt->status === 'submitted')
@@ -104,7 +104,7 @@
                                                     @endif
                                                 </td>
                                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                                    <a href="{{ route('student.exams.result', $attempt->id) }}" class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300">
+                                                    <a href="{{ route('student.exams.result', $attempt->id) }}" class="text-orange-600 hover:text-orange-900 dark:text-orange-400 dark:hover:text-orange-300">
                                                         View Result
                                                     </a>
                                                 </td>

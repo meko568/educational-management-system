@@ -12,15 +12,22 @@ use Illuminate\Support\Facades\DB;
 
 class AdminExamController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $exams = AdminExam::with('creator')->orderBy('created_at', 'desc')->get();
-        return $this->localeView('admin.exams.admin-index', compact('exams'));
+        $academicYear = $request->query('academicYear') ?? session('selectedAcademicYear', 'primary1');
+        session(['selectedAcademicYear' => $academicYear]);
+
+        $exams = AdminExam::with('creator')
+            ->where('grade', $academicYear)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return $this->localeView('admin.exams.admin-index', compact('exams', 'academicYear'));
     }
 
     public function create(Request $request)
     {
-        $selectedGrade = $request->query('grade', 'primary1');
+        $selectedGrade = $request->query('academicYear') ?? session('selectedAcademicYear', 'primary1');
         $suggestedDates = $this->getSuggestedDates($selectedGrade);
         return $this->localeView('admin.exams.admin-create', compact('selectedGrade', 'suggestedDates'));
     }
@@ -52,7 +59,7 @@ class AdminExamController extends Controller
 
     public function store(Request $request)
     {
-        $selectedGrade = $request->query('grade', 'primary1');
+        $selectedGrade = $request->input('academicYear') ?? session('selectedAcademicYear', 'primary1');
 
         $validated = $request->validate([
             'title' => 'required|string|max:255',

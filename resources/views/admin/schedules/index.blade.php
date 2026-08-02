@@ -26,7 +26,7 @@
                                 @endphp
                                 <label style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border-radius: 0.75rem; border: 1px solid var(--border-color); cursor: pointer; background-color: {{ $isSelected ? 'rgba(79, 70, 229, 0.1)' : 'var(--bg-alt)' }}; transition: all 0.2s;">
                                     <input type="checkbox" name="days[]" value="{{ $day }}" {{ $isSelected ? 'checked' : '' }} style="display: none;">
-                                    <span style="font-size: 0.75rem; font-weight: 700; color: {{ $isSelected ? '#4f46e5' : 'var(--text-muted)' }};">{{ $day }}</span>
+                                    <span style="font-size: 0.75rem; font-weight: 700; color: {{ $isSelected ? '#b5501f' : 'var(--text-muted)' }};">{{ $day }}</span>
                                 </label>
                             @endforeach
                         </div>
@@ -48,7 +48,7 @@
                 checkbox.addEventListener('change', () => {
                     if(checkbox.checked) {
                         label.style.backgroundColor = 'rgba(79, 70, 229, 0.1)';
-                        label.querySelector('span').style.color = '#4f46e5';
+                        label.querySelector('span').style.color = '#b5501f';
                     } else {
                         label.style.backgroundColor = 'var(--bg-alt)';
                         label.querySelector('span').style.color = 'var(--text-muted)';

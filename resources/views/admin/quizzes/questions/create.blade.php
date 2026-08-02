@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+        <h2 class="font-semibold text-xl text-stone-800 dark:text-stone-200 leading-tight">
             Add Questions to Quiz: {{ $quiz->title }}
         </h2>
     </x-slot>
@@ -10,9 +10,9 @@
             <div class="flex gap-6">
                 <!-- Sidebar - Question Navigation -->
                 <div class="w-64 flex-shrink-0">
-                    <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg sticky top-4">
+                    <div class="bg-white dark:bg-stone-800 overflow-hidden shadow-sm sm:rounded-lg sticky top-4">
                         <div class="p-4">
-                            <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">Questions</h3>
+                            <h3 class="text-lg font-medium text-stone-900 dark:text-stone-100 mb-4">Questions</h3>
                             <div id="question-nav" class="space-y-2 max-h-[60vh] overflow-y-auto">
                                 <!-- Question navigation items -->
                             </div>
@@ -20,11 +20,11 @@
                                 + Add Question
                             </button>
                         </div>
-                        <div class="border-t border-gray-200 dark:border-gray-700 p-4">
-                            <button type="submit" form="quiz-form" class="w-full inline-flex items-center justify-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 mb-2">
+                        <div class="border-t border-stone-200 dark:border-stone-700 p-4">
+                            <button type="submit" form="quiz-form" class="w-full inline-flex items-center justify-center px-4 py-2 bg-orange-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-orange-700 mb-2">
                                 Save & Finish
                             </button>
-                            <a href="{{ route('admin.quizzes.index') }}" class="w-full inline-flex items-center justify-center px-4 py-2 bg-gray-600 dark:bg-gray-700 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 dark:hover:bg-gray-600">
+                            <a href="{{ route('admin.quizzes.index') }}" class="w-full inline-flex items-center justify-center px-4 py-2 bg-stone-600 dark:bg-stone-700 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-stone-700 dark:hover:bg-stone-600">
                                 Cancel
                             </a>
                         </div>
@@ -33,7 +33,7 @@
 
                 <!-- Main Content - Question Editor -->
                 <div class="flex-1">
-                    <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="bg-white dark:bg-stone-800 overflow-hidden shadow-sm sm:rounded-lg">
                         <div class="p-6">
                             <!-- Errors Display -->
                             @if ($errors->any())
@@ -49,11 +49,11 @@
 
                             <!-- Custom Modal -->
                             <div id="custom-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                                <div class="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 shadow-xl border border-gray-200 dark:border-gray-700">
+                                <div class="bg-white dark:bg-stone-800 rounded-lg p-6 max-w-md w-full mx-4 shadow-xl border border-stone-200 dark:border-stone-700">
                                     <h3 id="modal-title" class="text-lg font-bold text-red-600 dark:text-red-400 mb-4">Warning</h3>
-                                    <div id="modal-content" class="text-gray-700 dark:text-gray-300 mb-6 space-y-2"></div>
+                                    <div id="modal-content" class="text-stone-700 dark:text-stone-300 mb-6 space-y-2"></div>
                                     <div class="flex justify-end">
-                                        <button id="modal-close-btn" class="px-6 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors font-medium">OK</button>
+                                        <button id="modal-close-btn" class="px-6 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700 transition-colors font-medium">OK</button>
                                     </div>
                                 </div>
                             </div>
@@ -65,14 +65,14 @@
                                 </div>
 
                                 <!-- Bottom Navigation -->
-                                <div class="flex justify-between items-center mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
-                                    <button type="button" id="prev-question-btn" class="inline-flex items-center px-4 py-2 bg-gray-600 text-white rounded-md font-semibold text-xs uppercase tracking-widest hover:bg-gray-700 disabled:opacity-50 transition-opacity">
+                                <div class="flex justify-between items-center mt-8 pt-6 border-t border-stone-200 dark:border-stone-700">
+                                    <button type="button" id="prev-question-btn" class="inline-flex items-center px-4 py-2 bg-stone-600 text-white rounded-md font-semibold text-xs uppercase tracking-widest hover:bg-stone-700 disabled:opacity-50 transition-opacity">
                                         Previous
                                     </button>
-                                    <span class="text-sm font-medium text-gray-500 dark:text-gray-400">
+                                    <span class="text-sm font-medium text-stone-500 dark:text-stone-400">
                                         Question <span id="current-display-num">1</span> of <span id="total-display-num">1</span>
                                     </span>
-                                    <button type="button" id="next-question-btn" class="inline-flex items-center px-4 py-2 bg-gray-600 text-white rounded-md font-semibold text-xs uppercase tracking-widest hover:bg-gray-700 disabled:opacity-50 transition-opacity">
+                                    <button type="button" id="next-question-btn" class="inline-flex items-center px-4 py-2 bg-stone-600 text-white rounded-md font-semibold text-xs uppercase tracking-widest hover:bg-stone-700 disabled:opacity-50 transition-opacity">
                                         Next
                                     </button>
                                 </div>
@@ -87,8 +87,8 @@
     <!-- HTML Template for a Question -->
     <template id="q-tpl">
         <div class="question-block space-y-6" data-idx="IDX">
-            <div class="flex justify-between items-center border-b border-gray-200 dark:border-gray-700 pb-4">
-                <h3 class="text-xl font-bold text-gray-900 dark:text-white text-indigo-600">Question #<span class="q-num">1</span></h3>
+            <div class="flex justify-between items-center border-b border-stone-200 dark:border-stone-700 pb-4">
+                <h3 class="text-xl font-bold text-stone-900 dark:text-white text-orange-600">Question #<span class="q-num">1</span></h3>
                 <button type="button" class="del-q-btn text-red-500 hover:text-red-700 text-sm font-medium flex items-center gap-1">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -100,40 +100,40 @@
             <!-- Type Selection -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Question Type</label>
-                    <select name="questions[IDX][type]" class="q-type-select block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    <label class="block text-sm font-semibold text-stone-700 dark:text-stone-300 mb-1">Question Type</label>
+                    <select name="questions[IDX][type]" class="q-type-select block w-full rounded-md border-stone-300 dark:border-stone-600 dark:bg-stone-700 dark:text-white shadow-sm focus:border-orange-500 focus:ring-orange-500">
                         <option value="multiple_choice">Multiple Choice</option>
                         <option value="true_false">True / False</option>
                         <option value="fill_blank">Fill in the Blank</option>
                     </select>
                 </div>
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Points</label>
-                    <input type="number" name="questions[IDX][points]" value="1" min="1" class="block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    <label class="block text-sm font-semibold text-stone-700 dark:text-stone-300 mb-1">Points</label>
+                    <input type="number" name="questions[IDX][points]" value="1" min="1" class="block w-full rounded-md border-stone-300 dark:border-stone-600 dark:bg-stone-700 dark:text-white shadow-sm focus:border-orange-500 focus:ring-orange-500">
                 </div>
             </div>
 
             <!-- Question Text -->
             <div>
-                <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Question Content</label>
-                <textarea name="questions[IDX][question_text]" rows="3" class="block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="Type your question here..."></textarea>
+                <label class="block text-sm font-semibold text-stone-700 dark:text-stone-300 mb-1">Question Content</label>
+                <textarea name="questions[IDX][question_text]" rows="3" class="block w-full rounded-md border-stone-300 dark:border-stone-600 dark:bg-stone-700 dark:text-white shadow-sm focus:border-orange-500 focus:ring-orange-500" placeholder="Type your question here..."></textarea>
             </div>
 
             <!-- Question Image -->
             <div>
-                <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Optional Image</label>
-                <input type="file" name="questions[IDX][question_image]" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-xs file:font-bold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 dark:file:bg-indigo-900 dark:file:text-indigo-300">
+                <label class="block text-sm font-semibold text-stone-700 dark:text-stone-300 mb-1">Optional Image</label>
+                <input type="file" name="questions[IDX][question_image]" class="block w-full text-sm text-stone-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-xs file:font-bold file:bg-orange-50 file:text-orange-700 hover:file:bg-orange-100 dark:file:bg-orange-900 dark:file:text-orange-300">
             </div>
 
             <!-- Containers for different types -->
-            <div class="q-options-area bg-white dark:bg-gray-800 p-4 rounded-md border border-gray-100 dark:border-gray-700">
+            <div class="q-options-area bg-white dark:bg-stone-800 p-4 rounded-md border border-stone-100 dark:border-stone-700">
                 <!-- Multiple Choice -->
                 <div class="mc-box space-y-4">
-                    <label class="block text-sm font-bold text-gray-700 dark:text-gray-200 mb-2">Choices (Select the circle for the correct answer)</label>
+                    <label class="block text-sm font-bold text-stone-700 dark:text-stone-200 mb-2">Choices (Select the circle for the correct answer)</label>
                     <div class="choices-list space-y-2">
                         <!-- Choices added via JS -->
                     </div>
-                    <button type="button" class="add-choice-btn inline-flex items-center text-indigo-600 hover:text-indigo-800 text-sm font-bold gap-1 mt-2">
+                    <button type="button" class="add-choice-btn inline-flex items-center text-orange-600 hover:text-orange-800 text-sm font-bold gap-1 mt-2">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
                         Add Choice
                     </button>
@@ -141,24 +141,24 @@
 
                 <!-- True/False -->
                 <div class="tf-box hidden">
-                    <label class="block text-sm font-bold text-gray-700 dark:text-gray-200 mb-3">Correct Answer</label>
+                    <label class="block text-sm font-bold text-stone-700 dark:text-stone-200 mb-3">Correct Answer</label>
                     <div class="flex gap-8">
                         <label class="flex items-center gap-2 cursor-pointer group">
-                            <input type="radio" name="questions[IDX][correct_answer_tf]" value="true" class="h-5 w-5 text-indigo-600 focus:ring-indigo-500 border-gray-300">
-                            <span class="text-gray-700 dark:text-gray-300 group-hover:text-indigo-600 font-medium">True</span>
+                            <input type="radio" name="questions[IDX][correct_answer_tf]" value="true" class="h-5 w-5 text-orange-600 focus:ring-orange-500 border-stone-300">
+                            <span class="text-stone-700 dark:text-stone-300 group-hover:text-orange-600 font-medium">True</span>
                         </label>
                         <label class="flex items-center gap-2 cursor-pointer group">
-                            <input type="radio" name="questions[IDX][correct_answer_tf]" value="false" class="h-5 w-5 text-indigo-600 focus:ring-indigo-500 border-gray-300">
-                            <span class="text-gray-700 dark:text-gray-300 group-hover:text-indigo-600 font-medium">False</span>
+                            <input type="radio" name="questions[IDX][correct_answer_tf]" value="false" class="h-5 w-5 text-orange-600 focus:ring-orange-500 border-stone-300">
+                            <span class="text-stone-700 dark:text-stone-300 group-hover:text-orange-600 font-medium">False</span>
                         </label>
                     </div>
                 </div>
 
                 <!-- Fill Blank -->
                 <div class="blank-box hidden">
-                    <label class="block text-sm font-bold text-gray-700 dark:text-gray-200 mb-1">Correct Answer (Exact Match)</label>
-                    <input type="text" name="questions[IDX][correct_answer_text]" class="block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="Type the exact answer students must write...">
-                    <p class="text-[10px] text-gray-500 mt-1 italic">Students must type this text exactly to get points.</p>
+                    <label class="block text-sm font-bold text-stone-700 dark:text-stone-200 mb-1">Correct Answer (Exact Match)</label>
+                    <input type="text" name="questions[IDX][correct_answer_text]" class="block w-full rounded-md border-stone-300 dark:border-stone-600 dark:bg-stone-700 dark:text-white shadow-sm focus:border-orange-500 focus:ring-orange-500" placeholder="Type the exact answer students must write...">
+                    <p class="text-[10px] text-stone-500 mt-1 italic">Students must type this text exactly to get points.</p>
                 </div>
             </div>
         </div>
@@ -202,7 +202,7 @@
 
                 const btn = document.createElement('button');
                 btn.type = 'button';
-                btn.className = `w-full text-left px-3 py-2 rounded-md text-sm transition-all ${i === activeIdx ? 'bg-indigo-600 text-white font-bold shadow-md' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200'}`;
+                btn.className = `w-full text-left px-3 py-2 rounded-md text-sm transition-all ${i === activeIdx ? 'bg-orange-600 text-white font-bold shadow-md' : 'bg-stone-100 dark:bg-stone-700 text-stone-700 dark:text-stone-300 hover:bg-stone-200'}`;
                 btn.textContent = `Question ${i + 1}`;
                 btn.onclick = () => showQuestion(i);
                 nav.appendChild(btn);
@@ -227,8 +227,8 @@
             const div = document.createElement('div');
             div.className = 'choice-item flex items-center gap-2';
             div.innerHTML = `
-                <input type="radio" name="questions[${qIdx}][correct_choice]" value="${cIdx}" class="correct-choice-radio h-4 w-4 text-indigo-600">
-                <input type="text" name="questions[${qIdx}][choices][${cIdx}][choice_text]" value="${val.replace(/"/g, '&quot;')}" placeholder="Choice ${String.fromCharCode(65 + cIdx)}" class="flex-1 rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm text-sm">
+                <input type="radio" name="questions[${qIdx}][correct_choice]" value="${cIdx}" class="correct-choice-radio h-4 w-4 text-orange-600">
+                <input type="text" name="questions[${qIdx}][choices][${cIdx}][choice_text]" value="${val.replace(/"/g, '&quot;')}" placeholder="Choice ${String.fromCharCode(65 + cIdx)}" class="flex-1 rounded-md border-stone-300 dark:border-stone-600 dark:bg-stone-700 dark:text-white shadow-sm text-sm">
                 <button type="button" class="del-choice text-red-500 hover:text-red-700">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
                 </button>

@@ -1,7 +1,7 @@
 <x-guest-layout>
     <div class="space-y-8">
         <div>
-            <h2 class="text-center text-3xl font-extrabold text-gray-900 dark:text-white">
+            <h2 class="text-center text-3xl font-extrabold text-stone-900 dark:text-white">
                 {{ __('messages.login_title') }}
             </h2>
         </div>
@@ -37,21 +37,21 @@
 
             <div class="space-y-4">
                 <div>
-                    <label for="code" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" style="color: var(--text-main); font-weight: 700;">{{ __('messages.code') }}</label>
+                    <label for="code" class="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1" style="color: var(--text-main); font-weight: 700;">{{ __('messages.code') }}</label>
                     <input
                         id="code"
                         name="code"
                         type="text"
                         value="{{ old('code') }}"
                         required
-                        class="appearance-none relative block w-full px-4 py-3 border border-gray-300 dark:border-slate-800 placeholder-gray-500 dark:placeholder-slate-600 text-gray-900 dark:text-white bg-white dark:bg-slate-950 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all sm:text-sm"
+                        class="appearance-none relative block w-full px-4 py-3 border border-stone-300 dark:border-stone-800 placeholder-stone-500 dark:placeholder-stone-600 text-stone-900 dark:text-white bg-white dark:bg-stone-950 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all sm:text-sm"
                         style="background-color: var(--bg-card); color: var(--text-main); border: 1px solid var(--border-color); border-radius: 0.75rem;"
                         placeholder="{{ __('messages.code_placeholder') }}"
                     >
                 </div>
 
                 <div x-data="{ showPassword: false }">
-                    <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" style="color: var(--text-main); font-weight: 700;">{{ __('messages.password') }}</label>
+                    <label for="password" class="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1" style="color: var(--text-main); font-weight: 700;">{{ __('messages.password') }}</label>
                     <div style="position: relative;">
                         <input
                             id="password"
@@ -59,7 +59,7 @@
                             :type="showPassword ? 'text' : 'password'"
                             required
                             autocomplete="current-password"
-                            class="appearance-none relative block w-full px-4 py-3 border border-gray-300 dark:border-slate-800 placeholder-gray-500 dark:placeholder-slate-600 text-gray-900 dark:text-white bg-white dark:bg-slate-950 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all sm:text-sm"
+                            class="appearance-none relative block w-full px-4 py-3 border border-stone-300 dark:border-stone-800 placeholder-stone-500 dark:placeholder-stone-600 text-stone-900 dark:text-white bg-white dark:bg-stone-950 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all sm:text-sm"
                             style="background-color: var(--bg-card); color: var(--text-main); border: 1px solid var(--border-color); border-radius: 0.75rem; width: 100%; {{ app()->getLocale() === 'ar' ? 'padding-left: 3rem;' : 'padding-right: 3rem;' }}"
                             placeholder="{{ __('messages.password_placeholder') }}"
                         >
@@ -76,7 +76,7 @@
                     id="remember_me"
                     name="remember"
                     type="checkbox"
-                    class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 dark:border-slate-800 rounded dark:bg-slate-950"
+                    class="h-4 w-4 text-orange-600 focus:ring-orange-500 border-stone-300 dark:border-stone-800 rounded dark:bg-stone-950"
                     style="width: 1rem; height: 1rem;"
                 >
                 <label for="remember_me" class="ml-2 block text-sm" style="color: var(--text-muted); font-size: 0.875rem;">
@@ -85,16 +85,16 @@
             </div>
 
             <div>
-                <button type="submit" class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-bold rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all shadow-lg shadow-indigo-600/20">
+                <button type="submit" class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-bold rounded-xl text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition-all shadow-lg shadow-orange-600/20">
                     {{ __('messages.login_button') }}
                 </button>
             </div>
         </form>
 
         <div class="text-center text-sm">
-            <p class="text-gray-600 dark:text-slate-500 mt-2">
+            <p class="text-stone-600 dark:text-stone-500 mt-2">
                 {{ __('messages.parent_question') }}
-                <a href="{{ route('parent.login') }}" class="font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 transition-colors">
+                <a href="{{ route('parent.login') }}" class="font-bold text-orange-600 dark:text-orange-400 hover:text-orange-500 transition-colors">
                     {{ __('messages.login_here') }}
                 </a>
             </p>

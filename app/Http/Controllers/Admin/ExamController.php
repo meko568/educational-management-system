@@ -18,6 +18,7 @@ class ExamController extends Controller
     {
         // Get academic year from URL parameter or session or default
         $academicYear = $request->query('academicYear') ?? session('selectedAcademicYear', 'primary1');
+        session(['selectedAcademicYear' => $academicYear]);
 
         // Filter exams by academic year
         $exams = Exam::where('academicYear', $academicYear)
@@ -45,6 +46,8 @@ class ExamController extends Controller
     public function create(Request $request)
     {
         $academicYear = $request->query('academicYear') ?? session('selectedAcademicYear', 'primary1');
+        session(['selectedAcademicYear' => $academicYear]);
+
         $defaultDate = now()->format('Y-m-d');
         return $this->localeView('admin.exams.create', compact('defaultDate', 'academicYear'));
     }
@@ -80,17 +83,17 @@ class ExamController extends Controller
     public function show(Request $request, Exam $exam)
     {
         $academicYear = $request->query('academicYear') ?? $exam->academicYear ?? session('selectedAcademicYear', 'primary1');
-        
+
         // Store the academic year in the session
         if ($academicYear) {
             session(['selectedAcademicYear' => $academicYear]);
         }
-        
+
         $exam->load('quizzes');
         $students = Student::where('role', '!=', 'admin')
             ->where('academicYear', $academicYear)
             ->get();
-            
+
         $results = ExamResult::where('exam_id', $exam->id)
             ->with('student')
             ->get();

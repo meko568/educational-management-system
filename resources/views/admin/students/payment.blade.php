@@ -92,7 +92,7 @@
                 <div style="padding-top: 1rem;">
                     <form action="{{ route('admin.students.process-payment', $student) }}" method="POST">
                         @csrf
-                        <button type="submit" style="width: 100%; padding: 1rem; background-color: #4f46e5; color: white; border: none; border-radius: 1rem; font-weight: 800; font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.2); display: flex; align-items: center; justify-content: center; gap: 0.75rem;">
+                        <button type="submit" style="width: 100%; padding: 1rem; background-color: #b5501f; color: white; border: none; border-radius: 1rem; font-weight: 800; font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.2); display: flex; align-items: center; justify-content: center; gap: 0.75rem;">
                             <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                             Record New Payment ({{ now()->format('F Y') }})
                         </button>

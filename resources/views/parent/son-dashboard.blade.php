@@ -2,12 +2,12 @@
     <x-slot name="header">
         <div class="flex items-center justify-between">
             <div>
-                <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                <h2 class="font-semibold text-xl text-stone-800 leading-tight">
                     {{ __('Son Dashboard') }}
                 </h2>
-                <p class="text-sm text-gray-600">{{ $student->name }} ({{ $student->code }}) - {{ $academicYear }}</p>
+                <p class="text-sm text-stone-600">{{ $student->name }} ({{ $student->code }}) - {{ $academicYear }}</p>
             </div>
-            <a href="{{ route('parent.dashboard') }}" class="inline-flex items-center px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-800">
+            <a href="{{ route('parent.dashboard') }}" class="inline-flex items-center px-4 py-2 bg-stone-700 text-white rounded hover:bg-stone-800">
                 Back
             </a>
         </div>
@@ -16,27 +16,27 @@
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="bg-white dark:bg-stone-800 overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6">
-                        <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">Exam Performance</h3>
+                        <h3 class="text-lg font-medium text-stone-900 dark:text-stone-100 mb-4">Exam Performance</h3>
                         <div class="chart-container" style="position: relative; height:300px;">
                             <canvas id="examChart"></canvas>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="bg-white dark:bg-stone-800 overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6">
-                        <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">Quiz Performance</h3>
+                        <h3 class="text-lg font-medium text-stone-900 dark:text-stone-100 mb-4">Quiz Performance</h3>
                         <div class="chart-container" style="position: relative; height:300px;">
                             <canvas id="quizChart"></canvas>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="bg-white dark:bg-stone-800 overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6">
-                        <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">Attendance Overview</h3>
+                        <h3 class="text-lg font-medium text-stone-900 dark:text-stone-100 mb-4">Attendance Overview</h3>
                         <div class="chart-container" style="position: relative; height:300px;">
                             <canvas id="attendanceChart"></canvas>
                         </div>
@@ -45,21 +45,21 @@
             </div>
 
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
-                <div class="p-6 bg-white border-b border-gray-200">
+                <div class="p-6 bg-white border-b border-stone-200">
                     <div class="flex justify-between items-center">
                         <div>
-                            <h3 class="text-lg font-medium text-gray-900">{{ $student->name }}</h3>
-                            <p class="text-gray-600">Student Code: {{ $student->code }}</p>
-                            <p class="text-gray-600">Academic Year: {{ $academicYear ?? 'N/A' }}</p>
+                            <h3 class="text-lg font-medium text-stone-900">{{ $student->name }}</h3>
+                            <p class="text-stone-600">Student Code: {{ $student->code }}</p>
+                            <p class="text-stone-600">Academic Year: {{ $academicYear ?? 'N/A' }}</p>
                             @if($student->phone)
-                                <p class="text-gray-600">Phone: {{ $student->phone }}</p>
+                                <p class="text-stone-600">Phone: {{ $student->phone }}</p>
                             @endif
                         </div>
                         <div class="text-right">
-                            <div class="text-2xl font-bold text-indigo-600">
+                            <div class="text-2xl font-bold text-orange-600">
                                 {{ $attendance['attendance_percentage'] }}%
                             </div>
-                            <div class="text-sm text-gray-500">Attendance</div>
+                            <div class="text-sm text-stone-500">Attendance</div>
                         </div>
                     </div>
                 </div>
@@ -68,22 +68,22 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6">
-                        <h3 class="text-lg font-medium text-gray-900 mb-4">Recent Exam Results</h3>
+                        <h3 class="text-lg font-medium text-stone-900 mb-4">Recent Exam Results</h3>
                         @if(count($examResults) > 0)
                             <div class="overflow-x-auto">
-                                <table class="min-w-full divide-y divide-gray-200">
-                                    <thead class="bg-gray-50">
+                                <table class="min-w-full divide-y divide-stone-200">
+                                    <thead class="bg-stone-50">
                                         <tr>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Exam</th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Score</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-stone-500 uppercase tracking-wider">Exam</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-stone-500 uppercase tracking-wider">Date</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-stone-500 uppercase tracking-wider">Score</th>
                                         </tr>
                                     </thead>
-                                    <tbody class="bg-white divide-y divide-gray-200">
+                                    <tbody class="bg-white divide-y divide-stone-200">
                                         @foreach($examResults->take(5) as $exam)
                                             <tr>
-                                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $exam['exam'] }}</td>
-                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $exam['date'] }}</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-stone-900">{{ $exam['exam'] }}</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-stone-500">{{ $exam['date'] }}</td>
                                                 <td class="px-6 py-4 whitespace-nowrap">
                                                     <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $exam['percentage'] >= 50 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
                                                         {{ $exam['marks_obtained'] }}/{{ $exam['total_marks'] }} ({{ round($exam['percentage']) }}%)
@@ -95,22 +95,22 @@
                                 </table>
                             </div>
                         @else
-                            <p class="text-gray-500">No exam results available.</p>
+                            <p class="text-stone-500">No exam results available.</p>
                         @endif
                     </div>
                 </div>
 
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6">
-                        <h3 class="text-lg font-medium text-gray-900 mb-4">Recent Attendance (full date & time)</h3>
+                        <h3 class="text-lg font-medium text-stone-900 mb-4">Recent Attendance (full date & time)</h3>
                         @if(count($attendance['recent']) > 0)
                             <div class="space-y-4">
                                 @foreach($attendance['recent'] as $record)
                                     <div class="flex items-center justify-between p-3 rounded-lg {{ $record['status'] === 'present' ? 'bg-green-50' : 'bg-red-50' }}">
                                         <div>
-                                            <p class="text-sm font-medium text-gray-900">{{ $record['date_time'] }}</p>
+                                            <p class="text-sm font-medium text-stone-900">{{ $record['date_time'] }}</p>
                                             @if(!empty($record['notes']))
-                                                <p class="text-sm text-gray-500">{{ $record['notes'] }}</p>
+                                                <p class="text-sm text-stone-500">{{ $record['notes'] }}</p>
                                             @endif
                                         </div>
                                         <span class="px-3 py-1 text-xs font-semibold rounded-full {{ $record['status'] === 'present' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
@@ -120,7 +120,7 @@
                                 @endforeach
                             </div>
                         @else
-                            <p class="text-gray-500">No attendance records available.</p>
+                            <p class="text-stone-500">No attendance records available.</p>
                         @endif
                     </div>
                 </div>
@@ -128,22 +128,22 @@
 
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
-                    <h3 class="text-lg font-medium text-gray-900 mb-4">All Quiz Results</h3>
+                    <h3 class="text-lg font-medium text-stone-900 mb-4">All Quiz Results</h3>
                     @if(count($quizResults) > 0)
                         <div class="overflow-x-auto">
-                            <table class="min-w-full divide-y divide-gray-200">
-                                <thead class="bg-gray-50">
+                            <table class="min-w-full divide-y divide-stone-200">
+                                <thead class="bg-stone-50">
                                     <tr>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quiz</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Score</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-stone-500 uppercase tracking-wider">Quiz</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-stone-500 uppercase tracking-wider">Date</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-stone-500 uppercase tracking-wider">Score</th>
                                     </tr>
                                 </thead>
-                                <tbody class="bg-white divide-y divide-gray-200">
+                                <tbody class="bg-white divide-y divide-stone-200">
                                     @foreach($quizResults as $quiz)
                                         <tr>
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $quiz['quiz'] }}</td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $quiz['date'] }}</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-stone-900">{{ $quiz['quiz'] }}</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-stone-500">{{ $quiz['date'] }}</td>
                                             <td class="px-6 py-4 whitespace-nowrap">
                                                 <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $quiz['percentage'] >= 50 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
                                                     {{ $quiz['marks_obtained'] }}/{{ $quiz['total_marks'] }} ({{ round($quiz['percentage']) }}%)
@@ -155,7 +155,7 @@
                             </table>
                         </div>
                     @else
-                        <p class="text-gray-500">No quiz results available.</p>
+                        <p class="text-stone-500">No quiz results available.</p>
                     @endif
                 </div>
             </div>
@@ -198,14 +198,14 @@
                 const dataset = {
                     label: chartData.label || '',
                     data: chartData.data || [],
-                    borderColor: chartData.borderColor || '#4f46e5',
+                    borderColor: chartData.borderColor || '#b5501f',
                     borderWidth: 2,
                     fill: false,
                     tension: 0.3
                 };
 
                 if (type !== 'line') {
-                    dataset.backgroundColor = chartData.backgroundColors || '#4f46e5';
+                    dataset.backgroundColor = chartData.backgroundColors || '#b5501f';
                 }
 
                 return new Chart(ctx.getContext('2d'), {
@@ -222,7 +222,7 @@
             createChart('examChart', 'line', {
                 ...@json($chartData['exam']),
                 label: 'Score (%)',
-                borderColor: '#4f46e5'
+                borderColor: '#b5501f'
             });
             @endif
 

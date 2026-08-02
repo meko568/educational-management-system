@@ -33,10 +33,10 @@ class DashboardController extends Controller
             ->get()
             ->filter(fn($r) => $r->exam && $r->exam->academicYear === $academicYear && is_null($r->exam->admin_exam_id))
             ->map(fn($r) => [
-                'title' => $r->exam->title,
+                'exam' => $r->exam->title,
                 'type' => 'Manual',
-                'marks' => $r->marks_obtained,
-                'total' => $r->exam->total_marks,
+                'marks_obtained' => $r->marks_obtained,
+                'total_marks' => $r->exam->total_marks,
                 'percentage' => $r->exam->total_marks > 0 ? ($r->marks_obtained / $r->exam->total_marks) * 100 : 0,
                 'date' => $r->exam->exam_date ? $r->exam->exam_date->format('Y-m-d') : $r->created_at->format('Y-m-d')
             ]);
@@ -48,10 +48,10 @@ class DashboardController extends Controller
             ->get()
             ->filter(fn($a) => $a->exam && $a->exam->grade === $academicYear)
             ->map(fn($a) => [
-                'title' => $a->exam->title,
+                'exam' => $a->exam->title,
                 'type' => 'Auto-Revision',
-                'marks' => $a->score,
-                'total' => 100, // Score is usually percentage in auto-revision or check total_points
+                'marks_obtained' => $a->score,
+                'total_marks' => 100,
                 'percentage' => (float) $a->score,
                 'date' => $a->submitted_at ? $a->submitted_at->format('Y-m-d') : $a->created_at->format('Y-m-d')
             ]);
@@ -64,10 +64,10 @@ class DashboardController extends Controller
             ->get()
             ->filter(fn($r) => $r->quiz && $r->quiz->academicYear === $academicYear && is_null($r->quiz->admin_quiz_id))
             ->map(fn($r) => [
-                'title' => $r->quiz->title,
+                'quiz' => $r->quiz->title,
                 'type' => 'Manual',
-                'marks' => $r->marks_obtained,
-                'total' => $r->quiz->total_marks,
+                'marks_obtained' => $r->marks_obtained,
+                'total_marks' => $r->quiz->total_marks,
                 'percentage' => $r->quiz->total_marks > 0 ? ($r->marks_obtained / $r->quiz->total_marks) * 100 : 0,
                 'date' => $r->created_at->format('Y-m-d')
             ]);
@@ -79,10 +79,10 @@ class DashboardController extends Controller
             ->get()
             ->filter(fn($a) => $a->quiz && $a->quiz->grade === $academicYear)
             ->map(fn($a) => [
-                'title' => $a->quiz->title,
+                'quiz' => $a->quiz->title,
                 'type' => 'Auto-Revision',
-                'marks' => $a->score,
-                'total' => 100,
+                'marks_obtained' => $a->score,
+                'total_marks' => 100,
                 'percentage' => (float) $a->score,
                 'date' => $a->submitted_at ? $a->submitted_at->format('Y-m-d') : $a->created_at->format('Y-m-d')
             ]);
@@ -123,7 +123,7 @@ class DashboardController extends Controller
             'total' => $attendances->count(),
             'present' => $attendances->where('status', 'present')->count(),
             'absent' => $attendances->where('status', 'absent')->count(),
-            'percentage' => $attendances->count() > 0
+            'attendance_percentage' => $attendances->count() > 0
                 ? round(($attendances->where('status', 'present')->count() / $attendances->count()) * 100, 2)
                 : 0,
             'recent' => $attendances->sortByDesc('date')->take(5)->map(fn($att) => [
@@ -134,21 +134,13 @@ class DashboardController extends Controller
         ];
 
         $chartData = [
-            'manualExam' => [
-                'labels' => $manualExamResults->values()->pluck('title')->toArray(),
-                'data' => $manualExamResults->values()->pluck('percentage')->map(fn($p) => round($p))->toArray(),
+            'exam' => [
+                'labels' => $allExams->values()->pluck('exam')->toArray(),
+                'data' => $allExams->values()->pluck('percentage')->map(fn($p) => round($p))->toArray(),
             ],
-            'autoExam' => [
-                'labels' => $autoExamAttempts->values()->pluck('title')->toArray(),
-                'data' => $autoExamAttempts->values()->pluck('percentage')->map(fn($p) => round($p))->toArray(),
-            ],
-            'manualQuiz' => [
-                'labels' => $manualQuizResults->values()->pluck('title')->toArray(),
-                'data' => $manualQuizResults->values()->pluck('percentage')->map(fn($p) => round($p))->toArray(),
-            ],
-            'autoQuiz' => [
-                'labels' => $autoQuizAttempts->values()->pluck('title')->toArray(),
-                'data' => $autoQuizAttempts->values()->pluck('percentage')->map(fn($p) => round($p))->toArray(),
+            'quiz' => [
+                'labels' => $allQuizzes->values()->pluck('quiz')->toArray(),
+                'data' => $allQuizzes->values()->pluck('percentage')->map(fn($p) => round($p))->toArray(),
             ],
             'attendance' => [
                 'labels' => ['Present', 'Absent'],
@@ -159,8 +151,8 @@ class DashboardController extends Controller
 
         return $this->localeView('student.dashboard', [
             'student' => $student,
-            'exams' => $allExams,
-            'quizzes' => $allQuizzes,
+            'examResults' => $allExams,
+            'quizResults' => $allQuizzes,
             'availableQuizzes' => $availableQuizzes,
             'availableExams' => $availableExams,
             'courses' => $courses,

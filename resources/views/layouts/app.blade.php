@@ -9,44 +9,64 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;1,9..144,600&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
     @if(app()->getLocale() === 'ar')
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     @endif
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
+    <script>
+        (function() {
+            const mode = localStorage.getItem('mode') || 'light';
+            if (mode === 'dark') {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        })();
+    </script>
+
     <style>
         :root {
-            --bg-main: #f8fafc;
-            --bg-card: #ffffff;
-            --bg-sidebar: #1e293b;
-            --text-main: #0f172a;
-            --text-muted: #64748b;
-            --border-color: #f1f5f9;
-            --accent-color: #4f46e5;
-            --sidebar-text: #94a3b8;
+            --bg-page: #fbf7ee;
+            --bg-alt: #f2ead7;
+            --bg-card: #fffdf7;
+            --bg-sidebar: #201a12;
+            --text-main: #201a12;
+            --text-muted: #6b6255;
+            --text-sidebar: #f3ead9;
+            --text-sidebar-muted: #7a6e5d;
+            --border-color: #ded2b5;
+            --accent-color: #b5501f;
+            --status-green: #2f5c3f;
         }
 
         .dark {
-            --bg-main: #020617;
-            --bg-card: #0f172a;
-            --bg-sidebar: #020617;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --border-color: #1e293b;
-            --accent-color: #6366f1;
-            --sidebar-text: #64748b;
+            --bg-page: #171310;
+            --bg-alt: #211b15;
+            --bg-card: #1f1a14;
+            --bg-sidebar: #100d0a;
+            --text-main: #f3ead9;
+            --text-muted: #a89a83;
+            --text-sidebar: #f3ead9;
+            --text-sidebar-muted: #7a6e5d;
+            --border-color: #3a3126;
+            --accent-color: #e78a4a;
+            --status-green: #7bbf95;
         }
 
         [x-cloak] { display: none !important; }
+        html { scroll-behavior: smooth; }
+        .font-display { font-family: 'Fraunces', {{ app()->getLocale() === 'ar' ? "'Noto Sans Arabic', " : '' }}serif; }
+        .font-mono-label { font-family: 'JetBrains Mono', monospace; letter-spacing: 0.06em; }
 
         body {
             font-family: {{ app()->getLocale() === 'ar' ? "'Noto Sans Arabic', 'Inter', sans-serif" : "'Inter', sans-serif" }};
             margin: 0 !important;
             padding: 0 !important;
             overflow-x: hidden;
-            background-color: var(--bg-main);
+            background-color: var(--bg-page);
             color: var(--text-main);
             transition: background-color 0.3s ease, color 0.3s ease;
         }
@@ -55,7 +75,7 @@
             display: flex;
             height: 100vh;
             overflow: hidden;
-            background-color: var(--bg-main);
+            background-color: var(--bg-page);
         }
 
         .main-content {
@@ -66,6 +86,8 @@
             position: relative;
             display: flex;
             flex-direction: column;
+            scroll-behavior: smooth;
+            background-color: var(--bg-page);
         }
 
         .content-padding {
@@ -82,11 +104,15 @@
 
         .card-custom {
             background-color: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 1.5rem;
+            border: 1.5px solid var(--border-color);
+            border-radius: 0.75rem;
             padding: 1.5rem;
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            color: var(--text-main);
         }
+
+        .sidebar-scrollbar::-webkit-scrollbar { width: 4px; }
+        .sidebar-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .sidebar-scrollbar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.05); border-radius: 20px; }
     </style>
 </head>
 <body class="antialiased">

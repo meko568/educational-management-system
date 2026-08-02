@@ -43,7 +43,7 @@
                 </div>
 
                 <div style="margin-top: 1rem;">
-                    <button type="submit" style="width: 100%; padding: 1rem; background-color: #0d9488; color: white; border: none; border-radius: 1rem; font-weight: 800; font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; box-shadow: 0 10px 15px -3px rgba(13, 148, 136, 0.2);">
+                    <button type="submit" style="width: 100%; padding: 1rem; background-color: #b5501f; color: white; border: none; border-radius: 1rem; font-weight: 800; font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; box-shadow: 0 10px 15px -3px rgba(13, 148, 136, 0.2);">
                         {{ __('messages.create_student_button') }}
                     </button>
                 </div>

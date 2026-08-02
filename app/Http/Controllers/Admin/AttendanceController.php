@@ -16,6 +16,7 @@ class AttendanceController extends Controller
     {
         // Get academic year from URL parameter or session or default
         $academicYear = $request->query('academicYear') ?? session('selectedAcademicYear', 'primary1');
+        session(['selectedAcademicYear' => $academicYear]);
 
         // Filter attendance by academic year
         $attendances = Attendance::where('academicYear', $academicYear)
@@ -32,6 +33,8 @@ class AttendanceController extends Controller
     public function create(Request $request)
     {
         $academicYear = $request->query('academicYear') ?? session('selectedAcademicYear', 'primary1');
+        session(['selectedAcademicYear' => $academicYear]);
+
         $students = Student::where('role', '!=', 'admin')
             ->where('academicYear', $academicYear)
             ->get();

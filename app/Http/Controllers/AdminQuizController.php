@@ -12,15 +12,22 @@ use Illuminate\Support\Facades\DB;
 
 class AdminQuizController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $quizzes = AdminQuiz::with('creator')->orderBy('created_at', 'desc')->get();
-        return $this->localeView('admin.quizzes.admin-index', compact('quizzes'));
+        $academicYear = $request->query('academicYear') ?? session('selectedAcademicYear', 'primary1');
+        session(['selectedAcademicYear' => $academicYear]);
+
+        $quizzes = AdminQuiz::with('creator')
+            ->where('grade', $academicYear)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return $this->localeView('admin.quizzes.admin-index', compact('quizzes', 'academicYear'));
     }
 
     public function create(Request $request)
     {
-        $selectedGrade = $request->query('grade', 'primary1');
+        $selectedGrade = $request->query('academicYear') ?? session('selectedAcademicYear', 'primary1');
         $suggestedDates = $this->getSuggestedDates($selectedGrade);
         return $this->localeView('admin.quizzes.admin-create', compact('selectedGrade', 'suggestedDates'));
     }
@@ -52,7 +59,7 @@ class AdminQuizController extends Controller
 
     public function store(Request $request)
     {
-        $selectedGrade = $request->query('grade', 'primary1');
+        $selectedGrade = $request->input('academicYear') ?? session('selectedAcademicYear', 'primary1');
 
         $validated = $request->validate([
             'title' => 'required|string|max:255',

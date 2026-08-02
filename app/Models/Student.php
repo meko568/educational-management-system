@@ -53,6 +53,7 @@ class Student extends Authenticatable
     {
         return $this->attributes['plain_password'] ?? null;
     }
+
     protected $primaryKey = 'code';
     protected $fillable = [
         'name',

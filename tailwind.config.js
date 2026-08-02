@@ -13,7 +13,32 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                sans: ['Inter', ...defaultTheme.fontFamily.sans],
+                display: ['Fraunces', 'serif'],
+                mono: ['JetBrains Mono', 'monospace'],
+            },
+            colors: {
+                stone: {
+                    50: '#fbf7ee',
+                    100: '#f2ead7',
+                    900: '#201a12',
+                    950: '#171310',
+                },
+                bg: {
+                    page: 'var(--bg-page)',
+                    alt: 'var(--bg-alt)',
+                    card: 'var(--bg-card)',
+                    sidebar: 'var(--bg-sidebar)',
+                },
+                text: {
+                    main: 'var(--text-main)',
+                    muted: 'var(--text-muted)',
+                    sidebar: 'var(--text-sidebar)',
+                    'sidebar-muted': 'var(--text-sidebar-muted)',
+                },
+                border: 'var(--border-color)',
+                accent: 'var(--accent-color)',
+                success: 'var(--status-green)',
             },
         },
     },

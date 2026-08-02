@@ -103,7 +103,7 @@
                     l.querySelector('span').style.color = 'var(--text-muted)';
                 });
                 label.style.backgroundColor = 'rgba(79, 70, 229, 0.1)';
-                label.querySelector('span').style.color = '#4f46e5';
+                label.querySelector('span').style.color = '#b5501f';
             });
         });
     </script>

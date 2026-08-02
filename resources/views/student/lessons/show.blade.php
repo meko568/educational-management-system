@@ -171,7 +171,7 @@
     <style>
         .plyr { border-radius: 1rem; }
         .dark .plyr--full-ui.plyr--video .plyr__control--overlaid { background: rgba(99, 102, 241, .8); }
-        .dark .plyr--full-ui.plyr--video .plyr__control:hover { background: #4f46e5; }
+        .dark .plyr--full-ui.plyr--video .plyr__control:hover { background: #b5501f; }
         .dark .plyr__control--overlaid { color: #fff; }
     </style>
     @endpush

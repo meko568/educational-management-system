@@ -8,7 +8,7 @@
             </div>
 
             <a href="{{ route('admin.students.create', ['academicYear' => $academicYear ?? 'primary1']) }}"
-               style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1.5rem; background-color: #0d9488; color: white; border-radius: 0.75rem; font-weight: 800; font-size: 0.875rem; text-decoration: none; box-shadow: 0 10px 15px -3px rgba(13, 148, 136, 0.2);">
+               style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1.5rem; background-color: #b5501f; color: white; border-radius: 0.75rem; font-weight: 800; font-size: 0.875rem; text-decoration: none; box-shadow: 0 10px 15px -3px rgba(13, 148, 136, 0.2);">
                 <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
                 {{ __('messages.add_student') }}
             </a>
@@ -32,7 +32,7 @@
                             <tr style="border-bottom: 1px solid var(--border-color); transition: background-color 0.2s;">
                                 <td style="padding: 1rem 1.5rem;">
                                     <div style="display: flex; align-items: center; gap: 0.75rem;">
-                                        <div style="width: 2.5rem; height: 2.5rem; border-radius: 9999px; background-color: rgba(79, 70, 229, 0.1); color: #4f46e5; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.75rem; border: 1px solid rgba(79, 70, 229, 0.2);">
+                                        <div style="width: 2.5rem; height: 2.5rem; border-radius: 9999px; background-color: rgba(79, 70, 229, 0.1); color: #b5501f; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.75rem; border: 1px solid rgba(79, 70, 229, 0.2);">
                                             {{ substr($student->name, 0, 1) }}
                                         </div>
                                         <div>

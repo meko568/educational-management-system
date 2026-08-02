@@ -24,12 +24,16 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        // Default to primary1 academic year
-        return $this->showByYear('primary1');
+        // Use session year if available, otherwise default to primary1
+        $academicYear = session('selectedAcademicYear', 'primary1');
+        return $this->showByYear($academicYear);
     }
 
     public function showByYear($academicYear)
     {
+        // Store the selected academic year in the session
+        session(['selectedAcademicYear' => $academicYear]);
+
         $totalStudents = Student::where('academicYear', $academicYear)->count();
         $totalExams = Exam::where('academicYear', $academicYear)->count();
         $totalQuizzes = Quiz::where('academicYear', $academicYear)->count();

@@ -15,15 +15,15 @@
     >{{ __('messages.request_deletion') }}</button>
 
     <x-modal name="confirm-user-deletion" :show="$errors->userDeletion->isNotEmpty()" focusable>
-        <form method="post" action="{{ route('profile.destroy') }}" class="p-10 bg-white dark:bg-slate-900">
+        <form method="post" action="{{ route('profile.destroy') }}" class="p-10 bg-white dark:bg-stone-900">
             @csrf
             @method('delete')
 
-            <h2 class="text-2xl font-black text-slate-900 dark:text-white leading-tight">
+            <h2 class="text-2xl font-black text-stone-900 dark:text-white leading-tight">
                 {{ __('messages.are_you_absolutely_sure') }}
             </h2>
 
-            <p class="mt-4 text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+            <p class="mt-4 text-sm text-stone-500 dark:text-stone-400 leading-relaxed">
                 {{ __('messages.delete_confirmation_text') }}
             </p>
 
@@ -34,7 +34,7 @@
                     id="password"
                     name="password"
                     type="password"
-                    class="block w-full border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 text-slate-900 dark:text-white focus:ring-red-500/20 focus:border-red-500 rounded-2xl font-bold p-4"
+                    class="block w-full border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-950 text-stone-900 dark:text-white focus:ring-red-500/20 focus:border-red-500 rounded-2xl font-bold p-4"
                     placeholder="{{ __('messages.verification_password') }}"
                 />
 
@@ -42,7 +42,7 @@
             </div>
 
             <div class="mt-10 flex gap-4">
-                <button type="button" x-on:click="$dispatch('close')" class="flex-1 px-6 py-4 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 rounded-2xl font-black text-sm hover:bg-slate-200 dark:hover:bg-slate-700 transition-all uppercase tracking-widest">
+                <button type="button" x-on:click="$dispatch('close')" class="flex-1 px-6 py-4 bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400 rounded-2xl font-black text-sm hover:bg-stone-200 dark:hover:bg-stone-700 transition-all uppercase tracking-widest">
                     {{ __('messages.abort') }}
                 </button>
 

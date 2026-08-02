@@ -23,9 +23,9 @@
                 <p style="font-size: 0.75rem; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin: 0;">Not Watched Yet</p>
                 <p style="font-size: 1.875rem; font-weight: 900; color: #ef4444; margin: 0.5rem 0 0 0;">{{ $notWatchedCount }}</p>
             </div>
-            <div class="card-custom" style="border-left: 4px solid #4f46e5;">
+            <div class="card-custom" style="border-left: 4px solid #b5501f;">
                 <p style="font-size: 0.75rem; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin: 0;">Watch Rate</p>
-                <p style="font-size: 1.875rem; font-weight: 900; color: #4f46e5; margin: 0.5rem 0 0 0;">{{ $stats->count() > 0 ? round(($watchedCount / $stats->count()) * 100) : 0 }}%</p>
+                <p style="font-size: 1.875rem; font-weight: 900; color: #b5501f; margin: 0.5rem 0 0 0;">{{ $stats->count() > 0 ? round(($watchedCount / $stats->count()) * 100) : 0 }}%</p>
             </div>
         </div>
 

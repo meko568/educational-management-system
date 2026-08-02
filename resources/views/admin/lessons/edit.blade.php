@@ -28,7 +28,7 @@
                                 @php $isCurrent = $lesson->scheduled_date->format('Y-m-d') === $suggested['date']; @endphp
                                 <label class="suggested-date-label" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border-radius: 0.75rem; border: 1px solid var(--border-color); background-color: {{ $isCurrent ? 'rgba(79, 70, 229, 0.1)' : 'var(--bg-alt)' }}; cursor: pointer; transition: all 0.2s;">
                                     <input type="radio" name="scheduled_date_suggested" value="{{ $suggested['date'] }}" style="display: none;" onchange="document.getElementById('scheduled_date').value = this.value" {{ $isCurrent ? 'checked' : '' }}>
-                                    <span style="font-size: 0.75rem; font-weight: 700; color: {{ $isCurrent ? '#4f46e5' : 'var(--text-muted)' }};">{{ $suggested['label'] }}</span>
+                                    <span style="font-size: 0.75rem; font-weight: 700; color: {{ $isCurrent ? '#b5501f' : 'var(--text-muted)' }};">{{ $suggested['label'] }}</span>
                                 </label>
                             @endforeach
                         </div>
@@ -105,7 +105,7 @@
                     l.querySelector('span').style.color = 'var(--text-muted)';
                 });
                 label.style.backgroundColor = 'rgba(79, 70, 229, 0.1)';
-                label.querySelector('span').style.color = '#4f46e5';
+                label.querySelector('span').style.color = '#b5501f';
             });
         });
     </script>

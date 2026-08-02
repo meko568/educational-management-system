@@ -19,7 +19,7 @@
 
             <div style="position: relative; z-index: 10;">
                 <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2.5rem;">
-                    <div style="width: 3.5rem; height: 3.5rem; background-color: rgba(79, 70, 229, 0.1); color: #4f46e5; border-radius: 1rem; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(79, 70, 229, 0.2);">
+                    <div style="width: 3.5rem; height: 3.5rem; background-color: rgba(79, 70, 229, 0.1); color: #b5501f; border-radius: 1rem; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(79, 70, 229, 0.2);">
                         <svg style="width: 1.75rem; height: 1.75rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
                     </div>
                     <div>

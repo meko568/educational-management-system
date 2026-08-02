@@ -31,7 +31,7 @@
                 </div>
                 <div>
                     <p style="font-size: 0.625rem; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin: 0;">Login Password</p>
-                    <p style="font-size: 1rem; font-weight: 700; color: #4f46e5; margin: 0.25rem 0 0 0; font-family: monospace;">{{ $student->plain_password ?? '********' }}</p>
+                    <p style="font-size: 1rem; font-weight: 700; color: #b5501f; margin: 0.25rem 0 0 0; font-family: monospace;">{{ $student->plain_password ?? '********' }}</p>
                 </div>
             </div>
         </div>
@@ -41,10 +41,10 @@
             <div class="card-custom" style="display: flex; flex-direction: column; gap: 1rem;">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                     <p style="font-size: 0.75rem; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin: 0;">Exam Average</p>
-                    <span style="font-size: 1.25rem; font-weight: 900; color: #4f46e5;">{{ round($totalExamAvg) }}%</span>
+                    <span style="font-size: 1.25rem; font-weight: 900; color: #b5501f;">{{ round($totalExamAvg) }}%</span>
                 </div>
                 <div style="height: 0.5rem; background-color: var(--bg-alt); border-radius: 999px; overflow: hidden;">
-                    <div style="width: {{ $totalExamAvg }}%; height: 100%; background-color: #4f46e5;"></div>
+                    <div style="width: {{ $totalExamAvg }}%; height: 100%; background-color: #b5501f;"></div>
                 </div>
                 <div style="display: flex; justify-content: space-between; font-size: 0.625rem; font-weight: 700; color: var(--text-muted);">
                     <span>Manual: {{ round($manualExamAvg) }}%</span>
@@ -181,7 +181,7 @@
                                             <div style="font-size: 0.75rem; color: var(--text-muted);">{{ $attempt->submitted_at ? $attempt->submitted_at->format('M d, Y') : 'In Progress' }}</div>
                                         </td>
                                         <td style="padding: 1rem 1.5rem; text-align: right;">
-                                            <span style="font-weight: 800; color: #4f46e5;">{{ $attempt->score }}%</span>
+                                            <span style="font-weight: 800; color: #b5501f;">{{ $attempt->score }}%</span>
                                         </td>
                                     </tr>
                                 @endforeach
