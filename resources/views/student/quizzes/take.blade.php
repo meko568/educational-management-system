@@ -14,29 +14,75 @@
         </div>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="flex gap-6">
-                <!-- Sidebar - Question Navigation -->
-                <div class="w-64 flex-shrink-0">
-                    <div class="bg-white dark:bg-stone-800 overflow-hidden shadow-sm sm:rounded-lg sticky top-4">
+    <div class="py-12" x-data="{ questionNavOpen: false }" @close-nav.window="questionNavOpen = false">
+        <!-- Sidebar - Question Navigation (Mobile & Desktop) -->
+        <div x-cloak
+             :class="questionNavOpen
+                        ? 'translate-x-0 shadow-2xl'
+                        : '{{ app()->getLocale() === 'ar' ? 'translate-x-full' : '-translate-x-full' }}'"
+             class="fixed inset-y-0 {{ app()->getLocale() === 'ar' ? 'right-0' : 'left-0' }} z-[2000] w-72 bg-white dark:bg-stone-800 transition-transform duration-300 ease-in-out shadow-2xl border-{{ app()->getLocale() === 'ar' ? 'r' : 'l' }} border-stone-200 dark:border-stone-700">
+
+            <div class="h-full flex flex-col">
+                <!-- Sidebar Header -->
+                <div class="flex items-center justify-between p-6 border-b border-stone-100 dark:border-stone-700">
+                    <h3 class="text-lg font-black uppercase tracking-tight text-stone-900 dark:text-stone-100">Questions</h3>
+                    <button @click="questionNavOpen = false" class="p-2 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-700 text-stone-400">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="flex-1 overflow-y-auto p-4">
+                    <div class="bg-white dark:bg-stone-800 overflow-hidden">
                         <div class="p-4">
-                            <h3 class="text-lg font-medium text-stone-900 dark:text-stone-100 mb-2">Questions</h3>
                             <div id="question-nav" class="space-y-2">
                                 <!-- Question navigation items will be added here -->
                             </div>
                         </div>
                         <div class="border-t border-stone-200 dark:border-stone-700 p-4">
-                            <button type="submit" form="quiz-form" class="w-full inline-flex items-center justify-center px-4 py-2 bg-orange-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-orange-700 mb-2">
+                            <button type="submit" form="quiz-form" class="w-full inline-flex items-center justify-center px-4 py-3 bg-orange-600 border border-transparent rounded-xl font-bold text-sm text-white uppercase tracking-widest hover:bg-orange-700 transition-colors shadow-lg shadow-orange-600/20 mb-2">
                                 Submit Quiz
                             </button>
-                            <div class="text-xs text-stone-500 dark:text-stone-400 text-center">
+                            <div class="text-[10px] font-mono-label font-bold text-stone-400 uppercase tracking-widest text-center mt-2">
                                 {{ $attempt->total_points }} total points
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
 
+        <!-- Overlay for Sidebar -->
+        <div x-cloak
+             x-show="questionNavOpen"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition ease-in duration-200"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             @click="questionNavOpen = false"
+             class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-[1900]">
+        </div>
+
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <!-- Question Navigation Toggle Button -->
+            <div class="mb-6">
+                <button @click="questionNavOpen = true" class="w-full sm:w-auto flex items-center justify-between gap-6 px-6 py-3 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-xl shadow-sm hover:shadow-md transition-all">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center text-orange-600">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                            </svg>
+                        </div>
+                        <span class="font-bold text-stone-700 dark:text-stone-200">Question Navigation</span>
+                    </div>
+                    <span class="text-xs font-mono-label font-bold text-stone-400 uppercase tracking-widest bg-stone-50 dark:bg-stone-700/50 px-2 py-1 rounded">View All ({{ $questions->count() }})</span>
+                </button>
+            </div>
+
+            <div class="flex gap-6">
                 <!-- Main Content - Question Display -->
                 <div class="flex-1">
                     <div class="bg-white dark:bg-stone-800 overflow-hidden shadow-sm sm:rounded-lg">
@@ -130,9 +176,14 @@
                                     <button type="button" id="prev-question-btn" class="inline-flex items-center px-4 py-2 bg-stone-600 dark:bg-stone-700 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-stone-700 dark:hover:bg-stone-600 disabled:bg-stone-800 dark:disabled:bg-stone-900 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
                                         Previous
                                     </button>
-                                    <button type="button" id="next-question-btn" class="inline-flex items-center px-4 py-2 bg-orange-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-orange-700 disabled:bg-orange-800 disabled:opacity-50 disabled:cursor-not-allowed">
-                                        Next
-                                    </button>
+                                    <div class="flex items-center gap-3">
+                                        <button type="button" id="next-question-btn" class="inline-flex items-center px-4 py-2 bg-orange-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-orange-700">
+                                            Next
+                                        </button>
+                                        <button type="submit" id="bottom-submit-btn" class="hidden inline-flex items-center px-4 py-2 bg-orange-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-orange-700">
+                                            Submit Quiz
+                                        </button>
+                                    </div>
                                 </div>
                             </form>
                         </div>
@@ -189,14 +240,24 @@
             currentQuestionIndex = index;
             updateQuestionNav();
             updateNavButtons();
+
+            window.dispatchEvent(new CustomEvent('close-nav'));
         }
 
         function updateNavButtons() {
             const prevBtn = document.getElementById('prev-question-btn');
             const nextBtn = document.getElementById('next-question-btn');
+            const submitBtn = document.getElementById('bottom-submit-btn');
 
             prevBtn.disabled = currentQuestionIndex === 0;
-            nextBtn.disabled = currentQuestionIndex === totalQuestions - 1;
+
+            if (currentQuestionIndex === totalQuestions - 1) {
+                nextBtn.classList.add('hidden');
+                submitBtn.classList.remove('hidden');
+            } else {
+                nextBtn.classList.remove('hidden');
+                submitBtn.classList.add('hidden');
+            }
         }
 
         // Start timer

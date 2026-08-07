@@ -222,19 +222,6 @@ class StudentExamController extends Controller
                 'score' => $score,
             ]);
 
-            // Automated Attendance
-            \App\Models\Attendance::updateOrCreate(
-                [
-                    'student_code' => $attempt->user_id,
-                    'date' => now()->startOfDay(),
-                ],
-                [
-                    'status' => 'present',
-                    'academicYear' => $attempt->exam->grade,
-                    'notes' => 'Auto-present via Exam: ' . $attempt->exam->title
-                ]
-            );
-
             DB::commit();
             return true;
         } catch (\Exception $e) {

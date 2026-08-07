@@ -222,19 +222,6 @@ class StudentQuizController extends Controller
                 'score' => $score,
             ]);
 
-            // Automated Attendance
-            \App\Models\Attendance::updateOrCreate(
-                [
-                    'student_code' => $attempt->user_id,
-                    'date' => now()->startOfDay(),
-                ],
-                [
-                    'status' => 'present',
-                    'academicYear' => $attempt->quiz->grade,
-                    'notes' => 'Auto-present via Quiz: ' . $attempt->quiz->title
-                ]
-            );
-
             DB::commit();
             return true;
         } catch (\Exception $e) {

@@ -13,7 +13,7 @@
                 <div class="bg-white dark:bg-stone-800 overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6">
                         <h3 class="text-lg font-medium text-stone-900 dark:text-stone-100 mb-4">Exam Performance</h3>
-                        <div class="chart-container" style="position: relative; height:400px;">
+                        <div class="relative h-[300px] sm:h-[400px]">
                             <canvas id="examChart"></canvas>
                         </div>
                     </div>
@@ -23,7 +23,7 @@
                 <div class="bg-white dark:bg-stone-800 overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6">
                         <h3 class="text-lg font-medium text-stone-900 dark:text-stone-100 mb-4">Quiz Performance</h3>
-                        <div class="chart-container" style="position: relative; height:400px;">
+                        <div class="relative h-[300px] sm:h-[400px]">
                             <canvas id="quizChart"></canvas>
                         </div>
                     </div>
@@ -33,7 +33,7 @@
                 <div class="bg-white dark:bg-stone-800 overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6">
                         <h3 class="text-lg font-medium text-stone-900 dark:text-stone-100 mb-4">Attendance Overview</h3>
-                        <div class="chart-container" style="position: relative; height:400px;">
+                        <div class="relative h-[300px] sm:h-[400px]">
                             <canvas id="attendanceChart"></canvas>
                         </div>
                     </div>
@@ -43,30 +43,30 @@
             <!-- Student Info Card -->
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
                 <div class="p-6 bg-white border-b border-stone-200">
-                    <div class="flex justify-between items-center">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                         <div>
                             <h3 class="text-lg font-medium text-stone-900">Welcome, {{ $student->name }}</h3>
-                            <p class="text-stone-600">Student Code: {{ $student->code }}</p>
-                            <p class="text-stone-600">Academic Year: {{ $student->academicYear ?? 'N/A' }}</p>
+                            <p class="text-sm text-stone-600">Student Code: {{ $student->code }}</p>
+                            <p class="text-sm text-stone-600">Academic Year: {{ $student->academicYear ?? 'N/A' }}</p>
                             @if($student->phone)
-                                <p class="text-stone-600">Phone: {{ $student->phone }}</p>
+                                <p class="text-sm text-stone-600">Phone: {{ $student->phone }}</p>
                             @endif
                             @if($student->parent_phone)
-                                <p class="text-stone-600">Parent's Phone: {{ $student->parent_phone }}</p>
+                                <p class="text-sm text-stone-600">Parent's Phone: {{ $student->parent_phone }}</p>
                             @endif
                         </div>
-                        <div class="text-right">
-                            <div class="text-2xl font-bold text-orange-600">
+                        <div class="flex flex-col items-start sm:items-end">
+                            <div class="text-3xl font-bold text-orange-600">
                                 {{ $attendance['attendance_percentage'] }}%
                             </div>
-                            <div class="text-sm text-stone-500">Attendance</div>
+                            <div class="text-xs uppercase font-bold tracking-wider text-stone-500">Attendance</div>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Stats Cards -->
-            <div class="grid grid-cols-1 gap-6 mb-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 mb-6">
                 <!-- Exams Card -->
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6">

@@ -124,6 +124,16 @@
             <div>
                 <label class="block text-sm font-semibold text-stone-700 dark:text-stone-300 mb-1">Optional Image</label>
                 <input type="file" name="questions[IDX][question_image]" class="block w-full text-sm text-stone-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-xs file:font-bold file:bg-orange-50 file:text-orange-700 hover:file:bg-orange-100 dark:file:bg-orange-900 dark:file:text-orange-300">
+                <div class="existing-image-container hidden mt-2">
+                    <p class="text-xs text-stone-500 mb-1">Current Image:</p>
+                    <div class="relative inline-block">
+                        <img src="" class="h-24 w-auto rounded border shadow-sm">
+                        <button type="button" class="remove-existing-image-btn absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 shadow-md hover:bg-red-600 transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                        </button>
+                    </div>
+                    <input type="hidden" name="questions[IDX][existing_image]" class="existing-image-input">
+                </div>
             </div>
 
             <!-- Containers for different types -->
@@ -186,7 +196,8 @@
                     tf: block.querySelector('input[value="true"]').checked ? 'true' : (block.querySelector('input[value="false"]').checked ? 'false' : null),
                     blank: block.querySelector('.blank-box input').value,
                     mc_correct: block.querySelector('.correct-choice-radio:checked')?.value,
-                    choices: choices
+                    choices: choices,
+                    image: block.querySelector('.existing-image-input').value
                 });
             });
             localStorage.setItem(STORAGE_KEY, JSON.stringify({ questions: data, activeIdx }));
@@ -254,6 +265,13 @@
                 block.querySelector('input[type="number"]').value = data.points;
                 block.querySelector('.blank-box input').value = data.blank || '';
 
+                if (data.image) {
+                    const imgContainer = block.querySelector('.existing-image-container');
+                    imgContainer.classList.remove('hidden');
+                    imgContainer.querySelector('img').src = data.image;
+                    imgContainer.querySelector('.existing-image-input').value = data.image;
+                }
+
                 const mcList = block.querySelector('.choices-list');
                 (data.choices.length ? data.choices : ['', '', '', '']).forEach((c, i) => {
                     const item = createChoice(qIdx, i, c);
@@ -295,6 +313,12 @@
                 const qIdx = block.getAttribute('data-idx');
                 const list = block.querySelector('.choices-list');
                 list.appendChild(createChoice(qIdx, list.children.length));
+                saveToLocal();
+            }
+            if (e.target.closest('.remove-existing-image-btn')) {
+                const container = e.target.closest('.existing-image-container');
+                container.classList.add('hidden');
+                container.querySelector('.existing-image-input').value = '';
                 saveToLocal();
             }
             if (e.target.closest('.del-choice')) {
@@ -378,11 +402,47 @@
 
         // Initialization
         const saved = localStorage.getItem(STORAGE_KEY);
+        const dbQuestions = @json($exam->questions);
+
         if (saved) {
             const state = JSON.parse(saved);
             state.questions.forEach(q => addQuestion(q));
             activeIdx = state.activeIdx || 0;
             showQuestion(activeIdx);
+        } else if (dbQuestions && dbQuestions.length > 0) {
+            dbQuestions.forEach(q => {
+                const choices = q.choices ? q.choices.map(c => c.choice_text) : [];
+                let mcCorrect = -1;
+                if (q.type === 'multiple_choice' && q.choices) {
+                    mcCorrect = q.choices.findIndex(c => c.is_correct);
+                }
+
+                let tfValue = null;
+                if (q.type === 'true_false' && q.choices) {
+                    const correctChoice = q.choices.find(c => c.is_correct);
+                    if (correctChoice) {
+                        tfValue = correctChoice.choice_text.toLowerCase() === 'true' ? 'true' : 'false';
+                    }
+                }
+
+                let blankValue = '';
+                if (q.type === 'fill_blank' && q.choices && q.choices.length > 0) {
+                    blankValue = q.choices[0].choice_text;
+                }
+
+                addQuestion({
+                    text: q.question_text,
+                    type: q.type,
+                    points: q.points,
+                    tf: tfValue,
+                    blank: blankValue,
+                    mc_correct: mcCorrect,
+                    choices: choices,
+                    image: q.question_image
+                });
+            });
+            activeIdx = 0;
+            showQuestion(0);
         } else {
             addQuestion();
         }

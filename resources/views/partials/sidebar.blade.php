@@ -1,7 +1,9 @@
 <!-- Warm Neutral Sidebar -->
 <aside
-    :class="sidebarOpen ? 'w-72' : 'w-24'"
-    class="hidden lg:flex flex-col flex-none h-full transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] z-30 relative overflow-hidden border-{{ app()->getLocale() === 'ar' ? 'l' : 'r' }}"
+    :class="sidebarOpen
+        ? 'translate-x-0 w-72'
+        : '{{ app()->getLocale() === 'ar' ? 'translate-x-full' : '-translate-x-full' }} lg:translate-x-0 lg:w-24'"
+    class="fixed inset-y-0 {{ app()->getLocale() === 'ar' ? 'right-0' : 'left-0' }} lg:static flex flex-col flex-none h-full transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] z-[110] overflow-hidden border-{{ app()->getLocale() === 'ar' ? 'l' : 'r' }}"
     style="background-color: var(--bg-sidebar); color: var(--text-sidebar); border-color: var(--border-color);"
 >
     <!-- Sidebar Header -->
@@ -58,6 +60,7 @@
             @foreach($navItems as $item)
                 @php $isActive = request()->routeIs($item['route'] . '*'); @endphp
                 <a href="{{ Route::has($item['route']) ? route($item['route'], $item['params'] ?? []) : '#' }}"
+                   @click="if (window.innerWidth < 1024) sidebarOpen = false"
                    class="group transition-all duration-300"
                    style="{{ $isActive ? 'background-color: var(--text-sidebar); color: #201a12; shadow: 0 4px 6px -1px rgba(0,0,0,0.1);' : 'color: var(--text-sidebar-muted);' }}"
                    :class="sidebarOpen
@@ -95,6 +98,7 @@
             @foreach($academicItems as $item)
                 @php $isActive = request()->routeIs($item['route'] . '*'); @endphp
                 <a href="{{ Route::has($item['route']) ? route($item['route'], $item['params'] ?? []) : '#' }}"
+                   @click="if (window.innerWidth < 1024) sidebarOpen = false"
                    class="group transition-all duration-300"
                    style="{{ $isActive ? 'background-color: var(--text-sidebar); color: #201a12; shadow: 0 4px 6px -1px rgba(0,0,0,0.1);' : 'color: var(--text-sidebar-muted);' }}"
                    :class="sidebarOpen
@@ -114,6 +118,30 @@
             @endforeach
         </div>
         @endif
+
+        <div class="mt-8 pt-8 border-t border-white/5 space-y-1">
+            <form method="POST" action="{{ route('logout') }}" id="sidebar-logout-form" class="hidden">
+                @csrf
+            </form>
+            <a href="{{ route('logout') }}"
+               onclick="event.preventDefault(); document.getElementById('sidebar-logout-form').submit();"
+               class="group transition-all duration-300"
+               style="color: #f87171;"
+               :class="sidebarOpen
+                    ? 'flex items-center gap-3 px-4 py-3 rounded-xl w-full hover:bg-red-500/10'
+                    : 'flex items-center justify-center w-12 h-12 rounded-2xl mx-auto hover:bg-red-500/10'">
+                <div class="flex-shrink-0 w-5 h-5 flex items-center justify-center">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                </div>
+                <span x-show="sidebarOpen"
+                      x-transition:enter="transition ease-out duration-300"
+                      x-transition:enter-start="opacity-0 -translate-x-2"
+                      x-transition:enter-end="opacity-100 translate-x-0"
+                      class="font-bold text-sm whitespace-nowrap">{{ __('messages.log_out') }}</span>
+            </a>
+        </div>
     </nav>
 
     <!-- Footer Identity -->

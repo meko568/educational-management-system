@@ -119,6 +119,7 @@ class AdminQuizController extends Controller
 
     public function createQuestions(AdminQuiz $quiz)
     {
+        $quiz->load('questions.choices');
         return $this->localeView('admin.quizzes.questions.create', compact('quiz'));
     }
 
@@ -134,13 +135,14 @@ class AdminQuizController extends Controller
             'questions.*.correct_choice' => 'nullable|integer',
             'questions.*.correct_answer_tf' => 'nullable|in:true,false',
             'questions.*.correct_answer_text' => 'nullable|string',
+            'questions.*.existing_image' => 'nullable|string',
         ]);
 
         DB::transaction(function () use ($request, $quiz, $validated) {
             $quiz->questions()->delete();
 
             foreach ($validated['questions'] as $index => $qData) {
-                $imagePath = null;
+                $imagePath = $qData['existing_image'] ?? null;
                 if ($request->hasFile("questions.{$index}.question_image")) {
                     $res = Cloudinary::upload($request->file("questions.{$index}.question_image")->getRealPath());
                     $imagePath = $res->getSecurePath();

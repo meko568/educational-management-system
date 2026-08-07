@@ -80,7 +80,7 @@
 
         .main-content {
             flex: 1;
-            height: 100%;
+            height: 100vh;
             overflow-y: auto;
             overflow-x: hidden;
             position: relative;
@@ -88,6 +88,22 @@
             flex-direction: column;
             scroll-behavior: smooth;
             background-color: var(--bg-page);
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Ensure scrollbar is visible when content overflows */
+        .main-content::-webkit-scrollbar {
+            width: 8px;
+        }
+        .main-content::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .main-content::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 10px;
+        }
+        .main-content::-webkit-scrollbar-thumb:hover {
+            background: var(--text-muted);
         }
 
         .content-padding {
@@ -117,6 +133,18 @@
 </head>
 <body class="antialiased">
     <div x-data="{ sidebarOpen: window.innerWidth > 1024 }" class="dashboard-container">
+        <!-- Mobile Sidebar Overlay -->
+        <div x-show="sidebarOpen"
+             x-cloak
+             x-transition:enter="transition-opacity ease-linear duration-300"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition-opacity ease-linear duration-300"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             @click="sidebarOpen = false"
+             class="fixed inset-0 z-[105] bg-stone-900/60 backdrop-blur-sm lg:hidden"></div>
+
         @include('partials.sidebar')
 
         <div class="main-content">
