@@ -281,4 +281,5 @@ return [
     'shortcut_primary' => 'ب',
     'shortcut_prep' => 'ع',
     'shortcut_sec' => 'ث',
+    'home' => 'الرئيسية',
 ];

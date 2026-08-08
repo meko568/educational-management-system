@@ -264,4 +264,5 @@ return [
     'shortcut_primary' => 'P',
     'shortcut_prep' => 'Pr',
     'shortcut_sec' => 'S',
+    'home' => 'Home',
 ];

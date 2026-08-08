@@ -39,7 +39,7 @@
         <div style="display: flex; flex-direction: column; gap: 0.5rem; width: 100%;">
             @php
                 $currentYear = $academicYear ?? session('selectedAcademicYear', 'primary1');
-                $role = Auth::user()->role;
+                $role = Auth::check() ? Auth::user()->role : 'guest';
 
                 if ($role === 'admin') {
                     $navItems = [
@@ -47,12 +47,17 @@
                         ['label' => __('messages.students'), 'icon' => 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z', 'route' => 'admin.students.index', 'params' => ['academicYear' => $currentYear]],
                         ['label' => __('messages.courses'), 'icon' => 'M12 6.253v13m0-13C6.5 6.253 2 10.998 2 17s4.5 10.747 10 10.747c5.5 0 10-4.998 10-10.747S17.5 6.253 12 6.253z', 'route' => 'admin.courses.index', 'params' => ['academicYear' => $currentYear]],
                     ];
-                } else {
+                } elseif ($role === 'student') {
                     $navItems = [
                         ['label' => __('messages.dashboard'), 'icon' => 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6', 'route' => 'student.dashboard'],
                         ['label' => __('messages.courses'), 'icon' => 'M12 6.253v13m0-13C6.5 6.253 2 10.998 2 17s4.5 10.747 10 10.747c5.5 0 10-4.998 10-10.747S17.5 6.253 12 6.253z', 'route' => 'student.courses.index'],
                         ['label' => __('messages.my_quizzes'), 'icon' => 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2', 'route' => 'student.quizzes.index'],
                         ['label' => __('messages.my_exams'), 'icon' => 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z', 'route' => 'student.exams.index'],
+                    ];
+                } else {
+                    $navItems = [
+                        ['label' => __('messages.home'), 'icon' => 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6', 'route' => 'welcome'],
+                        ['label' => __('messages.login'), 'icon' => 'M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1', 'route' => 'login'],
                     ];
                 }
             @endphp
@@ -119,6 +124,7 @@
         </div>
         @endif
 
+        @auth
         <div class="mt-8 pt-8 border-t border-white/5 space-y-1">
             <form method="POST" action="{{ route('logout') }}" id="sidebar-logout-form" class="hidden">
                 @csrf
@@ -142,9 +148,11 @@
                       class="font-bold text-sm whitespace-nowrap">{{ __('messages.log_out') }}</span>
             </a>
         </div>
+        @endauth
     </nav>
 
     <!-- Footer Identity -->
+    @if($role === 'admin')
     @php
         $yearFull = $academicYear ?? session('selectedAcademicYear', 'primary1');
         $yearShortcut = '';
@@ -172,4 +180,5 @@
             </div>
         </div>
     </div>
+    @endif
 </aside>

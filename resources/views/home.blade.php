@@ -20,8 +20,11 @@
         :root {
             --bg-main: #fbf7ee;
             --bg-alt: #f2ead7;
+            --bg-sidebar: #201a12;
             --text-main: #201a12;
             --text-muted: #6b6255;
+            --text-sidebar: #f3ead9;
+            --text-sidebar-muted: #7a6e5d;
             --border-color: #ded2b5;
             --card-bg: #fffdf7;
             --accent-color: #b5501f;
@@ -37,8 +40,11 @@
         .dark {
             --bg-main: #171310;
             --bg-alt: #211b15;
+            --bg-sidebar: #100d0a;
             --text-main: #f3ead9;
             --text-muted: #a89a83;
+            --text-sidebar: #f3ead9;
+            --text-sidebar-muted: #7a6e5d;
             --border-color: #3a3126;
             --card-bg: #1f1a14;
             --accent-color: #e78a4a;
@@ -111,10 +117,24 @@
     </style>
 </head>
 <body class="antialiased selection:bg-orange-200 selection:text-orange-900">
+    <div x-data="{ sidebarOpen: false }" class="flex h-screen overflow-hidden">
+        <!-- Mobile Sidebar Overlay -->
+        <div x-show="sidebarOpen"
+             x-cloak
+             x-transition:enter="transition-opacity ease-linear duration-300"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition-opacity ease-linear duration-300"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             @click="sidebarOpen = false"
+             class="fixed inset-0 z-[105] bg-stone-900/60 backdrop-blur-sm lg:hidden"></div>
 
-    @include('partials.navbar')
+        @include('partials.sidebar')
 
-    <main>
+        <div class="flex-1 h-full overflow-y-auto overflow-x-hidden relative flex flex-col">
+            @include('partials.navbar')
+            <main>
         <!-- Hero Section -->
         <section class="relative overflow-hidden section-padding" style="border-bottom: 1px solid var(--border-color);">
             <div class="container-custom">
@@ -291,5 +311,7 @@
             </div>
         </div>
     </footer>
+    </div>
+    </div>
 </body>
 </html>

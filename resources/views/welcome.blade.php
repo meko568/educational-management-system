@@ -18,12 +18,27 @@
         [x-cloak] { display: none !important; }
     </style>
 </head>
-<body class="antialiased bg-[#FBF7EE] dark:bg-stone-950 text-stone-900 dark:text-white transition-colors duration-300" x-data="{ sidebarOpen: false }">
+<body class="antialiased bg-[#FBF7EE] dark:bg-stone-950 text-stone-900 dark:text-white transition-colors duration-300">
+    <div x-data="{ sidebarOpen: false }" class="flex h-screen overflow-hidden">
+        <!-- Mobile Sidebar Overlay -->
+        <div x-show="sidebarOpen"
+             x-cloak
+             x-transition:enter="transition-opacity ease-linear duration-300"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition-opacity ease-linear duration-300"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             @click="sidebarOpen = false"
+             class="fixed inset-0 z-[105] bg-stone-900/60 backdrop-blur-sm lg:hidden"></div>
 
-    @include('partials.navbar')
+        @include('partials.sidebar')
 
-    <!-- Hero Section -->
-    <div class="relative min-h-[80vh] flex flex-col items-center justify-center overflow-hidden bg-white dark:bg-stone-950">
+        <div class="flex-1 h-full overflow-y-auto overflow-x-hidden relative flex flex-col">
+            @include('partials.navbar')
+
+            <!-- Hero Section -->
+            <div class="relative min-h-[80vh] flex flex-col items-center justify-center overflow-hidden bg-white dark:bg-stone-950 flex-shrink-0">
         <!-- Abstract Background -->
         <div class="absolute inset-0 z-0">
             <div class="absolute top-0 -left-4 w-72 h-72 bg-emerald-300 dark:bg-emerald-900 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
@@ -93,5 +108,7 @@
             <p class="text-sm font-bold text-stone-400 dark:text-stone-600 uppercase tracking-widest">&copy; {{ date('Y') }} EduManage System. All rights reserved.</p>
         </div>
     </footer>
+    </div>
+    </div>
 </body>
 </html>
