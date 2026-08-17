@@ -1,8 +1,19 @@
 #!/bin/sh
 set -e
 
-# Use the PORT environment variable if provided by PandaStack, default to 8080
-APP_PORT=${PORT:-8080}
+# Map Clever Cloud MySQL addon vars -> Laravel DB_* vars
+if [ -n "$MYSQL_ADDON_HOST" ]; then
+    echo "Clever Cloud MySQL addon found. Mapping DB env vars..."
+    export DB_CONNECTION=mysql
+    export DB_HOST=$MYSQL_ADDON_HOST
+    export DB_PORT=$MYSQL_ADDON_PORT
+    export DB_DATABASE=$MYSQL_ADDON_DB
+    export DB_USERNAME=$MYSQL_ADDON_USER
+    export DB_PASSWORD=$MYSQL_ADDON_PASSWORD
+fi
+
+# Clever Cloud listens on CC_DOCKER_EXPOSED_HTTP_PORT (default 8080)
+APP_PORT=${CC_DOCKER_EXPOSED_HTTP_PORT:-${PORT:-8080}}
 echo "Configuring Nginx to listen on port $APP_PORT..."
 sed -i "s/listen 8080; # This will be replaced by start.sh/listen ${APP_PORT};/g" /etc/nginx/nginx.conf
 
